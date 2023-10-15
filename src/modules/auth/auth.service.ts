@@ -48,7 +48,10 @@ export class AuthService {
       // Send to user gmail
       await this.sendCodeToUserEmail(createdUser.email);
 
-      return createdUser;
+      return {
+        message: 'Please, verify email!',
+        data: createdUser,
+      };
     } catch (error) {
       throw error;
     }
