@@ -6,6 +6,9 @@ import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AuthController } from './auth.controller';
+import { CacheModule } from '@nestjs/cache-manager';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
@@ -16,8 +19,12 @@ import { ConfigService } from '@nestjs/config';
         config.get<JwtModuleOptions>('jwt'),
       inject: [ConfigService],
     }),
+    CacheModule.register({
+      ttl: 60000,
+    }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController],
+  providers: [AuthService, MailService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
