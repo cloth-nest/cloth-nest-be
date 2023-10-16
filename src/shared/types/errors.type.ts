@@ -3,8 +3,16 @@ export type TypeError =
   | 'DatabaseError'
   | 'MailerError'
   | 'ValidationError'
-  | 'EmailExisted'
-  | 'TypeOrmError';
+  | 'EmailExistedError'
+  | 'TypeOrmError'
+  | 'InvalidLinkError'
+  | 'AccountUnactiveError'
+  | 'AccountActivatedBeforeError'
+  | 'EmailNotRegisterdError'
+  | 'WrongCodeError'
+  | 'CodeExpiredError'
+  | 'UnauthorizedError'
+  | 'NotFoundError';
 
 export type MessageValidationError = {
   message: string;

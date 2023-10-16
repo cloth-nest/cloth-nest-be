@@ -60,4 +60,15 @@ export class UsersService {
       throw error;
     }
   }
+
+  public async activateAccount(email: string): Promise<void> {
+    await this.userRepo.update(
+      {
+        email,
+      },
+      {
+        isActive: true,
+      },
+    );
+  }
 }

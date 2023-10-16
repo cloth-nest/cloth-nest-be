@@ -11,7 +11,7 @@ import { Response } from 'express';
 export interface SuccessResponse<T> {
   statusCode: number;
   message?: string;
-  data: T;
+  data?: T;
 }
 
 @Injectable()
@@ -30,7 +30,7 @@ export class TransformInterceptor<T>
       map((result) => ({
         statusCode,
         message: result?.message,
-        data: result.data,
+        data: result?.data,
       })),
     );
   }

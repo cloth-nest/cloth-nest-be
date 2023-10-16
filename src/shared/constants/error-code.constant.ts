@@ -5,16 +5,13 @@ type Code =
   | 'InternalServerError'
   | 'TypeOrmError'
   | 'MailerError'
-  | 'DBInsert'
-  | 'DBUpdate'
-  | 'DBQuery'
-  | 'DBDelete'
 
   // Group B
   | 'InvalidEmail'
   | 'InvalidPassword'
   | 'InvalidFirstName'
   | 'InvalidLastName'
+  | 'InvalidCode'
   | 'InvalidNewPassword'
   | 'InvalidOldPassword'
 
@@ -22,17 +19,30 @@ type Code =
   | 'EmailExisted'
   | 'InvalidLink'
   | 'AccountUnactive'
+  | 'AccountActivatedBefore'
+  | 'EmailNotRegisterd'
+  | 'WrongCode'
+  | 'CodeExpired'
+
+  // Group D
   | 'Unauthorized'
-  | 'NotFound'
-  | 'EmailNotRegisterd';
+  | 'NotFound';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
   DatabaseError: 'DatabaseError',
   ValidationError: 'ValidationError',
-  EmailExisted: 'EmailExisted',
+  EmailExistedError: 'EmailExistedError',
   TypeOrmError: 'TypeOrmError',
   MailerError: 'MailerError',
+  InvalidLinkError: 'InvalidLinkError',
+  AccountUnactiveError: 'AccountUnactiveError',
+  AccountActivatedBeforeError: 'AccountActivatedBeforeError',
+  EmailNotRegisterdError: 'EmailNotRegisterdError',
+  WrongCodeError: 'WrongCodeError',
+  CodeExpiredError: 'CodeExpiredError',
+  UnauthorizedError: 'UnauthorizedError',
+  NotFoundError: 'NotFoundError',
 };
 
 export const ERRORS: Record<Code, CustomError> = {
@@ -54,30 +64,6 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'MailerError something ..., need to override message field',
     statusCode: 500,
     typeError: TYPE_ERRORS.MailerError,
-  },
-  DBInsert: {
-    code: 'A0002',
-    message: 'Cannot insert data to database',
-    statusCode: 500,
-    typeError: TYPE_ERRORS.DatabaseError,
-  },
-  DBUpdate: {
-    code: 'A0003',
-    message: 'Cannot update data to database',
-    statusCode: 500,
-    typeError: TYPE_ERRORS.DatabaseError,
-  },
-  DBQuery: {
-    code: 'A0004',
-    message: 'Cannot query data in databsase',
-    statusCode: 500,
-    typeError: TYPE_ERRORS.DatabaseError,
-  },
-  DBDelete: {
-    code: 'A0005',
-    message: 'Cannot delete data in database',
-    statusCode: 500,
-    typeError: TYPE_ERRORS.DatabaseError,
   },
 
   // Group B
@@ -105,14 +91,20 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
-  InvalidNewPassword: {
+  InvalidCode: {
     code: 'B0005',
+    message: 'Invalid input code',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidNewPassword: {
+    code: 'B0006',
     message: 'Invalid input newPassword',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
   InvalidOldPassword: {
-    code: 'B0006',
+    code: 'B0007',
     message: 'Invalid input oldPassword',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
@@ -123,36 +115,56 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'C0001',
     message: 'Email is already existed',
     statusCode: 409,
-    typeError: TYPE_ERRORS.EmailExisted,
+    typeError: TYPE_ERRORS.EmailExistedError,
   },
   InvalidLink: {
     code: 'C0002',
     message: 'Invalid link',
     statusCode: 409,
-    typeError: TYPE_ERRORS.ValidationError,
+    typeError: TYPE_ERRORS.InvalidLinkError,
   },
   AccountUnactive: {
     code: 'C0003',
     message: 'An Email sent to your account please verify',
     statusCode: 400,
-    typeError: TYPE_ERRORS.ValidationError,
+    typeError: TYPE_ERRORS.AccountUnactiveError,
   },
-  Unauthorized: {
+  AccountActivatedBefore: {
     code: 'C0004',
-    message: 'Unauthorized',
-    statusCode: 401,
-    typeError: TYPE_ERRORS.ValidationError,
+    message: 'The account has been activated previously.',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.AccountActivatedBeforeError,
   },
-  NotFound: {
+  WrongCode: {
     code: 'C0005',
-    message: 'NotFound',
-    statusCode: 404,
-    typeError: TYPE_ERRORS.ValidationError,
+    message: 'Wrong code',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.WrongCodeError,
+  },
+  CodeExpired: {
+    code: 'C0006',
+    message: 'Code has expired, please resend new code',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.CodeExpiredError,
   },
   EmailNotRegisterd: {
-    code: 'C0006',
+    code: 'C0007',
     message: 'Email is not registered',
     statusCode: 404,
-    typeError: TYPE_ERRORS.ValidationError,
+    typeError: TYPE_ERRORS.EmailNotRegisterdError,
+  },
+
+  // Group D
+  Unauthorized: {
+    code: 'D0001',
+    message: 'Unauthorized',
+    statusCode: 401,
+    typeError: TYPE_ERRORS.UnauthorizedError,
+  },
+  NotFound: {
+    code: 'D0002',
+    message: 'NotFound',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 };

@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidationException } from '../exceptions/validator.exception';
@@ -35,6 +36,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message,
       },
     };
+
+    Logger.error(exception.stack, exception.name);
 
     response.status(statusCode).send(errorResponse);
   }
@@ -74,6 +77,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
       case 'firstName': {
         return ERRORS.InvalidFirstName;
+      }
+      case 'code': {
+        return ERRORS.InvalidCode;
       }
       case 'newPassword': {
         return ERRORS.InvalidNewPassword;

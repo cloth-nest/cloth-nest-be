@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto } from './dto';
+import { SignUpDto, VerifyEmailDto } from './dto';
 import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
 import { ERRORS } from 'src/shared/constants';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -50,10 +50,46 @@ export class AuthService {
 
       return {
         message: 'Please, verify email!',
-        data: createdUser,
       };
     } catch (error) {
       throw error;
+    }
+  }
+
+  public async verifyEmail(verifyEmailDto: VerifyEmailDto) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(
+        verifyEmailDto.email,
+      );
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check account is active
+      if (user.isActive) {
+        throw new CustomErrorException(ERRORS.AccountActivatedBefore);
+      }
+
+      // Check code valid
+      const savedCode = await this.cacheManager.get<number>(
+        verifyEmailDto.email,
+      );
+      if (!savedCode) {
+        throw new CustomErrorException(ERRORS.CodeExpired);
+      }
+
+      if (savedCode !== verifyEmailDto.code) {
+        throw new CustomErrorException(ERRORS.WrongCode);
+      }
+
+      // Clear cache, set active account
+      await this.cacheManager.del(verifyEmailDto.email);
+      await this.usersService.activateAccount(verifyEmailDto.email);
+
+      return { message: 'Account is activated' };
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -61,7 +97,7 @@ export class AuthService {
     return Math.floor(1000 + Math.random() * 9000);
   }
 
-  private async sendCodeToUserEmail(email: string) {
+  private async sendCodeToUserEmail(email: string): Promise<void> {
     // Gen code with 4 number
     const code = this.genCode();
 
