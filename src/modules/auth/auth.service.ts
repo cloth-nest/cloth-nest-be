@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto, VerifyEmailDto } from './dto';
+import { ResendCodeDto, SignUpDto, VerifyEmailDto } from './dto';
 import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
 import { ERRORS } from 'src/shared/constants';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -88,6 +88,30 @@ export class AuthService {
       await this.usersService.activateAccount(verifyEmailDto.email);
 
       return { message: 'Account is activated' };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async resendCode(resendCodeDto: ResendCodeDto) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(resendCodeDto.email);
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check account is active
+      if (user.isActive) {
+        throw new CustomErrorException(ERRORS.AccountActivatedBefore);
+      }
+
+      // Send to user gmail
+      await this.sendCodeToUserEmail(resendCodeDto.email);
+
+      return {
+        message: 'New code was sent your email!',
+      };
     } catch (err) {
       throw err;
     }
