@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entities';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
+import * as bcrypt from 'bcrypt';
 
 // This should be a real class/interface representing a user entity
 export type User1 = any;
@@ -68,6 +69,25 @@ export class UsersService {
       },
       {
         isActive: true,
+      },
+    );
+  }
+
+  public async isValidPassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    // Unhash & check password
+    return await bcrypt.compare(password, hashedPassword);
+  }
+
+  public async saveRefreshToken(rt: string, userId: number) {
+    return await this.userRepo.update(
+      {
+        id: userId,
+      },
+      {
+        refreshToken: rt,
       },
     );
   }

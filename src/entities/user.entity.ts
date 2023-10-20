@@ -54,6 +54,9 @@ export class User {
   @Column({ name: 'avatar', nullable: true })
   avatar: string;
 
+  @Column({ name: 'refresh_token', nullable: true })
+  refreshToken: string;
+
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
   userPermission: UserPermission[];
 

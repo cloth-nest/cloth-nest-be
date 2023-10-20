@@ -23,6 +23,7 @@ type Code =
   | 'EmailNotRegisterd'
   | 'WrongCode'
   | 'CodeExpired'
+  | 'WrongPassword'
 
   // Group D
   | 'Unauthorized'
@@ -43,6 +44,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   CodeExpiredError: 'CodeExpiredError',
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
+  WrongPasswordError: 'WrongPasswordError',
 };
 
 export const ERRORS: Record<Code, CustomError> = {
@@ -152,6 +154,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Email is not registered',
     statusCode: 404,
     typeError: TYPE_ERRORS.EmailNotRegisterdError,
+  },
+  WrongPassword: {
+    code: 'C0008',
+    message: 'Password is not correct',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.WrongPasswordError,
   },
 
   // Group D

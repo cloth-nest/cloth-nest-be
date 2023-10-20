@@ -6,7 +6,7 @@ dotenv.config();
 const jwtModuleOptions: JwtModuleOptions = {
   secret: process.env.JWT_ACCESS_TOKEN_SECRET || 'cloth-nest-app',
   signOptions: {
-    expiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10) || 60 * 1000,
+    expiresIn: parseInt(process.env.JWT_AT_EXPIRES_IN, 10) || 60 * 1000,
   },
 };
 

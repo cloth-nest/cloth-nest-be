@@ -11,6 +11,7 @@ export type TypeError =
   | 'EmailNotRegisterdError'
   | 'WrongCodeError'
   | 'CodeExpiredError'
+  | 'WrongPasswordError'
   | 'UnauthorizedError'
   | 'NotFoundError';
 

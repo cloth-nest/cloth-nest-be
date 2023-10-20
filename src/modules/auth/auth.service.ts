@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { ResendCodeDto, SignUpDto, VerifyEmailDto } from './dto';
+import { ResendCodeDto, SignInDto, SignUpDto, VerifyEmailDto } from './dto';
 import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
 import { ERRORS } from 'src/shared/constants';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { MailService } from '../mail/mail.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -15,24 +16,8 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private mailService: MailService,
+    private configService: ConfigService,
   ) {}
-
-  public async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      password;
-      return result;
-    }
-    return null;
-  }
-
-  public async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
 
   public async signUp(signUpDto: SignUpDto) {
     try {
@@ -114,6 +99,55 @@ export class AuthService {
       };
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async signIn(signInDto: SignInDto) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(signInDto.email);
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check valid password
+      const isValidPassword = await this.usersService.isValidPassword(
+        signInDto.password,
+        user.password,
+      );
+      if (!isValidPassword) {
+        throw new CustomErrorException(ERRORS.WrongPassword);
+      }
+
+      // Check account active
+      if (!user.isActive) {
+        // Send code to active account
+        this.sendCodeToUserEmail(user.email);
+
+        throw new CustomErrorException(ERRORS.AccountUnactive);
+      }
+
+      // Generate AT & RT
+      const payload = {
+        user: user.email,
+      };
+
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+        expiresIn: this.configService.get<string>('JWT_RT_EXPIRES_IN'),
+      });
+
+      // Save refresh token
+      await this.usersService.saveRefreshToken(refreshToken, user.id);
+
+      return {
+        data: {
+          accessToken: await this.jwtService.signAsync(payload),
+          refreshToken,
+        },
+      };
+    } catch (error) {
+      throw error;
     }
   }
 

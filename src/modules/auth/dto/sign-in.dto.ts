@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { passwordReg } from '../../../shared/constants';
 
-export class SignUpDto {
+export class SignInDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
@@ -20,14 +20,4 @@ export class SignUpDto {
   @NotContains(' ')
   @Matches(passwordReg)
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(50)
-  firstName: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(50)
-  lastName: string;
 }
