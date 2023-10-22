@@ -1,6 +1,7 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
+  ForgetPasswordDto,
   RefreshTokenDto,
   ResendCodeDto,
   SignInDto,
@@ -47,5 +48,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   signOut(@Body() signOutDto: SignOutDto) {
     return this.authService.signOut(signOutDto);
+  }
+
+  @Post('forget-password')
+  @HttpCode(HttpStatus.OK)
+  forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+    return this.authService.forgetPassword(forgetPasswordDto);
   }
 }

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import {
+  ForgetPasswordDto,
   RefreshTokenDto,
   ResendCodeDto,
   SignInDto,
@@ -249,6 +250,35 @@ export class AuthService {
 
       return {
         message: 'Sign out successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async forgetPassword(forgetPasswordDto: ForgetPasswordDto) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(
+        forgetPasswordDto.email,
+      );
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check account active
+      if (!user.isActive) {
+        // Send code to active account
+        this.sendCodeToUserEmail(user.email);
+
+        throw new CustomErrorException(ERRORS.AccountUnactive);
+      }
+
+      // Create code & send to user email
+      await this.sendCodeToUserEmail(user.email);
+
+      return {
+        message: 'Code is sent to your email. Please, verify it!',
       };
     } catch (err) {
       throw err;
