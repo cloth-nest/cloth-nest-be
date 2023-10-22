@@ -27,6 +27,7 @@ type Code =
   | 'CodeExpired'
   | 'WrongPassword'
   | 'WrongRefreshToken'
+  | 'SessionResetPassword'
 
   // Group D
   | 'Unauthorized'
@@ -50,6 +51,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   NotFoundError: 'NotFoundError',
   WrongPasswordError: 'WrongPasswordError',
   WrongRefreshTokenError: 'WrongRefreshTokenError',
+  SessionResetPasswordError: 'SessionResetPasswordError',
 };
 
 export const ERRORS: Record<Code, CustomError> = {
@@ -183,6 +185,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Refresh token not match with user',
     statusCode: 401,
     typeError: TYPE_ERRORS.UnauthorizedError,
+  },
+  SessionResetPassword: {
+    code: 'C0010',
+    message: 'Invalid session reset password',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.SessionResetPasswordError,
   },
 
   // Group D

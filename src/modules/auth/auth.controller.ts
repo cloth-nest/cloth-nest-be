@@ -4,12 +4,13 @@ import {
   ForgetPasswordDto,
   RefreshTokenDto,
   ResendCodeDto,
+  ResetPasswordDto,
   SignInDto,
   SignOutDto,
   SignUpDto,
   VerifyEmailDto,
+  VerifyForgetPasswordDto,
 } from './dto';
-import { VerifyForgetPasswordDto } from './dto/verify-forget-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -63,5 +64,11 @@ export class AuthController {
     @Body() verifyForgetPasswordDto: VerifyForgetPasswordDto,
   ) {
     return this.authService.verifyForgetPassword(verifyForgetPasswordDto);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }

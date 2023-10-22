@@ -14,6 +14,7 @@ export type TypeError =
   | 'CodeExpiredError'
   | 'WrongPasswordError'
   | 'WrongRefreshTokenError'
+  | 'SessionResetPasswordError'
   | 'UnauthorizedError'
   | 'NotFoundError';
 

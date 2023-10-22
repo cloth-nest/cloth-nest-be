@@ -25,7 +25,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     exception: HttpException | ValidationException | TypeORMError,
     host: ArgumentsHost,
   ): void {
-    console.log(exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const { code, message, statusCode, typeError } =

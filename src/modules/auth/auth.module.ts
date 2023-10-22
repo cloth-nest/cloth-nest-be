@@ -19,8 +19,7 @@ import { MailService } from '../mail/mail.service';
       inject: [ConfigService],
     }),
     CacheModule.registerAsync({
-      useFactory: async (config: ConfigService) =>
-        config.get<number>('CACHE_TTL_DEFAULT') * 1000, // Miliseconds
+      useFactory: async (config: ConfigService) => config.get<number>('cache'), // Miliseconds
       inject: [ConfigService],
     }),
   ],

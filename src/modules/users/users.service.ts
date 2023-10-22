@@ -4,6 +4,7 @@ import { User } from '../../entities';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
+import { hashPassword } from '../../shared/utils';
 
 // This should be a real class/interface representing a user entity
 export type User1 = any;
@@ -99,6 +100,17 @@ export class UsersService {
       },
       {
         refreshToken: '',
+      },
+    );
+  }
+
+  public async resetPassword(userId: number, newPassword: string) {
+    return await this.userRepo.update(
+      {
+        id: userId,
+      },
+      {
+        password: await hashPassword(newPassword),
       },
     );
   }

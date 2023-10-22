@@ -2,7 +2,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { appConfig, dbConfig, jwtConfig, mailerConfig } from './configs';
+import {
+  appConfig,
+  cacheConfig,
+  dbConfig,
+  jwtConfig,
+  mailerConfig,
+} from './configs';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
@@ -14,7 +20,7 @@ import { TransformInterceptor } from './shared/interceptors/transform.intercepto
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, dbConfig, jwtConfig, mailerConfig],
+      load: [appConfig, dbConfig, jwtConfig, mailerConfig, cacheConfig],
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async (config: ConfigService) =>

@@ -5,6 +5,7 @@ import {
   ForgetPasswordDto,
   RefreshTokenDto,
   ResendCodeDto,
+  ResetPasswordDto,
   SignInDto,
   SignOutDto,
   SignUpDto,
@@ -298,9 +299,12 @@ export class AuthService {
         throw new CustomErrorException(ERRORS.EmailNotRegisterd);
       }
 
-      // Check account is active
-      if (user.isActive) {
-        throw new CustomErrorException(ERRORS.AccountActivatedBefore);
+      // Check account active
+      if (!user.isActive) {
+        // Send code to active account
+        this.sendCodeToUserEmail(user.email);
+
+        throw new CustomErrorException(ERRORS.AccountUnactive);
       }
 
       // Check code valid
@@ -324,7 +328,50 @@ export class AuthService {
       );
 
       return {
-        data: verifyForgetPasswordDto,
+        message: 'Verify success, next step reset password',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(
+        resetPasswordDto.email,
+      );
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check account active
+      if (!user.isActive) {
+        // Send code to active account
+        this.sendCodeToUserEmail(user.email);
+
+        throw new CustomErrorException(ERRORS.AccountUnactive);
+      }
+
+      // Check in session
+      const sessionResetPassword = await this.cacheManager.get<boolean>(
+        `${resetPasswordDto.email}-reset-pw-session`,
+      );
+      if (!sessionResetPassword) {
+        throw new CustomErrorException(ERRORS.SessionResetPassword);
+      }
+
+      // Reset password
+      await this.usersService.resetPassword(
+        user.id,
+        resetPasswordDto.newPassword,
+      );
+
+      // Clear cache
+      await this.cacheManager.del(`${resetPasswordDto.email}-reset-pw-session`);
+
+      return {
+        message: 'Reset password successfully. Go to sign in',
       };
     } catch (err) {
       throw err;
