@@ -91,4 +91,15 @@ export class UsersService {
       },
     );
   }
+
+  public async removeRefreshToken(userId: number) {
+    return await this.userRepo.update(
+      {
+        id: userId,
+      },
+      {
+        refreshToken: '',
+      },
+    );
+  }
 }

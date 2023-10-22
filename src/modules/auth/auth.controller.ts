@@ -4,6 +4,7 @@ import {
   RefreshTokenDto,
   ResendCodeDto,
   SignInDto,
+  SignOutDto,
   SignUpDto,
   VerifyEmailDto,
 } from './dto';
@@ -40,5 +41,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshToken(refreshTokenDto);
+  }
+
+  @Post('sign-out')
+  @HttpCode(HttpStatus.OK)
+  signOut(@Body() signOutDto: SignOutDto) {
+    return this.authService.signOut(signOutDto);
   }
 }

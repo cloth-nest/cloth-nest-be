@@ -18,8 +18,10 @@ import { MailService } from '../mail/mail.service';
         config.get<JwtModuleOptions>('jwt'),
       inject: [ConfigService],
     }),
-    CacheModule.register({
-      ttl: 60000,
+    CacheModule.registerAsync({
+      useFactory: async (config: ConfigService) =>
+        config.get<number>('CACHE_TTL_DEFAULT') * 1000, // Miliseconds
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],

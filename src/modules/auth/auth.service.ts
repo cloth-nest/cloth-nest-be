@@ -5,6 +5,7 @@ import {
   RefreshTokenDto,
   ResendCodeDto,
   SignInDto,
+  SignOutDto,
   SignUpDto,
   VerifyEmailDto,
 } from './dto';
@@ -65,7 +66,7 @@ export class AuthService {
 
       // Check code valid
       const savedCode = await this.cacheManager.get<number>(
-        verifyEmailDto.email,
+        `${verifyEmailDto.email}-code`,
       );
       if (!savedCode) {
         throw new CustomErrorException(ERRORS.CodeExpired);
@@ -76,7 +77,7 @@ export class AuthService {
       }
 
       // Clear cache, set active account
-      await this.cacheManager.del(verifyEmailDto.email);
+      await this.cacheManager.del(`${verifyEmailDto.email}-code`);
       await this.usersService.activateAccount(verifyEmailDto.email);
 
       return { message: 'Account is activated' };
@@ -141,17 +142,26 @@ export class AuthService {
         email: user.email,
       };
 
+      // Create RT, AT
       const refreshToken = await this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_RT_EXPIRES_IN'),
+        expiresIn: this.configService.get<number>('JWT_RT_EXPIRES_IN'),
       });
+      const accessToken = await this.jwtService.signAsync(payload);
+
+      // Save AT to cache
+      await this.cacheManager.set(
+        `${user.email}-at`,
+        accessToken,
+        this.configService.get<number>('JWT_AT_EXPIRES_IN'),
+      );
 
       // Save refresh token
       await this.usersService.saveRefreshToken(refreshToken, user.id);
 
       return {
         data: {
-          accessToken: await this.jwtService.signAsync(payload),
+          accessToken,
           refreshToken,
         },
       };
@@ -195,7 +205,7 @@ export class AuthService {
       // Create RT
       const refreshToken = await this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_RT_EXPIRES_IN'),
+        expiresIn: this.configService.get<number>('JWT_RT_EXPIRES_IN'),
       });
 
       return {
@@ -209,8 +219,49 @@ export class AuthService {
     }
   }
 
+  public async signOut(signOutDto: SignOutDto) {
+    try {
+      /*
+       * 1. Check exist RT in body request
+       * 2. Verify get payload
+       * 3. Find user with email
+       * 4. Clear RT in db
+       * 5. Clear user's cache
+       */
+
+      // Verify token & get payload
+      const { email } = await this.jwtService.verifyAsync<JwtPayload>(
+        signOutDto.refreshToken,
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        },
+      );
+
+      // Find user and compare stored refresh token
+      const user = await this.usersService.findUserByEmail(email);
+      if (user.refreshToken !== signOutDto.refreshToken) {
+        throw new CustomErrorException(ERRORS.WrongRefreshToken);
+      }
+
+      // Clear user's cache & stored RT
+      await this.clearCacheUser(user.email);
+      await this.usersService.removeRefreshToken(user.id);
+
+      return {
+        message: 'Sign out successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   private genCode(): number {
     return Math.floor(1000 + Math.random() * 9000);
+  }
+
+  private async clearCacheUser(email: string): Promise<void> {
+    await this.cacheManager.del(`${email}-code`);
+    await this.cacheManager.del(`${email}-at`);
   }
 
   private async sendCodeToUserEmail(email: string): Promise<void> {
@@ -218,7 +269,7 @@ export class AuthService {
     const code = this.genCode();
 
     // Set cache to countdown
-    await this.cacheManager.set(email, code);
+    await this.cacheManager.set(`${email}-code`, code);
 
     // Send to gmail of user
     await this.mailService.sendUserConfirmation(email, code);
