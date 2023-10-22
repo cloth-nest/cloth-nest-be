@@ -3,6 +3,7 @@ export type TypeError =
   | 'DatabaseError'
   | 'MailerError'
   | 'JsonWebTokenError'
+  | 'InvalidRouteError'
   | 'ValidationError'
   | 'EmailExistedError'
   | 'TypeOrmError'

@@ -6,6 +6,7 @@ type Code =
   | 'TypeOrmError'
   | 'MailerError'
   | 'JsonWebTokenError'
+  | 'InvalidRoute'
 
   // Group B
   | 'InvalidEmail'
@@ -38,6 +39,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   DatabaseError: 'DatabaseError',
   MailerError: 'MailerError',
   JsonWebTokenError: 'JsonWebTokenError',
+  InvalidRouteError: 'InvalidRouteError',
   ValidationError: 'ValidationError',
   EmailExistedError: 'EmailExistedError',
   TypeOrmError: 'TypeOrmError',
@@ -47,11 +49,11 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   EmailNotRegisterdError: 'EmailNotRegisterdError',
   WrongCodeError: 'WrongCodeError',
   CodeExpiredError: 'CodeExpiredError',
-  UnauthorizedError: 'UnauthorizedError',
-  NotFoundError: 'NotFoundError',
   WrongPasswordError: 'WrongPasswordError',
   WrongRefreshTokenError: 'WrongRefreshTokenError',
   SessionResetPasswordError: 'SessionResetPasswordError',
+  UnauthorizedError: 'UnauthorizedError',
+  NotFoundError: 'NotFoundError',
 };
 
 export const ERRORS: Record<Code, CustomError> = {
@@ -129,6 +131,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Invalid input refreshToken',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidRoute: {
+    code: 'A0005',
+    message: 'Invalid route',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.InvalidRouteError,
   },
 
   // Group C
