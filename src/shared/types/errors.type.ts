@@ -2,6 +2,7 @@ export type TypeError =
   | 'InternalServerError'
   | 'DatabaseError'
   | 'MailerError'
+  | 'JsonWebTokenError'
   | 'ValidationError'
   | 'EmailExistedError'
   | 'TypeOrmError'
@@ -12,6 +13,7 @@ export type TypeError =
   | 'WrongCodeError'
   | 'CodeExpiredError'
   | 'WrongPasswordError'
+  | 'WrongRefreshTokenError'
   | 'UnauthorizedError'
   | 'NotFoundError';
 
@@ -24,5 +26,6 @@ export type CustomError = {
   code: string;
   message: string;
   statusCode: number;
+  detail?: string;
   typeError: TypeError | string;
 };

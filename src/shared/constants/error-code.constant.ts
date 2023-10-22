@@ -5,6 +5,7 @@ type Code =
   | 'InternalServerError'
   | 'TypeOrmError'
   | 'MailerError'
+  | 'JsonWebTokenError'
 
   // Group B
   | 'InvalidEmail'
@@ -14,6 +15,7 @@ type Code =
   | 'InvalidCode'
   | 'InvalidNewPassword'
   | 'InvalidOldPassword'
+  | 'InvalidRefreshToken'
 
   // Group C
   | 'EmailExisted'
@@ -24,6 +26,7 @@ type Code =
   | 'WrongCode'
   | 'CodeExpired'
   | 'WrongPassword'
+  | 'WrongRefreshToken'
 
   // Group D
   | 'Unauthorized'
@@ -32,10 +35,11 @@ type Code =
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
   DatabaseError: 'DatabaseError',
+  MailerError: 'MailerError',
+  JsonWebTokenError: 'JsonWebTokenError',
   ValidationError: 'ValidationError',
   EmailExistedError: 'EmailExistedError',
   TypeOrmError: 'TypeOrmError',
-  MailerError: 'MailerError',
   InvalidLinkError: 'InvalidLinkError',
   AccountUnactiveError: 'AccountUnactiveError',
   AccountActivatedBeforeError: 'AccountActivatedBeforeError',
@@ -45,6 +49,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
   WrongPasswordError: 'WrongPasswordError',
+  WrongRefreshTokenError: 'WrongRefreshTokenError',
 };
 
 export const ERRORS: Record<Code, CustomError> = {
@@ -66,6 +71,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'MailerError something ..., need to override message field',
     statusCode: 500,
     typeError: TYPE_ERRORS.MailerError,
+  },
+  JsonWebTokenError: {
+    code: 'A0004',
+    message: 'Invalid token',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.JsonWebTokenError,
   },
 
   // Group B
@@ -108,6 +119,12 @@ export const ERRORS: Record<Code, CustomError> = {
   InvalidOldPassword: {
     code: 'B0007',
     message: 'Invalid input oldPassword',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidRefreshToken: {
+    code: 'B0008',
+    message: 'Invalid input refreshToken',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
@@ -160,6 +177,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Password is not correct',
     statusCode: 400,
     typeError: TYPE_ERRORS.WrongPasswordError,
+  },
+  WrongRefreshToken: {
+    code: 'C0009',
+    message: 'Refresh token not match with user',
+    statusCode: 401,
+    typeError: TYPE_ERRORS.UnauthorizedError,
   },
 
   // Group D

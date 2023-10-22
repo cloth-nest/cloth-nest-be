@@ -11,6 +11,7 @@ import { ERRORS } from '../constants';
 import { CustomErrorException } from '../exceptions/custom-error.exception';
 import { AppResponse, CustomError } from '../types';
 import { TypeORMError } from 'typeorm';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -24,16 +25,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
     exception: HttpException | ValidationException | TypeORMError,
     host: ArgumentsHost,
   ): void {
+    console.log(exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const { code, message, statusCode, typeError } =
       this.formatError(exception);
-    const errorResponse: AppResponse<Pick<CustomError, 'code' | 'message'>> = {
+    const errorResponse: AppResponse<
+      Pick<CustomError, 'code' | 'message' | 'detail'>
+    > = {
       statusCode,
       message: typeError,
       error: {
         code,
         message,
+        detail:
+          exception.name === 'ValidationException' ||
+          exception.name === 'JsonWebTokenError'
+            ? exception.message
+            : undefined,
       },
     };
 
@@ -57,6 +66,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message: e.message,
         typeError: e.name,
       };
+    }
+    if (e instanceof JsonWebTokenError) {
+      return ERRORS.JsonWebTokenError;
     }
     if (e instanceof CustomErrorException) {
       return e.getResponse();
@@ -86,6 +98,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
       case 'oldPassword': {
         return ERRORS.InvalidOldPassword;
+      }
+      case 'refreshToken': {
+        return ERRORS.InvalidRefreshToken;
       }
       default:
         return ERRORS.InternalServerError;

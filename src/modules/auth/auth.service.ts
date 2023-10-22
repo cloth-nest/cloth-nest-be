@@ -1,13 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { ResendCodeDto, SignInDto, SignUpDto, VerifyEmailDto } from './dto';
+import {
+  RefreshTokenDto,
+  ResendCodeDto,
+  SignInDto,
+  SignUpDto,
+  VerifyEmailDto,
+} from './dto';
 import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
 import { ERRORS } from 'src/shared/constants';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from '../../shared/interfaces';
 
 @Injectable()
 export class AuthService {
@@ -127,13 +134,15 @@ export class AuthService {
         throw new CustomErrorException(ERRORS.AccountUnactive);
       }
 
-      // Generate AT & RT
-      const payload = {
-        user: user.email,
+      // Create payload
+      const payload: JwtPayload = {
+        userId: user.id,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
       };
 
       const refreshToken = await this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
         expiresIn: this.configService.get<string>('JWT_RT_EXPIRES_IN'),
       });
 
@@ -148,6 +157,55 @@ export class AuthService {
       };
     } catch (error) {
       throw error;
+    }
+  }
+
+  public async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    try {
+      /*
+       * 1. Verify token return user
+       * 2. Get payload
+       * 3. Từ payload tìm user
+       * 4. So sánh refresh token
+       * 5. Xóa refresh token
+       * 6. Tạo RT, AT trả về
+       */
+
+      // Verify token & get payload
+      const { email } = await this.jwtService.verifyAsync<JwtPayload>(
+        refreshTokenDto.refreshToken,
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        },
+      );
+
+      // Find user and compare stored refresh token
+      const user = await this.usersService.findUserByEmail(email);
+      if (user.refreshToken !== refreshTokenDto.refreshToken) {
+        throw new CustomErrorException(ERRORS.WrongRefreshToken);
+      }
+
+      // Create payload
+      const payload: JwtPayload = {
+        userId: user.id,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+      };
+
+      // Create RT
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn: this.configService.get<string>('JWT_RT_EXPIRES_IN'),
+      });
+
+      return {
+        data: {
+          accessToken: await this.jwtService.signAsync(payload),
+          refreshToken,
+        },
+      };
+    } catch (err) {
+      throw err;
     }
   }
 
