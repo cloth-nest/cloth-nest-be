@@ -9,6 +9,7 @@ import {
   SignOutDto,
   SignUpDto,
   VerifyEmailDto,
+  VerifyForgetPasswordDto,
 } from './dto';
 import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
 import { ERRORS } from 'src/shared/constants';
@@ -279,6 +280,51 @@ export class AuthService {
 
       return {
         message: 'Code is sent to your email. Please, verify it!',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async verifyForgetPassword(
+    verifyForgetPasswordDto: VerifyForgetPasswordDto,
+  ) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(
+        verifyForgetPasswordDto.email,
+      );
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check account is active
+      if (user.isActive) {
+        throw new CustomErrorException(ERRORS.AccountActivatedBefore);
+      }
+
+      // Check code valid
+      const savedCode = await this.cacheManager.get<number>(
+        `${verifyForgetPasswordDto.email}-code`,
+      );
+      if (!savedCode) {
+        throw new CustomErrorException(ERRORS.CodeExpired);
+      }
+
+      if (savedCode !== verifyForgetPasswordDto.code) {
+        throw new CustomErrorException(ERRORS.WrongCode);
+      }
+
+      // Clear cache & create reset password session
+      await this.cacheManager.del(`${verifyForgetPasswordDto.email}-code`);
+      await this.cacheManager.set(
+        `${verifyForgetPasswordDto.email}-reset-pw-session`,
+        true,
+        300000, // 5 minutes
+      );
+
+      return {
+        data: verifyForgetPasswordDto,
       };
     } catch (err) {
       throw err;
