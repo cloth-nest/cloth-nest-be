@@ -89,6 +89,72 @@ export class AuthService {
     }
   }
 
+  public async verifyEmailSignIn(verifyEmailDto: VerifyEmailDto) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(
+        verifyEmailDto.email,
+      );
+      if (!user) {
+        throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      }
+
+      // Check account is active
+      if (user.isActive) {
+        throw new CustomErrorException(ERRORS.AccountActivatedBefore);
+      }
+
+      // Check code valid
+      const savedCode = await this.cacheManager.get<number>(
+        `${verifyEmailDto.email}-code`,
+      );
+      if (!savedCode) {
+        throw new CustomErrorException(ERRORS.CodeExpired);
+      }
+
+      if (savedCode !== verifyEmailDto.code) {
+        throw new CustomErrorException(ERRORS.WrongCode);
+      }
+
+      // Clear cache, set active account
+      await this.cacheManager.del(`${verifyEmailDto.email}-code`);
+      await this.usersService.activateAccount(verifyEmailDto.email);
+
+      // Create payload
+      const payload: JwtPayload = {
+        userId: user.id,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+      };
+
+      // Create RT, AT
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn: this.configService.get<number>('JWT_RT_EXPIRES_IN'),
+      });
+      const accessToken = await this.jwtService.signAsync(payload);
+
+      // Save AT to cache
+      await this.cacheManager.set(
+        `${user.email}-at`,
+        accessToken,
+        this.configService.get<number>('JWT_AT_EXPIRES_IN'),
+      );
+
+      // Save refresh token
+      await this.usersService.saveRefreshToken(refreshToken, user.id);
+
+      return {
+        data: {
+          accessToken,
+          refreshToken,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async resendCode(resendCodeDto: ResendCodeDto) {
     try {
       // Check email existed

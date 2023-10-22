@@ -28,6 +28,12 @@ export class AuthController {
     return this.authService.verifyEmail(verifyEmailDto);
   }
 
+  @Post('verify-email-sign-in')
+  @HttpCode(HttpStatus.OK)
+  verifyEmailSignIn(@Body() verifyEmailDto: VerifyEmailDto) {
+    return this.authService.verifyEmailSignIn(verifyEmailDto);
+  }
+
   @Post('resend-code')
   @HttpCode(HttpStatus.CREATED)
   resendCode(@Body() resendCodeDto: ResendCodeDto) {
