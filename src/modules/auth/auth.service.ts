@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import {
+  ChangePasswordDto,
   ForgetPasswordDto,
   RefreshTokenDto,
   ResendCodeDto,
@@ -222,7 +223,7 @@ export class AuthService {
       await this.cacheManager.set(
         `${user.email}-at`,
         accessToken,
-        this.configService.get<number>('JWT_AT_EXPIRES_IN'),
+        this.configService.get<number>('JWT_AT_EXPIRES_IN') * 1000,
       );
 
       // Save refresh token
@@ -438,6 +439,43 @@ export class AuthService {
 
       return {
         message: 'Reset password successfully. Go to sign in',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async changePassword(
+    userPayload: JwtPayload,
+    changePasswordDto: ChangePasswordDto,
+  ) {
+    try {
+      // Check email existed
+      const user = await this.usersService.findUserByEmail(userPayload.email);
+      if (!user) {
+        throw new CustomErrorException(ERRORS.InternalServerError);
+      }
+
+      const { newPassword, oldPassword } = changePasswordDto;
+      if (newPassword === oldPassword) {
+        throw new CustomErrorException(ERRORS.NewPasswordMatchOldPassword);
+      }
+
+      // Check valid password
+      const isValidPassword = await this.usersService.isValidPassword(
+        oldPassword,
+        user.password,
+      );
+      if (!isValidPassword) {
+        throw new CustomErrorException(ERRORS.WrongPassword);
+      }
+
+      // Reset password
+      await this.usersService.resetPassword(user.id, newPassword);
+
+      return {
+        message: 'Change password successfully',
+        data: changePasswordDto,
       };
     } catch (err) {
       throw err;

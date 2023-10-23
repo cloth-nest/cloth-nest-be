@@ -29,10 +29,12 @@ type Code =
   | 'WrongPassword'
   | 'WrongRefreshToken'
   | 'SessionResetPassword'
+  | 'NewPasswordMatchOldPassword'
 
   // Group D
   | 'Unauthorized'
-  | 'NotFound';
+  | 'NotFound'
+  | 'Forbidden';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -52,8 +54,10 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   WrongPasswordError: 'WrongPasswordError',
   WrongRefreshTokenError: 'WrongRefreshTokenError',
   SessionResetPasswordError: 'SessionResetPasswordError',
+  NewPasswordMatchOldPasswordError: 'NewPasswordMatchOldPasswordError',
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
+  ForbiddenError: 'ForbiddenError',
 };
 
 export const ERRORS: Record<Code, CustomError> = {
@@ -200,6 +204,12 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.SessionResetPasswordError,
   },
+  NewPasswordMatchOldPassword: {
+    code: 'C0011',
+    message: 'The new password must not be the same as the old password',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.NewPasswordMatchOldPasswordError,
+  },
 
   // Group D
   Unauthorized: {
@@ -213,5 +223,11 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'NotFound',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+  Forbidden: {
+    code: 'D0003',
+    message: 'Forbidden',
+    statusCode: 403,
+    typeError: TYPE_ERRORS.ForbiddenError,
   },
 };

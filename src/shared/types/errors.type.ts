@@ -16,8 +16,10 @@ export type TypeError =
   | 'WrongPasswordError'
   | 'WrongRefreshTokenError'
   | 'SessionResetPasswordError'
+  | 'NewPasswordMatchOldPasswordError'
   | 'UnauthorizedError'
-  | 'NotFoundError';
+  | 'NotFoundError'
+  | 'ForbiddenError';
 
 export type MessageValidationError = {
   message: string;

@@ -7,3 +7,4 @@ export * from './sign-out.dto';
 export * from './forget-password.dto';
 export * from './verify-forget-password.dto';
 export * from './reset-password.dto';
+export * from './change-pasword.dto';

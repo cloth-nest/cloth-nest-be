@@ -5,6 +5,7 @@ import {
   HttpException,
   Logger,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidationException } from '../exceptions/validator.exception';
@@ -72,6 +73,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
     if (e instanceof NotFoundException) {
       return ERRORS.InvalidRoute;
+    }
+    if (e instanceof ForbiddenException) {
+      return ERRORS.Forbidden;
     }
     if (e instanceof CustomErrorException) {
       return e.getResponse();

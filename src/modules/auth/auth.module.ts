@@ -6,7 +6,6 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
-import { CacheModule } from '@nestjs/cache-manager';
 import { MailService } from '../mail/mail.service';
 
 @Module({
@@ -16,10 +15,6 @@ import { MailService } from '../mail/mail.service';
     JwtModule.registerAsync({
       useFactory: async (config: ConfigService) =>
         config.get<JwtModuleOptions>('jwt'),
-      inject: [ConfigService],
-    }),
-    CacheModule.registerAsync({
-      useFactory: async (config: ConfigService) => config.get<number>('cache'), // Miliseconds
       inject: [ConfigService],
     }),
   ],
