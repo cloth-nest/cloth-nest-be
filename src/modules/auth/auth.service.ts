@@ -139,7 +139,7 @@ export class AuthService {
       await this.cacheManager.set(
         `${user.email}-at`,
         accessToken,
-        this.configService.get<number>('JWT_AT_EXPIRES_IN'),
+        this.configService.get<number>('JWT_AT_EXPIRES_IN') * 1000,
       );
 
       // Save refresh token

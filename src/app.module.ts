@@ -42,7 +42,7 @@ import { GlobalModule } from './modules/global/global.module';
         config.get<TypeOrmModuleOptions>('database'),
       inject: [ConfigService],
     }),
-    CacheModule.register({
+    CacheModule.registerAsync({
       useFactory: async (config: ConfigService) => config.get('cache'), // Miliseconds
       inject: [ConfigService],
       isGlobal: true,
