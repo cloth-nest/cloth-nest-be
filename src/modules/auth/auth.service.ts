@@ -278,6 +278,9 @@ export class AuthService {
         expiresIn: this.configService.get<number>('JWT_RT_EXPIRES_IN'),
       });
 
+      // Save refresh token
+      await this.usersService.saveRefreshToken(refreshToken, user.id);
+
       return {
         data: {
           accessToken: await this.jwtService.signAsync(payload),
