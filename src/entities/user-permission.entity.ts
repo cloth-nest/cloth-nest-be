@@ -5,6 +5,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Column,
 } from 'typeorm';
 import { User, Permission } from './';
 
@@ -12,6 +13,12 @@ import { User, Permission } from './';
 export class UserPermission {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
+
+  @Column({ name: 'user_id' })
+  userId: number;
+
+  @Column({ name: 'permission_id' })
+  permissionId: number;
 
   @ManyToOne(() => User, (user) => user.userPermission)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })

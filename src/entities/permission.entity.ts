@@ -16,9 +16,6 @@ export class Permission {
   @Column({ name: 'name', nullable: false })
   name: string;
 
-  @Column({ name: 'content_type_id' })
-  contentTypeId: number;
-
   @Column({ name: 'code_name' })
   codeName: string;
 
