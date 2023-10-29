@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
 import { hashPassword } from '../../shared/utils';
+import { AuthUser } from 'src/shared/interfaces';
+import * as _ from 'lodash';
 
 // This should be a real class/interface representing a user entity
 export type User1 = any;
@@ -112,6 +114,45 @@ export class UsersService {
       {
         password: await hashPassword(newPassword),
       },
+    );
+  }
+
+  public async getAuthenticatedUser(userId: number): Promise<AuthUser> {
+    const user = await this.userRepo.findOne({
+      where: {
+        id: userId,
+      },
+      select: [
+        'id',
+        'email',
+        'lastName',
+        'firstName',
+        'password',
+        'isSuperUser',
+        'isStaff',
+        'isActive',
+        'dateJoined',
+        'userPermission',
+      ],
+      relations: {
+        userPermission: {
+          permission: true,
+        },
+      },
+    });
+
+    // Get code permission
+    const userPermissionList = user.userPermission.map(
+      (item) => item.permission.codeName,
+    );
+
+    // Remove userPermission field
+    return _.omit(
+      {
+        ...user,
+        permissions: userPermissionList,
+      },
+      ['userPermission'],
     );
   }
 }

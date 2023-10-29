@@ -13,13 +13,13 @@ import {
   VerifyEmailDto,
   VerifyForgetPasswordDto,
 } from './dto';
-import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
-import { ERRORS } from 'src/shared/constants';
+import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
+import { ERRORS } from '../../shared/constants';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from '../../shared/interfaces';
+import { AuthUser, JwtPayload } from '../../shared/interfaces';
 
 @Injectable()
 export class AuthService {
@@ -449,16 +449,10 @@ export class AuthService {
   }
 
   public async changePassword(
-    userPayload: JwtPayload,
+    currentUser: AuthUser,
     changePasswordDto: ChangePasswordDto,
   ) {
     try {
-      // Check email existed
-      const user = await this.usersService.findUserByEmail(userPayload.email);
-      if (!user) {
-        throw new CustomErrorException(ERRORS.InternalServerError);
-      }
-
       const { newPassword, oldPassword } = changePasswordDto;
       if (newPassword === oldPassword) {
         throw new CustomErrorException(ERRORS.NewPasswordMatchOldPassword);
@@ -467,14 +461,14 @@ export class AuthService {
       // Check valid password
       const isValidPassword = await this.usersService.isValidPassword(
         oldPassword,
-        user.password,
+        currentUser.password,
       );
       if (!isValidPassword) {
         throw new CustomErrorException(ERRORS.WrongPassword);
       }
 
       // Reset password
-      await this.usersService.resetPassword(user.id, newPassword);
+      await this.usersService.resetPassword(currentUser.id, newPassword);
 
       return {
         message: 'Change password successfully',
@@ -482,6 +476,26 @@ export class AuthService {
       };
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async validateUser(payload: JwtPayload): Promise<AuthUser | null> {
+    try {
+      // Check user exists and user permission
+      const user = await this.usersService.getAuthenticatedUser(payload.userId);
+
+      if (!user) {
+        return null;
+      }
+
+      // Check account active
+      if (!user.isActive) {
+        throw new CustomErrorException(ERRORS.AccountUnactive);
+      }
+
+      return user;
+    } catch (err) {
+      throw new CustomErrorException(ERRORS.InternalServerError);
     }
   }
 
