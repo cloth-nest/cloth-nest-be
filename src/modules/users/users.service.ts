@@ -5,11 +5,10 @@ import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
 import { hashPassword } from '../../shared/utils';
-import { AuthUser } from 'src/shared/interfaces';
+import { AuthUser } from '../../shared/interfaces';
 import * as _ from 'lodash';
-
-// This should be a real class/interface representing a user entity
-export type User1 = any;
+import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
+import { ERRORS } from '../../shared/constants';
 
 @Injectable()
 export class UsersService {
@@ -17,21 +16,52 @@ export class UsersService {
     @InjectRepository(User)
     private userRepo: Repository<User>,
   ) {}
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  public async getProfile(currentUser: AuthUser) {
+    try {
+      const user = await this.userRepo.findOne({
+        where: {
+          id: currentUser.id,
+        },
+        select: [
+          'id',
+          'email',
+          'firstName',
+          'lastName',
+          'isSuperUser',
+          'isStaff',
+          'isActive',
+          'dateJoined',
+          'defaultBillingAddressId',
+          'defaultShippingAddressId',
+          'note',
+          'avatar',
+          'userPermission',
+        ],
+        relations: {
+          userPermission: {
+            permission: true,
+          },
+        },
+      });
 
-  async findOne(username: string): Promise<User1 | undefined> {
-    return this.users.find((user) => user.username === username);
+      // Get code permission
+      const userPermissionList = user.userPermission.map(
+        (item) => item.permission.codeName,
+      );
+
+      // Remove userPermission field
+      return {
+        data: _.omit(
+          {
+            ...user,
+            permissions: userPermissionList,
+          },
+          ['userPermission'],
+        ),
+      };
+    } catch (err) {
+      throw new CustomErrorException(ERRORS.InternalServerError);
+    }
   }
 
   public async findUserByEmail(email: string): Promise<User | null> {
