@@ -6,8 +6,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
-import { UserPermission } from './';
+import { UserPermission, UserAddress, Address } from './';
 import * as bcrypt from 'bcrypt';
 
 @Entity({ name: 'user' })
@@ -45,8 +47,19 @@ export class User {
   @Column({ name: 'default_billing_address_id', nullable: true })
   defaultBillingAddressId: number;
 
-  @Column({ name: 'default_shipping_address_id', nullable: true })
-  defaultShippingAddressId: number;
+  @OneToOne(() => Address)
+  @JoinColumn({
+    name: 'default_shipping_address_id',
+    referencedColumnName: 'id',
+  })
+  defaultShippingAddress: Address;
+
+  @OneToOne(() => Address)
+  @JoinColumn({
+    name: 'profile_shipping_address_id',
+    referencedColumnName: 'id',
+  })
+  profileShippingAddress: Address;
 
   @Column({ name: 'name', default: '', nullable: true })
   note: string;
@@ -59,6 +72,9 @@ export class User {
 
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
   userPermission: UserPermission[];
+
+  @OneToMany(() => UserAddress, (userAddress) => userAddress.user)
+  userAddress: UserAddress[];
 
   @CreateDateColumn({
     name: 'created_at',

@@ -32,7 +32,7 @@ export class UsersService {
           'isActive',
           'dateJoined',
           'defaultBillingAddressId',
-          'defaultShippingAddressId',
+          'defaultShippingAddress',
           'note',
           'avatar',
           'userPermission',
