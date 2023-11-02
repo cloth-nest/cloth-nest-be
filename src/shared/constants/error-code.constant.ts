@@ -17,6 +17,15 @@ type Code =
   | 'InvalidNewPassword'
   | 'InvalidOldPassword'
   | 'InvalidRefreshToken'
+  | 'InvalidProvinceCode'
+  | 'InvalidProvinceName'
+  | 'InvalidDistrictCode'
+  | 'InvalidDistrictName'
+  | 'InvalidWardCode'
+  | 'InvalidWardName'
+  | 'InvalidAddressDetail'
+  | 'InvalidAddressPhone'
+  | 'InvalidIsAddressProfile'
 
   // Group C
   | 'EmailExisted'
@@ -34,7 +43,11 @@ type Code =
   // Group D
   | 'Unauthorized'
   | 'NotFound'
-  | 'Forbidden';
+  | 'Forbidden'
+
+  // Group E (Address)
+  | 'AddressProfileExist'
+  | 'UserAddressMustBeLessThanOrEqual10';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -136,6 +149,60 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidProvinceCode: {
+    code: 'B0009',
+    message: 'Invalid input provinceCode',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidProvinceName: {
+    code: 'B0010',
+    message: 'Invalid input provinceName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidDistrictCode: {
+    code: 'B0011',
+    message: 'Invalid input districtCode',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidDistrictName: {
+    code: 'B0012',
+    message: 'Invalid input districtName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidWardCode: {
+    code: 'B0013',
+    message: 'Invalid input wardCode',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidWardName: {
+    code: 'B0014',
+    message: 'Invalid input wardName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidAddressDetail: {
+    code: 'B0015',
+    message: 'Invalid input addressDetail',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidAddressPhone: {
+    code: 'B0016',
+    message: 'Invalid input addressPhone',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidIsAddressProfile: {
+    code: 'B0017',
+    message: 'Invalid input isAddressProfile',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -229,5 +296,19 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Forbidden',
     statusCode: 403,
     typeError: TYPE_ERRORS.ForbiddenError,
+  },
+
+  // Group E
+  AddressProfileExist: {
+    code: 'E0001',
+    message: 'Address profile is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  UserAddressMustBeLessThanOrEqual10: {
+    code: 'E0002',
+    message: 'User address must be less than or equal 10',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };

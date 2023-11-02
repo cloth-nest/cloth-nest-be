@@ -19,6 +19,7 @@ import { TransformInterceptor } from './shared/interceptors/transform.intercepto
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
 import { GlobalModule } from './modules/global/global.module';
+import { AddressModule } from './modules/address/address.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { GlobalModule } from './modules/global/global.module';
     GlobalModule,
     MailModule,
     AuthModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [

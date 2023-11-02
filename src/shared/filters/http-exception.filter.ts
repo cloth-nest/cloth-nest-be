@@ -109,6 +109,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'refreshToken': {
         return ERRORS.InvalidRefreshToken;
       }
+      case 'provinceCode': {
+        return ERRORS.InvalidProvinceCode;
+      }
+      case 'provinceName': {
+        return ERRORS.InvalidProvinceName;
+      }
+      case 'districtCode': {
+        return ERRORS.InvalidDistrictCode;
+      }
+      case 'districtName': {
+        return ERRORS.InvalidDistrictName;
+      }
+      case 'wardCode': {
+        return ERRORS.InvalidWardCode;
+      }
+      case 'wardName': {
+        return ERRORS.InvalidWardName;
+      }
+      case 'detail': {
+        return ERRORS.InvalidAddressDetail;
+      }
+      case 'phone': {
+        return ERRORS.InvalidAddressPhone;
+      }
+      case 'isAddressProfile': {
+        return ERRORS.InvalidIsAddressProfile;
+      }
       default:
         return ERRORS.InternalServerError;
     }

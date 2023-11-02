@@ -32,12 +32,13 @@ export class UsersService {
           'isActive',
           'dateJoined',
           'defaultBillingAddressId',
-          'defaultShippingAddress',
           'note',
           'avatar',
           'userPermission',
         ],
         relations: {
+          defaultShippingAddress: true,
+          profileShippingAddress: true,
           userPermission: {
             permission: true,
           },
@@ -165,6 +166,8 @@ export class UsersService {
         'userPermission',
       ],
       relations: {
+        defaultShippingAddress: true,
+        profileShippingAddress: true,
         userPermission: {
           permission: true,
         },
