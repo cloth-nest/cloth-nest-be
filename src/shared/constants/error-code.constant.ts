@@ -49,7 +49,8 @@ type Code =
   // Group E (Address)
   | 'AddressProfileExist'
   | 'UserAddressMustBeLessThanOrEqual10'
-  | 'AddressNotExist';
+  | 'AddressNotExist'
+  | 'CannotDeleteAddressProfile';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -324,5 +325,11 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Address not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+  CannotDeleteAddressProfile: {
+    code: 'E0004',
+    message: 'Cannot delete address profile',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };

@@ -209,4 +209,55 @@ export class AddressService {
       throw err;
     }
   }
+
+  public async deleteAddress(currentUser: AuthUser, addressId: string) {
+    try {
+      // Check user delete address profile
+      if (currentUser.profileShippingAddress?.id === parseInt(addressId)) {
+        throw new CustomErrorException(ERRORS.CannotDeleteAddressProfile);
+      }
+
+      // Check addressId belong to user
+      const userAddress = await this.userAddressRepo.findOne({
+        where: {
+          userId: currentUser.id,
+          addressId: parseInt(addressId),
+        },
+        select: ['id'],
+      });
+
+      if (!userAddress) {
+        throw new CustomErrorException(ERRORS.AddressNotExist);
+      }
+
+      // Delete address
+      await this.addressRepo.delete({
+        id: parseInt(addressId),
+      });
+
+      // Set defaultShippingAddress to profile address
+      if (
+        currentUser.profileShippingAddress &&
+        currentUser.defaultShippingAddress?.id === parseInt(addressId)
+      ) {
+        await this.userRepo.update(
+          {
+            id: currentUser.id,
+          },
+          {
+            defaultShippingAddress: currentUser.profileShippingAddress,
+          },
+        );
+      }
+
+      return {
+        message: 'Delete address successfully',
+        data: {
+          id: addressId,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Patch,
+  Delete,
   HttpCode,
   HttpStatus,
   Body,
@@ -16,6 +17,7 @@ import {
   FindOneAddressParams,
   UpdateOneAddressParams,
   UpdateOneAddressDto,
+  DeleteOneAddressParams,
 } from './dto';
 
 @Controller('address')
@@ -58,5 +60,15 @@ export class AddressController {
     @Body() updateAddressDto: UpdateOneAddressDto,
   ) {
     return this.addressService.updateAddress(user, params.id, updateAddressDto);
+  }
+
+  @Auth()
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deleteAddress(
+    @CurrentUser() user: AuthUser,
+    @Param() params: DeleteOneAddressParams,
+  ) {
+    return this.addressService.deleteAddress(user, params.id);
   }
 }

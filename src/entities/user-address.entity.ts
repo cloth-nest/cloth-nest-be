@@ -24,7 +24,9 @@ export class UserAddress {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
-  @ManyToOne(() => Address, (address) => address.userAddress)
+  @ManyToOne(() => Address, (address) => address.userAddress, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'address_id', referencedColumnName: 'id' })
   address: Address;
 
