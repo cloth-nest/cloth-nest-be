@@ -95,4 +95,30 @@ export class AddressService {
       throw err;
     }
   }
+
+  public async getAllAddressesBelongToUser(currentUser: AuthUser) {
+    try {
+      // Get all address belong to user
+      const userAddresses = await this.userRepo.findOne({
+        where: {
+          id: currentUser.id,
+        },
+        relations: {
+          userAddress: {
+            address: true,
+          },
+        },
+      });
+
+      const formatedData = userAddresses.userAddress.map((item) => {
+        return _.omit(item.address, ['createdAt', 'updatedAt']);
+      });
+
+      return {
+        data: formatedData,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

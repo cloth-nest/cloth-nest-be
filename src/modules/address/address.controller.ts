@@ -1,4 +1,11 @@
-import { Controller, Post, HttpCode, HttpStatus, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Body,
+} from '@nestjs/common';
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { AddressService } from './address.service';
@@ -16,5 +23,12 @@ export class AddressController {
     @Body() createAddressDto: CreateAddressDto,
   ) {
     return this.addressService.createAddress(user, createAddressDto);
+  }
+
+  @Auth()
+  @Get('')
+  @HttpCode(HttpStatus.OK)
+  getAllAddressesBelongToUser(@CurrentUser() user: AuthUser) {
+    return this.addressService.getAllAddressesBelongToUser(user);
   }
 }
