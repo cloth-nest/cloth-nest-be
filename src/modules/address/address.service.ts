@@ -121,4 +121,49 @@ export class AddressService {
       throw err;
     }
   }
+
+  public async getOneAddressBelongToUser(
+    currentUser: AuthUser,
+    addressId: string,
+  ) {
+    try {
+      // Check addressId belong to user
+      const userAddress = await this.userAddressRepo.findOne({
+        where: {
+          userId: currentUser.id,
+          addressId: parseInt(addressId),
+        },
+      });
+
+      if (!userAddress) {
+        throw new CustomErrorException(ERRORS.AddressNotExist);
+      }
+
+      const address = await this.addressRepo.findOne({
+        where: {
+          id: parseInt(addressId),
+        },
+        select: [
+          'id',
+          'email',
+          'firstName',
+          'lastName',
+          'provinceCode',
+          'districtName',
+          'districtCode',
+          'districtName',
+          'wardCode',
+          'wardName',
+          'detail',
+          'phone',
+        ],
+      });
+
+      return {
+        data: address,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

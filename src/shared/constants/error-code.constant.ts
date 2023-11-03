@@ -47,7 +47,8 @@ type Code =
 
   // Group E (Address)
   | 'AddressProfileExist'
-  | 'UserAddressMustBeLessThanOrEqual10';
+  | 'UserAddressMustBeLessThanOrEqual10'
+  | 'AddressNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -310,5 +311,11 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'User address must be less than or equal 10',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+  AddressNotExist: {
+    code: 'E0003',
+    message: 'Address not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 };
