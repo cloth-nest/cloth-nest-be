@@ -46,6 +46,9 @@ export class Address {
   @Column({ name: 'phone', nullable: false, length: 10 })
   phone: string;
 
+  @Column({ name: 'is_address_profile', nullable: false, default: false })
+  isAddressProfile: boolean;
+
   @OneToMany(() => UserAddress, (userAddress) => userAddress.address)
   userAddress: UserAddress[];
 

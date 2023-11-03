@@ -47,7 +47,10 @@ export class AddressService {
 
         // Create profile address
         createdAddress = await this.addressRepo.save(
-          this.addressRepo.create(createAddressDto),
+          this.addressRepo.create({
+            ...createAddressDto,
+            isAddressProfile,
+          }),
         );
 
         // Assign address to user
@@ -156,6 +159,7 @@ export class AddressService {
           'wardName',
           'detail',
           'phone',
+          'isAddressProfile',
         ],
       });
 
