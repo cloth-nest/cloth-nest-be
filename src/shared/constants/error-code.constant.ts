@@ -7,6 +7,7 @@ type Code =
   | 'MailerError'
   | 'JsonWebTokenError'
   | 'InvalidRoute'
+  | 'EmptyBody'
 
   // Group B
   | 'InvalidEmail'
@@ -99,6 +100,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Invalid token',
     statusCode: 400,
     typeError: TYPE_ERRORS.JsonWebTokenError,
+  },
+  EmptyBody: {
+    code: 'A0006',
+    message: 'The body cannot be empty',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 
   // Group B

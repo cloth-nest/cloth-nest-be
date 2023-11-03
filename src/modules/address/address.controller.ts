@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   HttpCode,
   HttpStatus,
   Body,
@@ -10,7 +11,12 @@ import {
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { AddressService } from './address.service';
-import { CreateAddressDto, FindOneAddressParams } from './dto';
+import {
+  CreateAddressDto,
+  FindOneAddressParams,
+  UpdateOneAddressParams,
+  UpdateOneAddressDto,
+} from './dto';
 
 @Controller('address')
 export class AddressController {
@@ -41,5 +47,16 @@ export class AddressController {
     @Param() params: FindOneAddressParams,
   ) {
     return this.addressService.getOneAddressBelongToUser(user, params.id);
+  }
+
+  @Auth()
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  updateAddress(
+    @CurrentUser() user: AuthUser,
+    @Param() params: UpdateOneAddressParams,
+    @Body() updateAddressDto: UpdateOneAddressDto,
+  ) {
+    return this.addressService.updateAddress(user, params.id, updateAddressDto);
   }
 }

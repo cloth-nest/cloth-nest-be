@@ -136,6 +136,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'isAddressProfile': {
         return ERRORS.InvalidIsAddressProfile;
       }
+      case 'requireNotEmpty': {
+        return ERRORS.EmptyBody;
+      }
       default:
         return ERRORS.InternalServerError;
     }

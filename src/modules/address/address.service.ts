@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateOneAddressDto } from './dto';
 
 @Injectable()
 export class AddressService {
@@ -165,6 +166,44 @@ export class AddressService {
 
       return {
         data: address,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async updateAddress(
+    currentUser: AuthUser,
+    addressId: string,
+    updateAddressDto: UpdateOneAddressDto,
+  ) {
+    try {
+      // Check addressId belong to user
+      const userAddress = await this.userAddressRepo.findOne({
+        where: {
+          userId: currentUser.id,
+          addressId: parseInt(addressId),
+        },
+      });
+
+      if (!userAddress) {
+        throw new CustomErrorException(ERRORS.AddressNotExist);
+      }
+
+      // Update address
+      await this.addressRepo.update(
+        {
+          id: parseInt(addressId),
+        },
+        updateAddressDto,
+      );
+
+      return {
+        message: 'Update address successfully',
+        data: {
+          id: parseInt(addressId),
+          ...updateAddressDto,
+        },
       };
     } catch (err) {
       throw err;
