@@ -18,6 +18,7 @@ import {
   UpdateOneAddressParams,
   UpdateOneAddressDto,
   DeleteOneAddressParams,
+  SetDefaultAddressParams,
 } from './dto';
 
 @Controller('address')
@@ -70,5 +71,15 @@ export class AddressController {
     @Param() params: DeleteOneAddressParams,
   ) {
     return this.addressService.deleteAddress(user, params.id);
+  }
+
+  @Auth()
+  @Patch('default/:id')
+  @HttpCode(HttpStatus.OK)
+  setDefaultAddress(
+    @CurrentUser() user: AuthUser,
+    @Param() params: SetDefaultAddressParams,
+  ) {
+    return this.addressService.setDefaultAddress(user, params.id);
   }
 }

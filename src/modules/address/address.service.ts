@@ -260,4 +260,46 @@ export class AddressService {
       throw err;
     }
   }
+
+  public async setDefaultAddress(currentUser: AuthUser, addressId: string) {
+    try {
+      // Check if the current address matches with defaultShippingAddress
+      if (currentUser.defaultShippingAddress?.id === parseInt(addressId)) {
+        throw new CustomErrorException(ERRORS.AddressIsDefaultAddress);
+      }
+
+      // Check addressId belong to user
+      const userAddress = await this.userAddressRepo.findOne({
+        where: {
+          userId: currentUser.id,
+          addressId: parseInt(addressId),
+        },
+      });
+
+      if (!userAddress) {
+        throw new CustomErrorException(ERRORS.AddressNotExist);
+      }
+
+      // Update defaultShippingAddress
+      await this.userRepo.update(
+        {
+          id: currentUser.id,
+        },
+        {
+          defaultShippingAddress: {
+            id: parseInt(addressId),
+          },
+        },
+      );
+
+      return {
+        message: 'Set default address successfully',
+        data: {
+          id: parseInt(addressId),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

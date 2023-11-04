@@ -50,7 +50,8 @@ type Code =
   | 'AddressProfileExist'
   | 'UserAddressMustBeLessThanOrEqual10'
   | 'AddressNotExist'
-  | 'CannotDeleteAddressProfile';
+  | 'CannotDeleteAddressProfile'
+  | 'AddressIsDefaultAddress';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -329,6 +330,12 @@ export const ERRORS: Record<Code, CustomError> = {
   CannotDeleteAddressProfile: {
     code: 'E0004',
     message: 'Cannot delete address profile',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  AddressIsDefaultAddress: {
+    code: 'E0005',
+    message: 'Address is default address',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },
