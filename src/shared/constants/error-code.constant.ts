@@ -15,6 +15,7 @@ type Code =
   | 'InvalidPassword'
   | 'InvalidFirstName'
   | 'InvalidLastName'
+  | 'InvalidGender'
   | 'InvalidCode'
   | 'InvalidNewPassword'
   | 'InvalidOldPassword'
@@ -26,7 +27,7 @@ type Code =
   | 'InvalidWardCode'
   | 'InvalidWardName'
   | 'InvalidAddressDetail'
-  | 'InvalidAddressPhone'
+  | 'InvalidPhone'
   | 'InvalidIsAddressProfile'
 
   // Group C
@@ -209,15 +210,21 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
-  InvalidAddressPhone: {
+  InvalidPhone: {
     code: 'B0016',
-    message: 'Invalid input addressPhone',
+    message: 'Invalid input phone',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
   InvalidIsAddressProfile: {
     code: 'B0017',
     message: 'Invalid input isAddressProfile',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidGender: {
+    code: 'B0018',
+    message: 'Gender is enum data type',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },

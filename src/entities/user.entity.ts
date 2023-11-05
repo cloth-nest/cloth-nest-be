@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { UserPermission, UserAddress, Address } from './';
 import * as bcrypt from 'bcrypt';
+import { Gender } from '../shared/enums';
 
 @Entity({ name: 'user' })
 export class User {
@@ -66,6 +67,12 @@ export class User {
 
   @Column({ name: 'avatar', nullable: true })
   avatar: string;
+
+  @Column({ name: 'gender', nullable: true, default: Gender.OTHER })
+  gender: Gender;
+
+  @Column({ name: 'phone', nullable: true, length: 10 })
+  phone: string;
 
   @Column({ name: 'refresh_token', nullable: true })
   refreshToken: string;

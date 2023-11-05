@@ -2,11 +2,13 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   HttpCode,
   HttpStatus,
   UseInterceptors,
   UploadedFile,
   ParseFilePipeBuilder,
+  Body,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthUser } from '../../shared/interfaces';
@@ -14,6 +16,7 @@ import { Auth, CurrentUser } from '../../shared/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { extensionImageReg } from '../../shared/constants';
+import { UpdateProfileDto } from './dto';
 
 @Controller('user')
 export class UserController {
@@ -47,5 +50,15 @@ export class UserController {
     file: Express.Multer.File,
   ) {
     return this.userService.uploadAvatarUser(user, file);
+  }
+
+  @Auth()
+  @Patch('profile')
+  @HttpCode(HttpStatus.OK)
+  updateProfile(
+    @CurrentUser() user: AuthUser,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.userService.updateProfile(user, updateProfileDto);
   }
 }

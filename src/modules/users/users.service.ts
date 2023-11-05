@@ -9,6 +9,7 @@ import { AuthUser } from '../../shared/interfaces';
 import * as _ from 'lodash';
 import { FileUploadService } from '../../shared/services';
 import { ConfigService } from '@nestjs/config';
+import { UpdateProfileDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -105,6 +106,33 @@ export class UsersService {
       };
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async updateProfile(
+    currentUser: AuthUser,
+    updateProfileDto: UpdateProfileDto,
+  ) {
+    try {
+      // Update profile
+      await this.userRepo.update(
+        {
+          id: currentUser.id,
+        },
+        {
+          ...updateProfileDto,
+        },
+      );
+
+      return {
+        message: 'Update profile successfully',
+        data: {
+          userId: currentUser.id,
+          ...updateProfileDto,
+        },
+      };
+    } catch (error) {
+      throw error;
     }
   }
 

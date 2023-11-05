@@ -106,6 +106,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'firstName': {
         return ERRORS.InvalidFirstName;
       }
+      case 'gender': {
+        return ERRORS.InvalidGender;
+      }
       case 'code': {
         return ERRORS.InvalidCode;
       }
@@ -140,7 +143,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return ERRORS.InvalidAddressDetail;
       }
       case 'phone': {
-        return ERRORS.InvalidAddressPhone;
+        return ERRORS.InvalidPhone;
       }
       case 'isAddressProfile': {
         return ERRORS.InvalidIsAddressProfile;
