@@ -7,14 +7,16 @@ import * as bcrypt from 'bcrypt';
 import { hashPassword } from '../../shared/utils';
 import { AuthUser } from '../../shared/interfaces';
 import * as _ from 'lodash';
-import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
-import { ERRORS } from '../../shared/constants';
+import { FileUploadService } from '../../shared/services';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    private fileUploadSerivce: FileUploadService,
+    private configService: ConfigService,
   ) {}
   public async getProfile(currentUser: AuthUser) {
     try {
@@ -61,8 +63,59 @@ export class UsersService {
         ),
       };
     } catch (err) {
-      throw new CustomErrorException(ERRORS.InternalServerError);
+      throw err;
     }
+  }
+
+  public async uploadAvatarUser(
+    currentUser: AuthUser,
+    file: Express.Multer.File,
+  ) {
+    try {
+      // Upload user avatar to S3
+      const uploadedImage = await this.fileUploadSerivce.uploadFileToS3(
+        file.buffer,
+        this.getS3Key(currentUser.id, file.originalname),
+      );
+
+      // Save avatar url to database
+      await this.userRepo.update(
+        {
+          id: currentUser.id,
+        },
+        {
+          avatar: uploadedImage,
+        },
+      );
+
+      // Remove old avatar if exist
+      if (currentUser.avatar) {
+        console.log(this.extractFileDestFromImageUrl(currentUser.avatar));
+
+        await this.fileUploadSerivce.removeFileFromS3(
+          this.extractFileDestFromImageUrl(currentUser.avatar),
+        );
+      }
+
+      return {
+        message: 'Upload avatar successfully',
+        data: {
+          avatarUrl: uploadedImage,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private getS3Key(userId: number, fileName: string): string {
+    return `${this.configService.get<string>(
+      'AWS_S3_AVATAR_FOLDER',
+    )}/${userId}-${Date.now()}-${fileName}`;
+  }
+
+  private extractFileDestFromImageUrl(imageUrl: string): string {
+    return imageUrl.replace(`${this.fileUploadSerivce.getS3Url()}/`, '');
   }
 
   public async findUserByEmail(email: string): Promise<User | null> {
@@ -162,6 +215,7 @@ export class UsersService {
         'isSuperUser',
         'isStaff',
         'isActive',
+        'avatar',
         'dateJoined',
         'userPermission',
       ],

@@ -9,6 +9,7 @@ import {
   jwtConfig,
   mailerConfig,
   devtoolConfig,
+  awsConfig,
 } from './configs';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
@@ -32,6 +33,7 @@ import { AddressModule } from './modules/address/address.module';
         mailerConfig,
         cacheConfig,
         devtoolConfig,
+        awsConfig,
       ],
     }),
     DevtoolsModule.registerAsync({

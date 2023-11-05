@@ -5,6 +5,7 @@ export type TypeError =
   | 'JsonWebTokenError'
   | 'InvalidRouteError'
   | 'ValidationError'
+  | 'ImageValidationError'
   | 'EmailExistedError'
   | 'TypeOrmError'
   | 'InvalidLinkError'

@@ -6,6 +6,7 @@ import {
   Logger,
   NotFoundException,
   ForbiddenException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidationException } from '../exceptions/validator.exception';
@@ -24,7 +25,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
    * @param host
    */
   catch(
-    exception: HttpException | ValidationException | TypeORMError,
+    exception:
+      | HttpException
+      | ValidationException
+      | TypeORMError
+      | UnprocessableEntityException,
     host: ArgumentsHost,
   ): void {
     const ctx = host.switchToHttp();
@@ -41,7 +46,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message,
         detail:
           exception.name === 'ValidationException' ||
-          exception.name === 'JsonWebTokenError'
+          exception.name === 'JsonWebTokenError' ||
+          exception.name === 'UnprocessableEntityException'
             ? exception.message
             : undefined,
       },
@@ -76,6 +82,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
     if (e instanceof ForbiddenException) {
       return ERRORS.Forbidden;
+    }
+    if (e instanceof UnprocessableEntityException) {
+      return ERRORS.UnprocessableEntity;
     }
     if (e instanceof CustomErrorException) {
       return e.getResponse();

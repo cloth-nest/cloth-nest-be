@@ -10,7 +10,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
 
-  const port = app.get(ConfigService).get<number>('port');
+  const port = app.get(ConfigService).get<number>('app.port');
 
   await app.listen(port).then(() => {
     Logger.verbose(`App listening at ${port}. Happy coding!`, 'App');

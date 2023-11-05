@@ -8,6 +8,7 @@ type Code =
   | 'JsonWebTokenError'
   | 'InvalidRoute'
   | 'EmptyBody'
+  | 'UnprocessableEntity'
 
   // Group B
   | 'InvalidEmail'
@@ -60,6 +61,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   JsonWebTokenError: 'JsonWebTokenError',
   InvalidRouteError: 'InvalidRouteError',
   ValidationError: 'ValidationError',
+  ImageValidationError: 'ImageValidationError',
   EmailExistedError: 'EmailExistedError',
   TypeOrmError: 'TypeOrmError',
   InvalidLinkError: 'InvalidLinkError',
@@ -108,6 +110,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'The body cannot be empty',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+  UnprocessableEntity: {
+    code: 'A0007',
+    message: 'Unprocessable entity',
+    statusCode: 422,
+    typeError: TYPE_ERRORS.ImageValidationError,
   },
 
   // Group B
