@@ -172,7 +172,9 @@ export class AddressService {
       });
 
       return {
-        data: address,
+        data: Object.assign({}, address, {
+          isDefault: address.id === currentUser?.defaultShippingAddress?.id,
+        }),
       };
     } catch (err) {
       throw err;
