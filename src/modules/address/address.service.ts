@@ -114,9 +114,16 @@ export class AddressService {
         },
       });
 
-      const formatedData = userAddresses.userAddress.map((item) => {
-        return _.omit(item.address, ['createdAt', 'updatedAt']);
-      });
+      const formatedData = userAddresses.userAddress.map((item) =>
+        _.omit(
+          {
+            ...item.address,
+            isDefault:
+              item.address.id === currentUser?.defaultShippingAddress?.id,
+          },
+          ['createdAt', 'updatedAt'],
+        ),
+      );
 
       return {
         data: formatedData,
@@ -153,7 +160,7 @@ export class AddressService {
           'firstName',
           'lastName',
           'provinceCode',
-          'districtName',
+          'provinceName',
           'districtCode',
           'districtName',
           'wardCode',
