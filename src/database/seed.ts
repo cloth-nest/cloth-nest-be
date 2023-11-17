@@ -10,6 +10,7 @@ import {
   UserPermissionSeeder,
   GroupSeeder,
   GroupPermissonSeeder,
+  CategorySeeder,
 } from './seeders';
 
 dotenv.config();
@@ -38,6 +39,7 @@ const {
       UserPermissionSeeder,
       GroupSeeder,
       GroupPermissonSeeder,
+      CategorySeeder,
     ],
   };
 

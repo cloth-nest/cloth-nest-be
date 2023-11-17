@@ -5,3 +5,4 @@ export * from './group-permission.entity';
 export * from './user-permission.entity';
 export * from './address.entity';
 export * from './user-address.entity';
+export * from './category.entity';

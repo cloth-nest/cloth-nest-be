@@ -23,6 +23,9 @@ export class Category {
   @Column({ name: 'level', nullable: false })
   level: number;
 
+  @Column({ name: 'parent_id', nullable: true })
+  parentId: number;
+
   @ManyToOne(() => Category, (category) => category.childCategories)
   @JoinColumn({
     name: 'parent_id',
