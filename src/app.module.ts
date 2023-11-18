@@ -21,6 +21,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
 import { GlobalModule } from './modules/global/global.module';
 import { AddressModule } from './modules/address/address.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { AddressModule } from './modules/address/address.module';
     MailModule,
     AuthModule,
     AddressModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [

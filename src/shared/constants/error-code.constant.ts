@@ -29,6 +29,9 @@ type Code =
   | 'InvalidAddressDetail'
   | 'InvalidPhone'
   | 'InvalidIsAddressProfile'
+  | 'InvalidLevelQueryParam'
+  | 'InvalidPageQueryParam'
+  | 'InvalidLimitQueryParam'
 
   // Group C
   | 'EmailExisted'
@@ -225,6 +228,24 @@ export const ERRORS: Record<Code, CustomError> = {
   InvalidGender: {
     code: 'B0018',
     message: 'Gender is enum data type',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidLevelQueryParam: {
+    code: 'B0019',
+    message: 'Invalid input level query param',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidPageQueryParam: {
+    code: 'B0020',
+    message: 'Invalid input page query param',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidLimitQueryParam: {
+    code: 'B0021',
+    message: 'Invalid input limit query param',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },

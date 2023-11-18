@@ -148,6 +148,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'isAddressProfile': {
         return ERRORS.InvalidIsAddressProfile;
       }
+      case 'level': {
+        return ERRORS.InvalidLevelQueryParam;
+      }
+      case 'page': {
+        return ERRORS.InvalidPageQueryParam;
+      }
+      case 'limit': {
+        return ERRORS.InvalidLimitQueryParam;
+      }
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }
