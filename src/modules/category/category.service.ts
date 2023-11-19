@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GetAllCategoriesQueryDTO } from './dto';
+import { GetAllCategoriesQueryDTO, UpdateOneCategoryBodyDTO } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../../entities';
@@ -55,6 +55,38 @@ export class CategoryService {
 
       return {
         data: category,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async updateOneCategory(
+    categoryId: string,
+    updateOneCategoryBodyDTO: UpdateOneCategoryBodyDTO,
+  ) {
+    try {
+      const category = await this.categoryRepo.count({
+        where: { id: parseInt(categoryId) },
+      });
+      if (!category) {
+        throw new CustomErrorException(ERRORS.CategoryNotExist);
+      }
+
+      // Update category
+      await this.categoryRepo.update(
+        {
+          id: parseInt(categoryId),
+        },
+        updateOneCategoryBodyDTO,
+      );
+
+      return {
+        message: 'Update category successfully',
+        data: {
+          id: parseInt(categoryId),
+          ...updateOneCategoryBodyDTO,
+        },
       };
     } catch (err) {
       throw err;

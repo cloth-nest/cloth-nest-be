@@ -94,5 +94,9 @@
   {
     "userId": 1,
     "permissionId": 24
+  },
+  {
+    "userId": 1,
+    "permissionId": 25
   }
 ]

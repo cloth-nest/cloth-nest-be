@@ -94,5 +94,9 @@
   {
     "name": "Manage translations",
     "codeName": "MANAGE_TRANSLATIONS"
+  },
+  {
+    "name": "Manage categories",
+    "codeName": "MANAGE_CATEGORIES"
   }
 ]
