@@ -160,6 +160,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'id': {
         return ERRORS.InvalidIdPathParam;
       }
+      case 'name': {
+        return ERRORS.InvalidCategoryName;
+      }
+      case 'description': {
+        return ERRORS.InvalidCategoryDescription;
+      }
+      case 'parentId': {
+        return ERRORS.InvalidParentCategoryId;
+      }
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }

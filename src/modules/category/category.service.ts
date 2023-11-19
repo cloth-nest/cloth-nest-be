@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { GetAllCategoriesQueryDTO, UpdateOneCategoryBodyDTO } from './dto';
+import {
+  CreateOneCategoryBodyDto,
+  GetAllCategoriesQueryDTO,
+  UpdateOneCategoryBodyDTO,
+} from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../../entities';
 import { paginate } from '../../shared/utils/pager.util';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
+import * as _ from 'lodash';
 
 @Injectable()
 export class CategoryService {
@@ -87,6 +92,47 @@ export class CategoryService {
           id: parseInt(categoryId),
           ...updateOneCategoryBodyDTO,
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createOneCategory(
+    createCategoryBodyDto: CreateOneCategoryBodyDto,
+  ) {
+    try {
+      // Destructure body
+      const { name, description, parentId } = createCategoryBodyDto;
+
+      let parentCategory: Category = undefined;
+
+      // Check if parentCategory is exist
+      if (parentId) {
+        parentCategory = await this.categoryRepo.findOne({
+          where: { id: parentId },
+          select: ['id', 'level'],
+        });
+        if (!parentCategory) {
+          throw new CustomErrorException(ERRORS.ParentCategoryNotExist);
+        }
+      }
+
+      // Create new category
+      const createdCategory = await this.categoryRepo.save({
+        name,
+        description,
+        level: parentCategory ? parentCategory.level + 1 : 0,
+        parentCategory,
+      });
+
+      return {
+        message: 'Create category successfully',
+        data: _.omit(createdCategory, [
+          'parentCategory',
+          'createdAt',
+          'updatedAt',
+        ]),
       };
     } catch (err) {
       throw err;

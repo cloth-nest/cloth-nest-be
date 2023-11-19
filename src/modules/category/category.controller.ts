@@ -6,10 +6,12 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import {
+  CreateOneCategoryBodyDto,
   FindOneCategoryParamDto,
   GetAllCategoriesQueryDTO,
   UpdateOneCategoryBodyDTO,
@@ -48,5 +50,12 @@ export class CategoryController {
       param.id,
       updateCategoryBodyDto,
     );
+  }
+
+  @Auth(Permission.MANAGE_CATEGORIES)
+  @Post('')
+  @HttpCode(HttpStatus.CREATED)
+  createOneCategory(@Body() createCategoryBodyDto: CreateOneCategoryBodyDto) {
+    return this.categoryService.createOneCategory(createCategoryBodyDto);
   }
 }

@@ -29,6 +29,9 @@ type Code =
   | 'InvalidAddressDetail'
   | 'InvalidPhone'
   | 'InvalidIsAddressProfile'
+  | 'InvalidCategoryName'
+  | 'InvalidCategoryDescription'
+  | 'InvalidParentCategoryId'
   | 'InvalidLevelQueryParam'
   | 'InvalidPageQueryParam'
   | 'InvalidLimitQueryParam'
@@ -60,7 +63,8 @@ type Code =
   | 'AddressIsDefaultAddress'
 
   // Group F (Category)
-  | 'CategoryNotExist';
+  | 'CategoryNotExist'
+  | 'ParentCategoryNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -259,6 +263,24 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidCategoryName: {
+    code: 'B0023',
+    message: 'Invalid input categoryName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidCategoryDescription: {
+    code: 'B0024',
+    message: 'Invalid input categoryDescription',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidParentCategoryId: {
+    code: 'B0025',
+    message: 'Invalid input parentCategoryId',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -390,6 +412,12 @@ export const ERRORS: Record<Code, CustomError> = {
   CategoryNotExist: {
     code: 'F0001',
     message: 'Category not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
+  },
+  ParentCategoryNotExist: {
+    code: 'F0002',
+    message: 'Parent category not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
   },
