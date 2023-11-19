@@ -13,24 +13,39 @@ import { CategoryService } from './category.service';
 import {
   CreateOneCategoryBodyDto,
   FindOneCategoryParamDto,
-  GetAllCategoriesQueryDTO,
+  GetAllCategoriesAdminQueryDTO,
+  GetAllCategoriesUserQueryDTO,
   UpdateOneCategoryBodyDTO,
   UpdateOneCategoryParamDto,
 } from './dto';
 import { Auth } from '../../shared/decorators';
-import { Permission } from 'src/shared/enums';
+import { Permission } from '../../shared/enums';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @Auth(Permission.MANAGE_CATEGORIES)
+  @Get('admin')
+  @HttpCode(HttpStatus.OK)
+  getAllCategoriesAdmin(
+    @Query()
+    getAllCategoriesAdminQueryDTO: GetAllCategoriesAdminQueryDTO,
+  ) {
+    return this.categoryService.getAllCategoriesAdmin(
+      getAllCategoriesAdminQueryDTO,
+    );
+  }
+
   @Get('')
   @HttpCode(HttpStatus.OK)
-  getAllCategories(
+  getAllCategoriesUser(
     @Query()
-    getAllCategoriesQueryDTO: GetAllCategoriesQueryDTO,
+    getAllCategoriesUserQueryDTO: GetAllCategoriesUserQueryDTO,
   ) {
-    return this.categoryService.getAllCategories(getAllCategoriesQueryDTO);
+    return this.categoryService.getAllCategoriesUser(
+      getAllCategoriesUserQueryDTO,
+    );
   }
 
   @Get(':id')

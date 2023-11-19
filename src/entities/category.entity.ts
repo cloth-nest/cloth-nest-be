@@ -4,12 +4,14 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  OneToMany,
   JoinColumn,
+  Tree,
+  TreeParent,
+  TreeChildren,
 } from 'typeorm';
 
 @Entity({ name: 'category' })
+@Tree('materialized-path')
 export class Category {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
@@ -26,15 +28,15 @@ export class Category {
   @Column({ name: 'parent_id', nullable: true })
   parentId: number;
 
-  @ManyToOne(() => Category, (category) => category.childCategories)
+  @TreeParent()
   @JoinColumn({
     name: 'parent_id',
     referencedColumnName: 'id',
   })
-  parentCategory: Category;
+  parent: Category;
 
-  @OneToMany(() => Category, (category) => category.parentCategory)
-  childCategories: Category[];
+  @TreeChildren()
+  childs: Category[];
 
   @CreateDateColumn({
     name: 'created_at',

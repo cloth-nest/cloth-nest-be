@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import {
   CreateOneCategoryBodyDto,
-  GetAllCategoriesQueryDTO,
+  GetAllCategoriesAdminQueryDTO,
+  GetAllCategoriesUserQueryDTO,
   UpdateOneCategoryBodyDTO,
 } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../../entities';
-import { paginate } from '../../shared/utils/pager.util';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import * as _ from 'lodash';
+import { treeMap, paginate } from '../../shared/utils';
 
 @Injectable()
 export class CategoryService {
@@ -19,28 +20,76 @@ export class CategoryService {
     private categoryRepo: Repository<Category>,
   ) {}
 
-  public async getAllCategories(
-    getAllCategoriesQueryDTO: GetAllCategoriesQueryDTO,
+  public async getAllCategoriesAdmin(
+    getAllCategoriesAdminQueryDTO: GetAllCategoriesAdminQueryDTO,
   ) {
     try {
       // Destructor query
-      const { level, limit, page } = getAllCategoriesQueryDTO;
+      const { level, parentId, limit, page } = getAllCategoriesAdminQueryDTO;
+
+      let parentCategory: Category = undefined;
+
+      // Check if parentCategory is exist
+      if (parentId) {
+        parentCategory = await this.categoryRepo.findOne({
+          where: { id: parentId },
+        });
+        if (!parentCategory) {
+          throw new CustomErrorException(ERRORS.ParentCategoryNotExist);
+        }
+      }
 
       // Get categories and total
-      const [categories, total] = await this.categoryRepo.findAndCount({
-        where: {
-          level,
-        },
-        select: ['id', 'description', 'name', 'level'],
-        take: limit,
-        skip: (page - 1) * limit,
-      });
+      const [categories, total] = await this.categoryRepo.manager
+        .getTreeRepository(Category)
+        .findAndCount({
+          where: {
+            level,
+            parentId,
+          },
+          select: ['id', 'description', 'name', 'level'],
+          take: limit,
+          skip: (page - 1) * limit,
+        });
 
       return {
         data: {
           categories,
           pageInformation: paginate(limit, page, total),
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getAllCategoriesUser(
+    getAllCategoriesUserQueryDTO: GetAllCategoriesUserQueryDTO,
+  ) {
+    try {
+      // Destructor query
+      const { depth } = getAllCategoriesUserQueryDTO;
+
+      // Get categories
+      const categories = await this.categoryRepo.manager
+        .getTreeRepository(Category)
+        .findTrees({
+          depth,
+        });
+
+      return {
+        // Remove createdAt, updatedAt
+        data: treeMap(
+          categories,
+          (node) => ({
+            id: node.id,
+            name: node.name,
+            description: node.description,
+            level: node.level,
+            childs: node.childs,
+          }),
+          { id: 'id', children: 'childs' },
+        ),
       };
     } catch (err) {
       throw err;
