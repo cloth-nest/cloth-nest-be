@@ -32,6 +32,7 @@ type Code =
   | 'InvalidLevelQueryParam'
   | 'InvalidPageQueryParam'
   | 'InvalidLimitQueryParam'
+  | 'InvalidIdPathParam'
 
   // Group C
   | 'EmailExisted'
@@ -56,7 +57,10 @@ type Code =
   | 'UserAddressMustBeLessThanOrEqual10'
   | 'AddressNotExist'
   | 'CannotDeleteAddressProfile'
-  | 'AddressIsDefaultAddress';
+  | 'AddressIsDefaultAddress'
+
+  // Group F (Category)
+  | 'CategoryNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -249,6 +253,12 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidIdPathParam: {
+    code: 'B0022',
+    message: 'Invalid input id path param',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -374,5 +384,13 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Address is default address',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+
+  // Group F
+  CategoryNotExist: {
+    code: 'F0001',
+    message: 'Category not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 };

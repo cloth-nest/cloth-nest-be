@@ -157,6 +157,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'limit': {
         return ERRORS.InvalidLimitQueryParam;
       }
+      case 'id': {
+        return ERRORS.InvalidIdPathParam;
+      }
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }
