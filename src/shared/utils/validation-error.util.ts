@@ -6,7 +6,8 @@ export const getMessage = (
 ): MessageValidationError => {
   const error = getDeepError(errors[0]);
   const field = error.property;
-  const message = Object.values(error.constraints)[0] ?? '';
+  const errorMessageList = Object.values(error.constraints);
+  const message = errorMessageList[errorMessageList.length - 1] ?? '';
 
   return {
     message: message,
@@ -23,6 +24,6 @@ export const getDeepError = (error: ValidationError): ValidationError => {
   if (!error.children.length) {
     return error;
   } else {
-    return getDeepError(error.children[0]);
+    return getDeepError(error.children[error.children.length - 1]);
   }
 };
