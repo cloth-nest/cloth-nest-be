@@ -89,6 +89,7 @@ export class CategoryService {
             id: node.id,
             name: node.name,
             description: node.description,
+            bgImgUrl: node.bgImgUrl,
             level: node.level,
             childs: node.childs,
           }),
@@ -104,7 +105,7 @@ export class CategoryService {
     try {
       const category = await this.categoryRepo.findOne({
         where: { id: parseInt(categoryId) },
-        select: ['id', 'description', 'name', 'level'],
+        select: ['id', 'description', 'name', 'level', 'bgImgUrl'],
       });
 
       if (!category) {
@@ -122,13 +123,24 @@ export class CategoryService {
   public async updateOneCategory(
     categoryId: string,
     updateOneCategoryBodyDTO: UpdateOneCategoryBodyDTO,
+    bgImg: Express.Multer.File,
   ) {
     try {
-      const category = await this.categoryRepo.count({
+      const category = await this.categoryRepo.findOne({
         where: { id: parseInt(categoryId) },
+        select: ['id', 'bgImgUrl'],
       });
       if (!category) {
         throw new CustomErrorException(ERRORS.CategoryNotExist);
+      }
+
+      let bgImgUrl: string = undefined;
+      if (bgImg) {
+        // Upload bg img category to S3 & return url
+        bgImgUrl = await this.fileUploadSerivce.uploadFileToS3(
+          bgImg.buffer,
+          this.getS3Key(parseInt(categoryId), bgImg.originalname),
+        );
       }
 
       // Update category
@@ -136,14 +148,25 @@ export class CategoryService {
         {
           id: parseInt(categoryId),
         },
-        updateOneCategoryBodyDTO,
+        {
+          ...updateOneCategoryBodyDTO,
+          bgImgUrl,
+        },
       );
+
+      // Remove old bg image if exist
+      if (category.bgImgUrl) {
+        await this.fileUploadSerivce.removeFileFromS3(
+          this.extractFileDestFromImageUrl(category.bgImgUrl),
+        );
+      }
 
       return {
         message: 'Update category successfully',
         data: {
           id: parseInt(categoryId),
           ...updateOneCategoryBodyDTO,
+          bgImg: bgImgUrl,
         },
       };
     } catch (err) {
@@ -181,8 +204,9 @@ export class CategoryService {
       });
 
       // Upload user avatar to S3
+      let bgImgUrl: string = undefined;
       if (file) {
-        const uploadedImage = await this.fileUploadSerivce.uploadFileToS3(
+        bgImgUrl = await this.fileUploadSerivce.uploadFileToS3(
           file.buffer,
           this.getS3Key(createdCategory.id, file.originalname),
         );
@@ -193,18 +217,22 @@ export class CategoryService {
             id: createdCategory.id,
           },
           {
-            bgImg: uploadedImage,
+            bgImgUrl,
           },
         );
       }
 
       return {
         message: 'Create category successfully',
-        data: _.omit(createdCategory, [
-          'parentCategory',
-          'createdAt',
-          'updatedAt',
-        ]),
+        data: {
+          ..._.omit(createdCategory, [
+            'parent',
+            'parentId',
+            'createdAt',
+            'updatedAt',
+          ]),
+          bgImgUrl,
+        },
       };
     } catch (err) {
       throw err;
@@ -215,5 +243,9 @@ export class CategoryService {
     return `${this.configService.get<string>(
       'AWS_S3_CATEGORY_FOLDER',
     )}/${categoryId}-${Date.now()}-${fileName}`;
+  }
+
+  private extractFileDestFromImageUrl(imageUrl: string): string {
+    return imageUrl.replace(`${this.fileUploadSerivce.getS3Url()}/`, '');
   }
 }

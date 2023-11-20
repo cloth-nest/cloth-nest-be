@@ -63,13 +63,29 @@ export class CategoryController {
   @Auth(Permission.MANAGE_CATEGORIES)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('bgImg'))
   updateOneCategory(
     @Param() param: UpdateOneCategoryParamDto,
     @Body() updateCategoryBodyDto: UpdateOneCategoryBodyDTO,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: extensionImageReg,
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          fileIsRequired: false,
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    bgImg: Express.Multer.File,
   ) {
     return this.categoryService.updateOneCategory(
       param.id,
       updateCategoryBodyDto,
+      bgImg,
     );
   }
 
