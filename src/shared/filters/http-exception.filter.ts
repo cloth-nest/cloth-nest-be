@@ -151,6 +151,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'level': {
         return ERRORS.InvalidLevelQueryParam;
       }
+      case 'depth': {
+        return ERRORS.InvalidDepthQueryParam;
+      }
       case 'page': {
         return ERRORS.InvalidPageQueryParam;
       }

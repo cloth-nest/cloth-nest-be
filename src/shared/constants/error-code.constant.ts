@@ -33,6 +33,7 @@ type Code =
   | 'InvalidCategoryDescription'
   | 'InvalidParentCategoryId'
   | 'InvalidLevelQueryParam'
+  | 'InvalidDepthQueryParam'
   | 'InvalidPageQueryParam'
   | 'InvalidLimitQueryParam'
   | 'InvalidIdPathParam'
@@ -278,6 +279,12 @@ export const ERRORS: Record<Code, CustomError> = {
   InvalidParentCategoryId: {
     code: 'B0025',
     message: 'Invalid input parentCategoryId',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidDepthQueryParam: {
+    code: 'B0026',
+    message: 'Invalid input depth query param',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
