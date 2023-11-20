@@ -12,12 +12,16 @@ import { CustomErrorException } from '../../shared/exceptions/custom-error.excep
 import { ERRORS } from '../../shared/constants';
 import * as _ from 'lodash';
 import { treeMap, paginate } from '../../shared/utils';
+import { FileUploadService } from '../../shared/services';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepo: Repository<Category>,
+    private fileUploadSerivce: FileUploadService,
+    private configService: ConfigService,
   ) {}
 
   public async getAllCategoriesAdmin(
@@ -149,6 +153,7 @@ export class CategoryService {
 
   public async createOneCategory(
     createCategoryBodyDto: CreateOneCategoryBodyDto,
+    file: Express.Multer.File,
   ) {
     try {
       // Destructure body
@@ -172,8 +177,26 @@ export class CategoryService {
         name,
         description,
         level: parentCategory ? parentCategory.level + 1 : 0,
-        parentCategory,
+        parent: parentCategory,
       });
+
+      // Upload user avatar to S3
+      if (file) {
+        const uploadedImage = await this.fileUploadSerivce.uploadFileToS3(
+          file.buffer,
+          this.getS3Key(createdCategory.id, file.originalname),
+        );
+
+        // Save background image url to database
+        await this.categoryRepo.update(
+          {
+            id: createdCategory.id,
+          },
+          {
+            bgImg: uploadedImage,
+          },
+        );
+      }
 
       return {
         message: 'Create category successfully',
@@ -186,5 +209,11 @@ export class CategoryService {
     } catch (err) {
       throw err;
     }
+  }
+
+  private getS3Key(categoryId: number, fileName: string): string {
+    return `${this.configService.get<string>(
+      'AWS_S3_CATEGORY_FOLDER',
+    )}/${categoryId}-${Date.now()}-${fileName}`;
   }
 }

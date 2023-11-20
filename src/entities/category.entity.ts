@@ -25,6 +25,9 @@ export class Category {
   @Column({ name: 'level', nullable: false })
   level: number;
 
+  @Column({ name: 'bg_url', nullable: true })
+  bgImg: string;
+
   @Column({ name: 'parent_id', nullable: true })
   parentId: number;
 

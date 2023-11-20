@@ -5,9 +5,12 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import {
@@ -20,6 +23,9 @@ import {
 } from './dto';
 import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extensionImageReg } from '../../shared/constants';
+import { Express } from 'express';
 
 @Controller('category')
 export class CategoryController {
@@ -70,7 +76,24 @@ export class CategoryController {
   @Auth(Permission.MANAGE_CATEGORIES)
   @Post('')
   @HttpCode(HttpStatus.CREATED)
-  createOneCategory(@Body() createCategoryBodyDto: CreateOneCategoryBodyDto) {
-    return this.categoryService.createOneCategory(createCategoryBodyDto);
+  @UseInterceptors(FileInterceptor('file'))
+  createOneCategory(
+    @Body() createCategoryBodyDto: CreateOneCategoryBodyDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: extensionImageReg,
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          fileIsRequired: false,
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.categoryService.createOneCategory(createCategoryBodyDto, file);
   }
 }
