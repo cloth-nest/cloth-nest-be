@@ -51,7 +51,7 @@ export class CategoryService {
             level,
             parentId,
           },
-          select: ['id', 'description', 'name', 'level'],
+          select: ['id', 'description', 'name', 'level', 'bgImgUrl'],
           take: limit,
           skip: (page - 1) * limit,
         });
