@@ -4,6 +4,7 @@ import { Raw, Repository } from 'typeorm';
 import { AttributeValue, ProductAttribute } from '../../entities';
 import { paginate } from '../../shared/utils';
 import {
+  CreateAttributeValueBodyDTO,
   CreateProductAttributeBodyDTO,
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesQueryDTO,
@@ -201,6 +202,53 @@ export class ProductService {
         data: {
           attributeValues,
           pageInformation: paginate(limit, page, total),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createAttributeValue(
+    createAttributeValueBodyDTO: CreateAttributeValueBodyDTO,
+  ) {
+    try {
+      // Check product attribute exists
+      const productAttribute = await this.productAttributeRepo.count({
+        where: {
+          id: createAttributeValueBodyDTO.attributeId,
+        },
+      });
+
+      if (!productAttribute) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNotExist);
+      }
+
+      // Check attribute value exists
+      const attributeValue = await this.attributeValueRepo.count({
+        where: {
+          attributeId: createAttributeValueBodyDTO.attributeId,
+          value: createAttributeValueBodyDTO.attributeValue,
+        },
+      });
+
+      if (attributeValue) {
+        throw new CustomErrorException(ERRORS.ProductAttributeValueExist);
+      }
+
+      // Create attribute value
+      const createdAttributeValue = await this.attributeValueRepo.save({
+        attributeId: createAttributeValueBodyDTO.attributeId,
+        value: createAttributeValueBodyDTO.attributeValue,
+      });
+
+      return {
+        message: 'Create attribute value successfully',
+        data: {
+          attributeValue: _.omit(createdAttributeValue, [
+            'createdAt',
+            'updatedAt',
+          ]),
         },
       };
     } catch (err) {

@@ -13,6 +13,7 @@ import {
 import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
 import {
+  CreateAttributeValueBodyDTO,
   CreateProductAttributeBodyDTO,
   DeleteProductAttributeParamDto,
   GetAllAttributeQueryDTO,
@@ -71,7 +72,7 @@ export class ProductController {
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)
-  @Get('attributes/:id/values')
+  @Get('attributes/values/:id')
   @HttpCode(HttpStatus.OK)
   getAllValuesBelongToAttribute(
     @Param() param: GetAllAttributeValuesParamDto,
@@ -81,6 +82,18 @@ export class ProductController {
     return this.productService.getAllAttributeValues(
       param.id,
       getAllAttributeValuesQueryDTO,
+    );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('attributes/values')
+  @HttpCode(HttpStatus.CREATED)
+  createAttributeValue(
+    @Body()
+    createAttributeValueBodyDTO: CreateAttributeValueBodyDTO,
+  ) {
+    return this.productService.createAttributeValue(
+      createAttributeValueBodyDTO,
     );
   }
 }

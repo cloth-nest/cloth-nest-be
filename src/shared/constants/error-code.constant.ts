@@ -39,6 +39,8 @@ type Code =
   | 'InvalidIdPathParam'
   | 'InvalidSearchQueryParam'
   | 'InvalidProductAttributeName'
+  | 'InvalidAttributeId'
+  | 'InvalidAttributeValue'
 
   // Group C
   | 'EmailExisted'
@@ -72,7 +74,8 @@ type Code =
   // Group G (Product)
   | 'ProductAttributeNotExist'
   | 'ProductAttributeNameExist'
-  | 'ProductAttributeHasValuesCanNotDelete';
+  | 'ProductAttributeHasValuesCanNotDelete'
+  | 'ProductAttributeValueExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -308,6 +311,18 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidAttributeId: {
+    code: 'B0029',
+    message: 'Invalid input attributeId',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidAttributeValue: {
+    code: 'B0030',
+    message: 'Invalid input attributeValue',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -465,6 +480,12 @@ export const ERRORS: Record<Code, CustomError> = {
   ProductAttributeHasValuesCanNotDelete: {
     code: 'G0003',
     message: 'Product attribute has values can not delete',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductAttributeError,
+  },
+  ProductAttributeValueExist: {
+    code: 'G0004',
+    message: 'Product attribute value is already existed',
     statusCode: 409,
     typeError: TYPE_ERRORS.ProductAttributeError,
   },
