@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -15,6 +16,8 @@ import {
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesParamDto,
   GetAllAttributeValuesQueryDTO,
+  UpdateProductAttributeBodyDTO,
+  UpdateProductAttributeParamDto,
 } from './dto';
 import { ProductService } from './product.service';
 
@@ -41,6 +44,20 @@ export class ProductController {
   ) {
     return this.productService.createProductAttribute(
       createProductAttributeBodyDTO,
+    );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Patch('attributes/:id')
+  @HttpCode(HttpStatus.CREATED)
+  updateProductAttribute(
+    @Param() param: UpdateProductAttributeParamDto,
+    @Body()
+    updateProductAttributeBodyDTO: UpdateProductAttributeBodyDTO,
+  ) {
+    return this.productService.updateProductAttribute(
+      param.id,
+      updateProductAttributeBodyDTO,
     );
   }
 

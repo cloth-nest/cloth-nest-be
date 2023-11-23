@@ -91,6 +91,40 @@ export class ProductService {
     }
   }
 
+  public async updateProductAttribute(
+    attributeId: string,
+    updateProductAttributeBodyDTO: CreateProductAttributeBodyDTO,
+  ) {
+    try {
+      // Check product attribute exists
+      const productAttribute = await this.productAttributeRepo.count({
+        where: {
+          id: parseInt(attributeId),
+        },
+      });
+
+      if (!productAttribute) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNotExist);
+      }
+
+      // Update product attribute
+      await this.productAttributeRepo.update(
+        {
+          id: parseInt(attributeId),
+        },
+        {
+          name: updateProductAttributeBodyDTO.productAttributeName,
+        },
+      );
+
+      return {
+        message: 'Update product attribute successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async getAllAttributeValues(
     attributeId: string,
     getAllAttributeValuesQueryDTO: GetAllAttributeValuesQueryDTO,
