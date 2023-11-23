@@ -290,4 +290,30 @@ export class ProductService {
       throw err;
     }
   }
+
+  public async deleteAttributeValue(attributeValueId: string) {
+    try {
+      // Check attribute value exists
+      const attributeValue = await this.attributeValueRepo.count({
+        where: {
+          id: parseInt(attributeValueId),
+        },
+      });
+
+      if (!attributeValue) {
+        throw new CustomErrorException(ERRORS.ProductAttributeValueNotExist);
+      }
+
+      // Delete attribute value
+      await this.attributeValueRepo.delete({
+        id: parseInt(attributeValueId),
+      });
+
+      return {
+        message: 'Delete attribute value successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

@@ -5,3 +5,4 @@ export * from './update-product-attribute.dto';
 export * from './delete-product-attribute.dto';
 export * from './create-atribute-value.dto';
 export * from './update-attribute-value.dto';
+export * from './delete-attribute-value.dto';

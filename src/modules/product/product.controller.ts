@@ -15,6 +15,7 @@ import { Permission } from '../../shared/enums';
 import {
   CreateAttributeValueBodyDTO,
   CreateProductAttributeBodyDTO,
+  DeleteAttributeValueParamDto,
   DeleteProductAttributeParamDto,
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesParamDto,
@@ -111,5 +112,12 @@ export class ProductController {
       param.id,
       updateAttributeValueBodyDTO,
     );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Delete('attributes/values/:id')
+  @HttpCode(HttpStatus.OK)
+  deleteAttributeValue(@Param() param: DeleteAttributeValueParamDto) {
+    return this.productService.deleteAttributeValue(param.id);
   }
 }
