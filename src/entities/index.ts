@@ -6,3 +6,5 @@ export * from './user-permission.entity';
 export * from './address.entity';
 export * from './user-address.entity';
 export * from './category.entity';
+export * from './attribute-value.entity';
+export * from './product-attribute.entity';
