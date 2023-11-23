@@ -1,8 +1,18 @@
-import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
-
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
-import { GetAllAttributeQueryDTO } from './dto';
+import {
+  GetAllAttributeQueryDTO,
+  GetAllAttributeValuesParamDto,
+  GetAllAttributeValuesQueryDTO,
+} from './dto';
 import { ProductService } from './product.service';
 
 @Controller('product')
@@ -12,10 +22,24 @@ export class ProductController {
   @Auth(Permission.MANAGE_PRODUCTS)
   @Get('attributes')
   @HttpCode(HttpStatus.OK)
-  getAllCategoriesAdmin(
+  getAllAttributes(
     @Query()
     getAllAttributesQueryDTO: GetAllAttributeQueryDTO,
   ) {
     return this.productService.getAllAttributes(getAllAttributesQueryDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Get('attributes/:id/values')
+  @HttpCode(HttpStatus.OK)
+  getAllValuesBelongToAttribute(
+    @Param() param: GetAllAttributeValuesParamDto,
+    @Query()
+    getAllAttributeValuesQueryDTO: GetAllAttributeValuesQueryDTO,
+  ) {
+    return this.productService.getAllAttributeValues(
+      param.id,
+      getAllAttributeValuesQueryDTO,
+    );
   }
 }

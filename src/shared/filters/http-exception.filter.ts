@@ -172,6 +172,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'parentId': {
         return ERRORS.InvalidParentCategoryId;
       }
+      case 'search': {
+        return ERRORS.InvalidSearchQueryParam;
+      }
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }

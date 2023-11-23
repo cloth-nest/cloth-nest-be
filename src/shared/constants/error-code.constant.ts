@@ -37,6 +37,7 @@ type Code =
   | 'InvalidPageQueryParam'
   | 'InvalidLimitQueryParam'
   | 'InvalidIdPathParam'
+  | 'InvalidSearchQueryParam'
 
   // Group C
   | 'EmailExisted'
@@ -65,7 +66,10 @@ type Code =
 
   // Group F (Category)
   | 'CategoryNotExist'
-  | 'ParentCategoryNotExist';
+  | 'ParentCategoryNotExist'
+
+  // Group G (Product)
+  | 'ProductAttributeNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -288,6 +292,12 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidSearchQueryParam: {
+    code: 'B0027',
+    message: 'Invalid input search query param',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -425,6 +435,14 @@ export const ERRORS: Record<Code, CustomError> = {
   ParentCategoryNotExist: {
     code: 'F0002',
     message: 'Parent category not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
+  },
+
+  // Group G
+  ProductAttributeNotExist: {
+    code: 'G0001',
+    message: 'Product attribute not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
   },
