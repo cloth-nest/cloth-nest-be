@@ -71,7 +71,8 @@ type Code =
 
   // Group G (Product)
   | 'ProductAttributeNotExist'
-  | 'ProductAttributeNameExist';
+  | 'ProductAttributeNameExist'
+  | 'ProductAttributeHasValuesCanNotDelete';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -93,6 +94,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   WrongRefreshTokenError: 'WrongRefreshTokenError',
   SessionResetPasswordError: 'SessionResetPasswordError',
   NewPasswordMatchOldPasswordError: 'NewPasswordMatchOldPasswordError',
+  ProductAttributeError: 'ProductAttributeError',
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
   ForbiddenError: 'ForbiddenError',
@@ -452,12 +454,18 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'G0001',
     message: 'Product attribute not exist',
     statusCode: 404,
-    typeError: TYPE_ERRORS.NotFoundError,
+    typeError: TYPE_ERRORS.ProductAttributeError,
   },
   ProductAttributeNameExist: {
     code: 'G0002',
     message: 'Product attribute name is already existed',
     statusCode: 409,
-    typeError: TYPE_ERRORS.ValidationError,
+    typeError: TYPE_ERRORS.ProductAttributeError,
+  },
+  ProductAttributeHasValuesCanNotDelete: {
+    code: 'G0003',
+    message: 'Product attribute has values can not delete',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductAttributeError,
   },
 };

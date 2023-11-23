@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -13,6 +14,7 @@ import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
 import {
   CreateProductAttributeBodyDTO,
+  DeleteProductAttributeParamDto,
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesParamDto,
   GetAllAttributeValuesQueryDTO,
@@ -49,7 +51,7 @@ export class ProductController {
 
   @Auth(Permission.MANAGE_PRODUCTS)
   @Patch('attributes/:id')
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   updateProductAttribute(
     @Param() param: UpdateProductAttributeParamDto,
     @Body()
@@ -59,6 +61,13 @@ export class ProductController {
       param.id,
       updateProductAttributeBodyDTO,
     );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Delete('attributes/:id')
+  @HttpCode(HttpStatus.OK)
+  deleteProductAttribute(@Param() param: DeleteProductAttributeParamDto) {
+    return this.productService.deleteProductAttribute(param.id);
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

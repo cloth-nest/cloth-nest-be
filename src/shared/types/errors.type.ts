@@ -18,6 +18,7 @@ export type TypeError =
   | 'WrongRefreshTokenError'
   | 'SessionResetPasswordError'
   | 'NewPasswordMatchOldPasswordError'
+  | 'ProductAttributeError'
   | 'UnauthorizedError'
   | 'NotFoundError'
   | 'ForbiddenError';

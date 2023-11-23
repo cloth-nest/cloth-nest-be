@@ -125,6 +125,45 @@ export class ProductService {
     }
   }
 
+  public async deleteProductAttribute(attributeId: string) {
+    try {
+      // Check product attribute exists
+      const productAttribute = await this.productAttributeRepo.count({
+        where: {
+          id: parseInt(attributeId),
+        },
+      });
+
+      if (!productAttribute) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNotExist);
+      }
+
+      // Check product attribute has values
+      const productAttributeValues = await this.attributeValueRepo.count({
+        where: {
+          attributeId: parseInt(attributeId),
+        },
+      });
+
+      if (productAttributeValues) {
+        throw new CustomErrorException(
+          ERRORS.ProductAttributeHasValuesCanNotDelete,
+        );
+      }
+
+      // Delete product attribute
+      await this.productAttributeRepo.delete({
+        id: parseInt(attributeId),
+      });
+
+      return {
+        message: 'Delete product attribute successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async getAllAttributeValues(
     attributeId: string,
     getAllAttributeValuesQueryDTO: GetAllAttributeValuesQueryDTO,
