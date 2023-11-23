@@ -75,7 +75,8 @@ type Code =
   | 'ProductAttributeNotExist'
   | 'ProductAttributeNameExist'
   | 'ProductAttributeHasValuesCanNotDelete'
-  | 'ProductAttributeValueExist';
+  | 'ProductAttributeValueExist'
+  | 'ProductAttributeValueNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -487,6 +488,12 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'G0004',
     message: 'Product attribute value is already existed',
     statusCode: 409,
+    typeError: TYPE_ERRORS.ProductAttributeError,
+  },
+  ProductAttributeValueNotExist: {
+    code: 'G0005',
+    message: 'Product attribute value not exist',
+    statusCode: 404,
     typeError: TYPE_ERRORS.ProductAttributeError,
   },
 };

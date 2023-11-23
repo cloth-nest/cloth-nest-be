@@ -8,6 +8,7 @@ import {
   CreateProductAttributeBodyDTO,
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesQueryDTO,
+  UpdateAttributeValueBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -250,6 +251,40 @@ export class ProductService {
             'updatedAt',
           ]),
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async updateAttributeValue(
+    attributeValueId: string,
+    updateAttributeValueBodyDTO: UpdateAttributeValueBodyDTO,
+  ) {
+    try {
+      // Check attribute value exists
+      const attributeValue = await this.attributeValueRepo.count({
+        where: {
+          id: parseInt(attributeValueId),
+        },
+      });
+
+      if (!attributeValue) {
+        throw new CustomErrorException(ERRORS.ProductAttributeValueNotExist);
+      }
+
+      // Update attribute value
+      await this.attributeValueRepo.update(
+        {
+          id: parseInt(attributeValueId),
+        },
+        {
+          value: updateAttributeValueBodyDTO.attributeValue,
+        },
+      );
+
+      return {
+        message: 'Update attribute value successfully',
       };
     } catch (err) {
       throw err;

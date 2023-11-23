@@ -19,6 +19,8 @@ import {
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesParamDto,
   GetAllAttributeValuesQueryDTO,
+  UpdateAttributeValueBodyDTO,
+  UpdateAttributeValueParamDto,
   UpdateProductAttributeBodyDTO,
   UpdateProductAttributeParamDto,
 } from './dto';
@@ -94,6 +96,20 @@ export class ProductController {
   ) {
     return this.productService.createAttributeValue(
       createAttributeValueBodyDTO,
+    );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Patch('attributes/values/:id')
+  @HttpCode(HttpStatus.OK)
+  updateAttributeValue(
+    @Param() param: UpdateAttributeValueParamDto,
+    @Body()
+    updateAttributeValueBodyDTO: UpdateAttributeValueBodyDTO,
+  ) {
+    return this.productService.updateAttributeValue(
+      param.id,
+      updateAttributeValueBodyDTO,
     );
   }
 }
