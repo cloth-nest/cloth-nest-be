@@ -11,6 +11,7 @@ import {
   GroupSeeder,
   GroupPermissonSeeder,
   CategorySeeder,
+  ProductAttributeSeeder,
 } from './seeders';
 
 dotenv.config();
@@ -40,6 +41,7 @@ const {
       GroupSeeder,
       GroupPermissonSeeder,
       CategorySeeder,
+      ProductAttributeSeeder,
     ],
   };
 
