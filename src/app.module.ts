@@ -22,6 +22,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { GlobalModule } from './modules/global/global.module';
 import { AddressModule } from './modules/address/address.module';
 import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { CategoryModule } from './modules/category/category.module';
     AuthModule,
     AddressModule,
     CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [
