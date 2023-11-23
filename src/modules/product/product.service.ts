@@ -3,9 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Raw, Repository } from 'typeorm';
 import { AttributeValue, ProductAttribute } from '../../entities';
 import { paginate } from '../../shared/utils';
-import { GetAllAttributeQueryDTO, GetAllAttributeValuesQueryDTO } from './dto';
+import {
+  CreateProductAttributeBodyDTO,
+  GetAllAttributeQueryDTO,
+  GetAllAttributeValuesQueryDTO,
+} from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ProductService {
@@ -45,6 +50,40 @@ export class ProductService {
         data: {
           productAttributes,
           pageInformation: paginate(limit, page, total),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createProductAttribute(
+    createProductAttributeBodyDTO: CreateProductAttributeBodyDTO,
+  ) {
+    try {
+      // Check product attribute exists
+      const productAttribute = await this.productAttributeRepo.count({
+        where: {
+          name: createProductAttributeBodyDTO.productAttributeName,
+        },
+      });
+
+      if (productAttribute) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNameExist);
+      }
+
+      // Create product attribute
+      const createdProductAttribute = await this.productAttributeRepo.save({
+        name: createProductAttributeBodyDTO.productAttributeName,
+      });
+
+      return {
+        message: 'Create product attribute successfully',
+        data: {
+          productAttribute: _.omit(createdProductAttribute, [
+            'createdAt',
+            'updatedAt',
+          ]),
         },
       };
     } catch (err) {

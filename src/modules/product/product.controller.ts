@@ -1,14 +1,17 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Query,
 } from '@nestjs/common';
 import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
 import {
+  CreateProductAttributeBodyDTO,
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesParamDto,
   GetAllAttributeValuesQueryDTO,
@@ -27,6 +30,18 @@ export class ProductController {
     getAllAttributesQueryDTO: GetAllAttributeQueryDTO,
   ) {
     return this.productService.getAllAttributes(getAllAttributesQueryDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('attributes')
+  @HttpCode(HttpStatus.CREATED)
+  createProductAttribute(
+    @Body()
+    createProductAttributeBodyDTO: CreateProductAttributeBodyDTO,
+  ) {
+    return this.productService.createProductAttribute(
+      createProductAttributeBodyDTO,
+    );
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

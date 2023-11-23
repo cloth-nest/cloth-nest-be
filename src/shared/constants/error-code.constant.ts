@@ -38,6 +38,7 @@ type Code =
   | 'InvalidLimitQueryParam'
   | 'InvalidIdPathParam'
   | 'InvalidSearchQueryParam'
+  | 'InvalidProductAttributeName'
 
   // Group C
   | 'EmailExisted'
@@ -69,7 +70,8 @@ type Code =
   | 'ParentCategoryNotExist'
 
   // Group G (Product)
-  | 'ProductAttributeNotExist';
+  | 'ProductAttributeNotExist'
+  | 'ProductAttributeNameExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -298,6 +300,12 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidProductAttributeName: {
+    code: 'B0028',
+    message: 'Invalid input productAttributeName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -445,5 +453,11 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Product attribute not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+  ProductAttributeNameExist: {
+    code: 'G0002',
+    message: 'Product attribute name is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };

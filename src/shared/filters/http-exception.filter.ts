@@ -175,6 +175,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'search': {
         return ERRORS.InvalidSearchQueryParam;
       }
+      case 'productAttributeName': {
+        return ERRORS.InvalidProductAttributeName;
+      }
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }
