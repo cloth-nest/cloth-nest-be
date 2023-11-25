@@ -37,6 +37,7 @@ export class UsersService {
           'defaultBillingAddressId',
           'note',
           'avatar',
+          'phone',
           'userPermission',
         ],
         relations: {
