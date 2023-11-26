@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Query,
 } from '@nestjs/common';
 import { Auth } from '../../../shared/decorators';
@@ -13,6 +15,7 @@ import {
   GetAllProductAttributesQueryDTO,
   GetAllProductTypeQueryDTO,
   GetAllProductAttributesParamDto,
+  CreateProductTypeBodyDTO,
 } from './dto';
 
 @Controller('product/types')
@@ -41,5 +44,14 @@ export class ProductTypeController {
       param.id,
       getAllProductAttributesQueryDTO,
     );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('')
+  @HttpCode(HttpStatus.CREATED)
+  createProductType(
+    @Body() createProductTypeBodyDTO: CreateProductTypeBodyDTO,
+  ) {
+    return this.productTypeService.createProductType(createProductTypeBodyDTO);
   }
 }

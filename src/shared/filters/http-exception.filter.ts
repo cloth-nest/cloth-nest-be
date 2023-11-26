@@ -184,6 +184,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'attributeValue': {
         return ERRORS.InvalidAttributeValue;
       }
+      case 'productTypeName': {
+        return ERRORS.InvalidProductTypeName;
+      }
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }

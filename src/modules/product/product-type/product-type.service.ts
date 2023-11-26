@@ -8,11 +8,13 @@ import {
   ProductTypeProductAttribute,
 } from '../../../entities';
 import {
+  CreateProductTypeBodyDTO,
   GetAllProductAttributesQueryDTO,
   GetAllProductTypeQueryDTO,
 } from './dto';
 import { CustomErrorException } from '../../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../../shared/constants';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ProductTypeService {
@@ -109,6 +111,35 @@ export class ProductTypeService {
             total,
           },
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createProductType(
+    createProductTypeBodyDTO: CreateProductTypeBodyDTO,
+  ) {
+    try {
+      // Check product type exist
+      const productType = await this.productTypeRepo.findOne({
+        where: {
+          name: createProductTypeBodyDTO.productTypeName,
+        },
+      });
+
+      if (productType) {
+        throw new CustomErrorException(ERRORS.ProductTypeAlreadyExist);
+      }
+
+      // Create product type
+      const createdProductType = await this.productTypeRepo.save({
+        name: createProductTypeBodyDTO.productTypeName,
+      });
+
+      return {
+        message: 'Create product type successfully',
+        data: _.omit(createdProductType, ['createdAt', 'updatedAt']),
       };
     } catch (err) {
       throw err;
