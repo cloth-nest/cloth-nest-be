@@ -4,17 +4,13 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
   JoinColumn,
-  Tree,
-  TreeParent,
-  TreeChildren,
-  OneToMany,
 } from 'typeorm';
-import { Product } from './';
+import { Category, ProductType } from './';
 
-@Entity({ name: 'category' })
-@Tree('materialized-path')
-export class Category {
+@Entity({ name: 'product' })
+export class Product {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
@@ -24,27 +20,28 @@ export class Category {
   @Column({ name: 'description', nullable: true })
   description: string;
 
-  @Column({ name: 'level', nullable: false })
-  level: number;
+  @Column({ name: 'price', nullable: false, type: 'decimal' })
+  price: number;
 
-  @Column({ name: 'bg_url', nullable: true })
-  bgImgUrl: string;
+  @Column({ name: 'weight', nullable: true, type: 'decimal' })
+  weight: number;
 
-  @Column({ name: 'parent_id', nullable: true })
-  parentId: number;
+  @Column({ name: 'category_id', nullable: false })
+  categoryId: number;
 
-  @OneToMany(() => Product, (product) => product.category)
-  products: Product[];
-
-  @TreeParent()
+  @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({
-    name: 'parent_id',
+    name: 'category_id',
     referencedColumnName: 'id',
   })
-  parent: Category;
+  category: Category;
 
-  @TreeChildren()
-  childs: Category[];
+  @ManyToOne(() => ProductType, (productType) => productType.products)
+  @JoinColumn({
+    name: 'product_type_id',
+    referencedColumnName: 'id',
+  })
+  productType: ProductType;
 
   @CreateDateColumn({
     name: 'created_at',

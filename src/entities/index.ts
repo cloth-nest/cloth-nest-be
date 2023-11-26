@@ -8,3 +8,7 @@ export * from './user-address.entity';
 export * from './category.entity';
 export * from './attribute-value.entity';
 export * from './product-attribute.entity';
+export * from './product.entity';
+export * from './product-type.entity';
+export * from './product-type-product-attribute.entity';
+export * from './product-type-product-variant.entity';
