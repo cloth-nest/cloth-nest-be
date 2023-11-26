@@ -76,7 +76,8 @@ type Code =
   | 'ProductAttributeNameExist'
   | 'ProductAttributeHasValuesCanNotDelete'
   | 'ProductAttributeValueExist'
-  | 'ProductAttributeValueNotExist';
+  | 'ProductAttributeValueNotExist'
+  | 'ProductTypeNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -99,6 +100,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   SessionResetPasswordError: 'SessionResetPasswordError',
   NewPasswordMatchOldPasswordError: 'NewPasswordMatchOldPasswordError',
   ProductAttributeError: 'ProductAttributeError',
+  ProductTypeError: 'ProductTypeError',
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
   ForbiddenError: 'ForbiddenError',
@@ -493,6 +495,12 @@ export const ERRORS: Record<Code, CustomError> = {
   ProductAttributeValueNotExist: {
     code: 'G0005',
     message: 'Product attribute value not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ProductAttributeError,
+  },
+  ProductTypeNotExist: {
+    code: 'G0006',
+    message: 'Product type not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.ProductAttributeError,
   },

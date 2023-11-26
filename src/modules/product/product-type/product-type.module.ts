@@ -4,13 +4,19 @@ import {
   AttributeValue,
   ProductAttribute,
   ProductType,
+  ProductTypeProductAttribute,
 } from '../../../entities';
 import { ProductTypeController } from './product-type.controller';
 import { ProductTypeService } from './product-type.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProductAttribute, AttributeValue, ProductType]),
+    TypeOrmModule.forFeature([
+      ProductAttribute,
+      AttributeValue,
+      ProductType,
+      ProductTypeProductAttribute,
+    ]),
   ],
   controllers: [ProductTypeController],
   providers: [ProductTypeService],

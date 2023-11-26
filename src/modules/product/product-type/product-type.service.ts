@@ -5,8 +5,14 @@ import {
   AttributeValue,
   ProductAttribute,
   ProductType,
+  ProductTypeProductAttribute,
 } from '../../../entities';
-import { GetAllProductTypeQueryDTO } from './dto';
+import {
+  GetAllProductAttributesQueryDTO,
+  GetAllProductTypeQueryDTO,
+} from './dto';
+import { CustomErrorException } from '../../../shared/exceptions/custom-error.exception';
+import { ERRORS } from '../../../shared/constants';
 
 @Injectable()
 export class ProductTypeService {
@@ -17,6 +23,8 @@ export class ProductTypeService {
     private attributeValueRepo: Repository<AttributeValue>,
     @InjectRepository(ProductType)
     private productTypeRepo: Repository<ProductType>,
+    @InjectRepository(ProductTypeProductAttribute)
+    private productTypeProductTypeRepo: Repository<ProductTypeProductAttribute>,
   ) {}
 
   public async getAllProductTypes(
@@ -44,6 +52,57 @@ export class ProductTypeService {
       return {
         data: {
           productTypes,
+          pageInformation: {
+            limit,
+            page,
+            total,
+          },
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getAllAttributeBelongToProductType(
+    productTypeId: string,
+    getAllProductAttributesQueryDTO: GetAllProductAttributesQueryDTO,
+  ) {
+    try {
+      // Check product type exist
+      const productType = await this.productTypeRepo.count({
+        where: {
+          id: parseInt(productTypeId),
+        },
+      });
+
+      if (!productType) {
+        throw new CustomErrorException(ERRORS.ProductTypeNotExist);
+      }
+
+      // Destructor query
+      const { limit, page } = getAllProductAttributesQueryDTO;
+
+      // Get all product attributes && total
+      const [productAttributes, total] =
+        await this.productTypeProductTypeRepo.findAndCount({
+          where: {
+            productTypeId: parseInt(productTypeId),
+          },
+          select: ['productAttribute'],
+          order: {
+            order: 'ASC',
+          },
+          relations: ['productAttribute'],
+          take: limit,
+          skip: limit * (page - 1),
+        });
+
+      return {
+        data: {
+          productAttributes: productAttributes.map(
+            (productAttribute) => productAttribute.productAttribute,
+          ),
           pageInformation: {
             limit,
             page,
