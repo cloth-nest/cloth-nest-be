@@ -14,6 +14,7 @@ import {
   ProductAttributeSeeder,
   AttributeValueSeeder,
   ProductTypeSeeder,
+  ProductTypeProductAttributeSeeder,
 } from './seeders';
 
 dotenv.config();
@@ -46,6 +47,7 @@ const {
       ProductAttributeSeeder,
       AttributeValueSeeder,
       ProductTypeSeeder,
+      ProductTypeProductAttributeSeeder,
     ],
   };
 

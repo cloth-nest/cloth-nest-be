@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ProductType } from './';
+import { ProductAttribute, ProductType } from './';
 
 @Entity({ name: 'product_type_product_attribute' })
 export class ProductTypeProductAttribute {
@@ -29,6 +29,13 @@ export class ProductTypeProductAttribute {
   )
   @JoinColumn({ name: 'product_type_id', referencedColumnName: 'id' })
   productType: ProductType;
+
+  @ManyToOne(
+    () => ProductAttribute,
+    (productAttribute) => productAttribute.productTypeProductAttribute,
+  )
+  @JoinColumn({ name: 'product_attribute_id', referencedColumnName: 'id' })
+  productAttribute: ProductAttribute;
 
   @CreateDateColumn({
     name: 'created_at',

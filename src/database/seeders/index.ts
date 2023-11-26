@@ -7,3 +7,4 @@ export * from './category.seeder';
 export * from './product-attribute.seeder';
 export * from './attribute-value.seeder';
 export * from './product-type.seeder';
+export * from './product-type-product-attribute.seeder';
