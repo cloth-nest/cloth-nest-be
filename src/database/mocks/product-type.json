@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Umbrella",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 2,
+    "name": "Hanger",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 3,
+    "name": "Jacket",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 4,
+    "name": "Bra",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 5,
+    "name": "Skirt",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 6,
+    "name": "Crop Top",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 7,
+    "name": "Trish",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 8,
+    "name": "Shirt",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 9,
+    "name": "Bag",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  },
+  {
+    "id": 10,
+    "name": "Wallet",
+    "hasVariants": false,
+    "isShippingRequired": false,
+    "weight": null
+  }
+]
