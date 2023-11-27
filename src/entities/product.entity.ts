@@ -6,8 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { Category, ProductType } from './';
+import { Category, ProductImage, ProductType, ProductVariant } from './';
 
 @Entity({ name: 'product' })
 export class Product {
@@ -42,6 +43,12 @@ export class Product {
     referencedColumnName: 'id',
   })
   productType: ProductType;
+
+  @OneToMany(() => ProductVariant, (productVariant) => productVariant.product)
+  productVariants: ProductVariant[];
+
+  @OneToMany(() => ProductImage, (productImage) => productImage.product)
+  productImages: ProductImage[];
 
   @CreateDateColumn({
     name: 'created_at',

@@ -12,3 +12,6 @@ export * from './product.entity';
 export * from './product-type.entity';
 export * from './product-type-product-attribute.entity';
 export * from './product-type-product-variant.entity';
+export * from './product-variant.entity';
+export * from './product-image.entity';
+export * from './variant-image.entity';
