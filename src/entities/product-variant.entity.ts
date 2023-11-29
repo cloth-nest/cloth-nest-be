@@ -8,7 +8,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Product, VariantImage } from './';
+import { AssignedVariantAttribute, Product, VariantImage } from './';
 
 @Entity({ name: 'product_variant' })
 export class ProductVariant {
@@ -24,11 +24,22 @@ export class ProductVariant {
   @Column({ name: 'price_override', nullable: false, type: 'decimal' })
   priceOverride: number;
 
-  @Column({ name: 'weight_override', nullable: true, type: 'decimal' })
+  @Column({
+    name: 'weight_override',
+    nullable: true,
+    type: 'decimal',
+    default: 0,
+  })
   weightOverride: number;
 
   @Column({ name: 'product_id', nullable: false })
   productId: number;
+
+  @OneToMany(
+    () => AssignedVariantAttribute,
+    (assignedVariantAttributes) => assignedVariantAttributes.productVariant,
+  )
+  assignedVariantAttributes: AssignedVariantAttribute[];
 
   @ManyToOne(() => Product, (product) => product.productVariants)
   @JoinColumn({

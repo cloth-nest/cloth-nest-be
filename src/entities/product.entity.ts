@@ -8,7 +8,13 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Category, ProductImage, ProductType, ProductVariant } from './';
+import {
+  AssignedProductAttribute,
+  Category,
+  ProductImage,
+  ProductType,
+  ProductVariant,
+} from './';
 
 @Entity({ name: 'product' })
 export class Product {
@@ -24,11 +30,17 @@ export class Product {
   @Column({ name: 'price', nullable: false, type: 'decimal' })
   price: number;
 
-  @Column({ name: 'weight', nullable: true, type: 'decimal' })
+  @Column({ name: 'weight', nullable: false, type: 'decimal', default: 0 })
   weight: number;
 
   @Column({ name: 'category_id', nullable: false })
   categoryId: number;
+
+  @OneToMany(
+    () => AssignedProductAttribute,
+    (assignedProductAttributes) => assignedProductAttributes.product,
+  )
+  assignedProductAttributes: AssignedProductAttribute[];
 
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({

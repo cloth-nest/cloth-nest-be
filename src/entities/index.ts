@@ -15,3 +15,7 @@ export * from './product-type-product-variant.entity';
 export * from './product-variant.entity';
 export * from './product-image.entity';
 export * from './variant-image.entity';
+export * from './assigned-product-attribute-values.entity';
+export * from './assigned-variant-attribute-values.entity';
+export * from './assigned-product-attribute.entity';
+export * from './assigned-variant-attribute.entity';

@@ -6,8 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { ProductType } from './';
+import { AssignedVariantAttribute, ProductType } from './';
 
 @Entity({ name: 'product_type_product_variant' })
 export class ProductTypeProductVariant {
@@ -29,6 +30,13 @@ export class ProductTypeProductVariant {
   )
   @JoinColumn({ name: 'product_type_id', referencedColumnName: 'id' })
   productType: ProductType;
+
+  @OneToMany(
+    () => AssignedVariantAttribute,
+    (assignedVariantAttributes) =>
+      assignedVariantAttributes.productTypeProductVariant,
+  )
+  assignedVariantAttributes: AssignedVariantAttribute[];
 
   @CreateDateColumn({
     name: 'created_at',

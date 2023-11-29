@@ -6,8 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { ProductAttribute, ProductType } from './';
+import { AssignedProductAttribute, ProductAttribute, ProductType } from './';
 
 @Entity({ name: 'product_type_product_attribute' })
 export class ProductTypeProductAttribute {
@@ -29,6 +30,13 @@ export class ProductTypeProductAttribute {
   )
   @JoinColumn({ name: 'product_type_id', referencedColumnName: 'id' })
   productType: ProductType;
+
+  @OneToMany(
+    () => AssignedProductAttribute,
+    (assignedProductAttributes) =>
+      assignedProductAttributes.productTypeProductAttribute,
+  )
+  assignedProductAttributes: AssignedProductAttribute[];
 
   @ManyToOne(
     () => ProductAttribute,

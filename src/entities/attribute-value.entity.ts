@@ -6,8 +6,13 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { ProductAttribute } from './product-attribute.entity';
+import {
+  AssignedProductAttributeValues,
+  AssignedVariantAttributeValues,
+} from '.';
 
 @Entity({ name: 'attribute_value' })
 export class AttributeValue {
@@ -29,6 +34,20 @@ export class AttributeValue {
     referencedColumnName: 'id',
   })
   attribute: ProductAttribute;
+
+  @OneToMany(
+    () => AssignedProductAttributeValues,
+    (assignedProductAttributeValues) =>
+      assignedProductAttributeValues.attributeValue,
+  )
+  assignedProductAttributeValues: AssignedProductAttributeValues[];
+
+  @OneToMany(
+    () => AssignedVariantAttributeValues,
+    (assignedVariantAttributeValues) =>
+      assignedVariantAttributeValues.attributeValue,
+  )
+  assignedVariantAttributeValues: AssignedVariantAttributeValues[];
 
   @CreateDateColumn({
     name: 'created_at',
