@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import {
   AssignedProductAttribute,
@@ -27,14 +28,33 @@ export class Product {
   @Column({ name: 'description', nullable: true })
   description: string;
 
-  @Column({ name: 'price', nullable: false, type: 'decimal' })
+  @Column({
+    name: 'price',
+    nullable: false,
+    type: 'numeric',
+  })
   price: number;
 
-  @Column({ name: 'weight', nullable: false, type: 'decimal', default: 0 })
+  @Column({
+    name: 'weight',
+    nullable: false,
+    type: 'double precision',
+    default: 0,
+  })
   weight: number;
 
   @Column({ name: 'category_id', nullable: false })
   categoryId: number;
+
+  @Column({ name: 'default_variant_id', nullable: false })
+  defaultVariantId: number;
+
+  // @OneToOne(() => ProductVariant)
+  // @JoinColumn({
+  //   name: 'default_variant_id',
+  //   referencedColumnName: 'id',
+  // })
+  // defaultVariant: ProductVariant;
 
   @OneToMany(
     () => AssignedProductAttribute,

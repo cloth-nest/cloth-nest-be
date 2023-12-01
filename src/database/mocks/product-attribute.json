@@ -1,90 +1,34 @@
 [
   {
-    "id": 1,
+    "id": 36,
     "name": "Material"
   },
   {
-    "id": 2,
-    "name": "Min size"
+    "id": 37,
+    "name": "Shoe size"
   },
   {
-    "id": 3,
-    "name": "Max size"
+    "id": 38,
+    "name": "Size"
   },
   {
-    "id": 4,
-    "name": "Color"
+    "id": 39,
+    "name": "Volume"
   },
   {
-    "id": 5,
-    "name": "Gerta"
+    "id": 40,
+    "name": "Flavor"
   },
   {
-    "id": 6,
-    "name": "Yehudit"
+    "id": 41,
+    "name": "EBook Format"
   },
   {
-    "id": 7,
-    "name": "Zebadiah"
+    "id": 42,
+    "name": "Medium"
   },
   {
-    "id": 8,
-    "name": "Niccolo"
-  },
-  {
-    "id": 9,
-    "name": "Gonzales"
-  },
-  {
-    "id": 10,
-    "name": "Carlyle"
-  },
-  {
-    "id": 11,
-    "name": "Gussi"
-  },
-  {
-    "id": 12,
-    "name": "Cletus"
-  },
-  {
-    "id": 13,
-    "name": "Casper"
-  },
-  {
-    "id": 14,
-    "name": "Virgilio"
-  },
-  {
-    "id": 15,
-    "name": "Boyd"
-  },
-  {
-    "id": 16,
-    "name": "Mahmoud"
-  },
-  {
-    "id": 17,
-    "name": "Darda"
-  },
-  {
-    "id": 18,
-    "name": "Jackquelin"
-  },
-  {
-    "id": 19,
-    "name": "Hilton"
-  },
-  {
-    "id": 20,
-    "name": "Starlin"
-  },
-  {
-    "id": 21,
-    "name": "Blake"
-  },
-  {
-    "id": 22,
-    "name": "Wit"
+    "id": 43,
+    "name": "Publisher"
   }
 ]

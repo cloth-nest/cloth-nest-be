@@ -15,14 +15,23 @@ export class ProductVariant {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'sku', nullable: true, unique: true })
+  @Column({
+    name: 'sku',
+    nullable: true,
+    unique: true,
+    type: 'varchar',
+    length: 255,
+  })
   sku: string;
 
   @Column({ name: 'name', nullable: false })
   name: string;
 
+  @Column({ name: 'order', nullable: false, type: 'integer' })
+  order: number;
+
   @Column({ name: 'price_override', nullable: false, type: 'decimal' })
-  priceOverride: number;
+  price: number;
 
   @Column({
     name: 'weight_override',
@@ -30,7 +39,7 @@ export class ProductVariant {
     type: 'decimal',
     default: 0,
   })
-  weightOverride: number;
+  weight: number;
 
   @Column({ name: 'product_id', nullable: false })
   productId: number;

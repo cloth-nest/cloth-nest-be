@@ -1,322 +1,218 @@
 [
   {
+    "id": 105,
     "value": "Cotton",
-    "attributeId": 1
+    "attributeId": 1,
+    "order": 0
   },
   {
+    "id": 106,
     "value": "Elastane",
-    "attributeId": 1
+    "attributeId": 1,
+    "order": 1
   },
   {
+    "id": 107,
     "value": "Polyester",
-    "attributeId": 1
+    "attributeId": 1,
+    "order": 2
   },
   {
+    "id": 140,
     "value": "Wool",
-    "attributeId": 1
+    "attributeId": 1,
+    "order": 3
   },
   {
+    "id": 108,
+    "value": "39",
+    "attributeId": 2,
+    "order": 0
+  },
+  {
+    "id": 109,
+    "value": "40",
+    "attributeId": 2,
+    "order": 1
+  },
+  {
+    "id": 110,
+    "value": "41",
+    "attributeId": 2,
+    "order": 2
+  },
+  {
+    "id": 111,
+    "value": "42",
+    "attributeId": 2,
+    "order": 3
+  },
+  {
+    "id": 112,
+    "value": "43",
+    "attributeId": 2,
+    "order": 4
+  },
+  {
+    "id": 113,
+    "value": "44",
+    "attributeId": 2,
+    "order": 5
+  },
+  {
+    "id": 114,
+    "value": "45",
+    "attributeId": 2,
+    "order": 6
+  },
+  {
+    "id": 115,
     "value": "S",
-    "attributeId": 2
+    "attributeId": 3,
+    "order": 0
   },
   {
+    "id": 116,
     "value": "M",
-    "attributeId": 2
+    "attributeId": 3,
+    "order": 1
   },
   {
+    "id": 117,
     "value": "L",
-    "attributeId": 2
+    "attributeId": 3,
+    "order": 2
   },
   {
+    "id": 118,
     "value": "XL",
-    "attributeId": 2
+    "attributeId": 3,
+    "order": 3
   },
   {
+    "id": 119,
     "value": "XXL",
-    "attributeId": 2
+    "attributeId": 3,
+    "order": 4
   },
   {
-    "value": "S",
-    "attributeId": 3
+    "id": 120,
+    "value": "700ml",
+    "attributeId": 4,
+    "order": 0
   },
   {
-    "value": "M",
-    "attributeId": 3
+    "id": 121,
+    "value": "Orange",
+    "attributeId": 5,
+    "order": 0
   },
   {
-    "value": "L",
-    "attributeId": 3
+    "id": 122,
+    "value": "Banana",
+    "attributeId": 5,
+    "order": 1
   },
   {
-    "value": "XL",
-    "attributeId": 3
+    "id": 123,
+    "value": "Bean",
+    "attributeId": 5,
+    "order": 2
   },
   {
-    "value": "XXL",
-    "attributeId": 3
+    "id": 124,
+    "value": "Carrot",
+    "attributeId": 5,
+    "order": 3
   },
   {
-    "value": "GREEN",
-    "attributeId": 4
+    "id": 125,
+    "value": "Sprouty",
+    "attributeId": 5,
+    "order": 4
   },
   {
-    "value": "PINK",
-    "attributeId": 4
+    "id": 126,
+    "value": "Salty, like the tears of your enemy",
+    "attributeId": 5,
+    "order": 5
   },
   {
-    "value": "ORANGE & YELLOW",
-    "attributeId": 4
+    "id": 127,
+    "value": "Pineapple",
+    "attributeId": 5,
+    "order": 6
   },
   {
-    "value": "BLUE",
-    "attributeId": 4
+    "id": 128,
+    "value": "Coconut",
+    "attributeId": 5,
+    "order": 7
   },
   {
-    "value": "WHITE",
-    "attributeId": 4
+    "id": 129,
+    "value": "Apple",
+    "attributeId": 5,
+    "order": 8
   },
   {
-    "value": "Blondelle",
-    "attributeId": 11
+    "id": 130,
+    "value": "EPUB",
+    "attributeId": 6,
+    "order": 0
   },
   {
-    "value": "Claresta",
-    "attributeId": 13
+    "id": 131,
+    "value": "MOBI",
+    "attributeId": 6,
+    "order": 1
   },
   {
-    "value": "Adella",
-    "attributeId": 19
+    "id": 132,
+    "value": "Vinyl",
+    "attributeId": 7,
+    "order": 0
   },
   {
-    "value": "Megan",
-    "attributeId": 10
+    "id": 133,
+    "value": "DVD",
+    "attributeId": 7,
+    "order": 1
   },
   {
-    "value": "Fiann",
-    "attributeId": 10
+    "id": 134,
+    "value": "VHS",
+    "attributeId": 7,
+    "order": 2
   },
   {
-    "value": "Clovis",
-    "attributeId": 19
+    "id": 135,
+    "value": "iTunes",
+    "attributeId": 7,
+    "order": 3
   },
   {
-    "value": "Alyce",
-    "attributeId": 16
+    "id": 136,
+    "value": "CD",
+    "attributeId": 7,
+    "order": 4
   },
   {
-    "value": "Gina",
-    "attributeId": 13
+    "id": 137,
+    "value": "MP3",
+    "attributeId": 7,
+    "order": 5
   },
   {
-    "value": "Steffie",
-    "attributeId": 5
+    "id": 138,
+    "value": "Digital Audio",
+    "attributeId": 8,
+    "order": 0
   },
   {
-    "value": "Cloe",
-    "attributeId": 5
-  },
-  {
-    "value": "Elbertine",
-    "attributeId": 14
-  },
-  {
-    "value": "Rahal",
-    "attributeId": 16
-  },
-  {
-    "value": "Sidonnie",
-    "attributeId": 13
-  },
-  {
-    "value": "Michel",
-    "attributeId": 8
-  },
-  {
-    "value": "Jobina",
-    "attributeId": 5
-  },
-  {
-    "value": "Vannie",
-    "attributeId": 14
-  },
-  {
-    "value": "Lela",
-    "attributeId": 12
-  },
-  {
-    "value": "Franni",
-    "attributeId": 10
-  },
-  {
-    "value": "Marleen",
-    "attributeId": 16
-  },
-  {
-    "value": "Shandy",
-    "attributeId": 14
-  },
-  {
-    "value": "Elbertine",
-    "attributeId": 14
-  },
-  {
-    "value": "Pru",
-    "attributeId": 18
-  },
-  {
-    "value": "Mireille",
-    "attributeId": 18
-  },
-  {
-    "value": "Celie",
-    "attributeId": 5
-  },
-  {
-    "value": "Anne",
-    "attributeId": 5
-  },
-  {
-    "value": "Bibi",
-    "attributeId": 21
-  },
-  {
-    "value": "Kariotta",
-    "attributeId": 11
-  },
-  {
-    "value": "Orelle",
-    "attributeId": 19
-  },
-  {
-    "value": "Wilona",
-    "attributeId": 18
-  },
-  {
-    "value": "Karry",
-    "attributeId": 14
-  },
-  {
-    "value": "Millicent",
-    "attributeId": 18
-  },
-  {
-    "value": "Maryanna",
-    "attributeId": 11
-  },
-  {
-    "value": "Kellsie",
-    "attributeId": 6
-  },
-  {
-    "value": "Emera",
-    "attributeId": 5
-  },
-  {
-    "value": "Betta",
-    "attributeId": 10
-  },
-  {
-    "value": "Shoshanna",
-    "attributeId": 12
-  },
-  {
-    "value": "Tomasine",
-    "attributeId": 22
-  },
-  {
-    "value": "Darda",
-    "attributeId": 20
-  },
-  {
-    "value": "Aline",
-    "attributeId": 16
-  },
-  {
-    "value": "Orelie",
-    "attributeId": 6
-  },
-  {
-    "value": "Sally",
-    "attributeId": 8
-  },
-  {
-    "value": "Aurelia",
-    "attributeId": 8
-  },
-  {
-    "value": "Sapphire",
-    "attributeId": 8
-  },
-  {
-    "value": "Violette",
-    "attributeId": 5
-  },
-  {
-    "value": "Minna",
-    "attributeId": 11
-  },
-  {
-    "value": "Valerie",
-    "attributeId": 20
-  },
-  {
-    "value": "Jobina",
-    "attributeId": 20
-  },
-  {
-    "value": "Myrtle",
-    "attributeId": 21
-  },
-  {
-    "value": "Micaela",
-    "attributeId": 8
-  },
-  {
-    "value": "Bernadina",
-    "attributeId": 21
-  },
-  {
-    "value": "Albina",
-    "attributeId": 10
-  },
-  {
-    "value": "Ethelyn",
-    "attributeId": 12
-  },
-  {
-    "value": "Kessia",
-    "attributeId": 6
-  },
-  {
-    "value": "Augustine",
-    "attributeId": 22
-  },
-  {
-    "value": "Jordain",
-    "attributeId": 22
-  },
-  {
-    "value": "Cloris",
-    "attributeId": 18
-  },
-  {
-    "value": "Vallie",
-    "attributeId": 12
-  },
-  {
-    "value": "Ashleigh",
-    "attributeId": 22
-  },
-  {
-    "value": "Anne-marie",
-    "attributeId": 11
-  },
-  {
-    "value": "Ninnette",
-    "attributeId": 20
-  },
-  {
-    "value": "Anissa",
-    "attributeId": 17
+    "id": 141,
+    "value": "Saleor Publishing",
+    "attributeId": 8,
+    "order": 1
   }
 ]

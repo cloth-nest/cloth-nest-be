@@ -1,72 +1,65 @@
 [
   {
     "id": 1,
-    "name": "Umbrella",
+    "name": "Default Type",
     "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "isShippingRequired": true,
+    "weight": 0
   },
   {
-    "id": 2,
-    "name": "Hanger",
-    "hasVariants": false,
+    "id": 17,
+    "name": "Audiobook",
+    "hasVariants": true,
     "isShippingRequired": false,
-    "weight": null
+    "weight": 0
   },
   {
-    "id": 3,
-    "name": "Jacket",
-    "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "id": 18,
+    "name": "Shoe",
+    "hasVariants": true,
+    "isShippingRequired": true,
+    "weight": 1000
   },
   {
-    "id": 4,
-    "name": "Bra",
+    "id": 19,
+    "name": "Sweatshirt",
     "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "isShippingRequired": true,
+    "weight": 1000
   },
   {
-    "id": 5,
-    "name": "Skirt",
-    "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "id": 20,
+    "name": "Top",
+    "hasVariants": true,
+    "isShippingRequired": true,
+    "weight": 1000
   },
   {
-    "id": 6,
-    "name": "Crop Top",
+    "id": 21,
+    "name": "Beanies & Scarfs",
     "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "isShippingRequired": true,
+    "weight": 1000
   },
   {
-    "id": 7,
-    "name": "Trish",
+    "id": 22,
+    "name": "Simple",
     "hasVariants": false,
     "isShippingRequired": false,
-    "weight": null
+    "weight": 0
   },
   {
-    "id": 8,
-    "name": "Shirt",
+    "id": 23,
+    "name": "Juice",
     "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "isShippingRequired": true,
+    "weight": 100
   },
   {
-    "id": 9,
-    "name": "Bag",
+    "id": 24,
+    "name": "Simple Gift Card",
     "hasVariants": false,
     "isShippingRequired": false,
-    "weight": null
-  },
-  {
-    "id": 10,
-    "name": "Wallet",
-    "hasVariants": false,
-    "isShippingRequired": false,
-    "weight": null
+    "weight": 0
   }
 ]

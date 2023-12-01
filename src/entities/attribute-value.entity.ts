@@ -25,6 +25,9 @@ export class AttributeValue {
   @Column({ name: 'attribute_id', nullable: false })
   attributeId: number;
 
+  @Column({ name: 'order', nullable: false })
+  order: number;
+
   @ManyToOne(
     () => ProductAttribute,
     (productAttribute) => productAttribute.attributeValues,

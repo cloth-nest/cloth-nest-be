@@ -1,0 +1,290 @@
+[
+  {
+    "id": 1,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-headless-omnichannel-book_thumbnail_1024.png",
+    "productId": 1
+  },
+  {
+    "id": 2,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-plimsolls-1_thumbnail_1024.png",
+    "productId": 2
+  },
+  {
+    "id": 3,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-plimsolls-2_thumbnail_1024.png",
+    "productId": 2
+  },
+  {
+    "id": 4,
+    "order": 2,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-plimsolls-3_thumbnail_1024.png",
+    "productId": 2
+  },
+  {
+    "id": 5,
+    "order": 3,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-plimsolls-4_thumbnail_1024.png",
+    "productId": 2
+  },
+  {
+    "id": 6,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-plimsolls-1_thumbnail_1024.png",
+    "productId": 3
+  },
+  {
+    "id": 7,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-plimsolls-2_thumbnail_1024.png",
+    "productId": 3
+  },
+  {
+    "id": 8,
+    "order": 2,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-plimsolls-3_thumbnail_1024.png",
+    "productId": 3
+  },
+  {
+    "id": 9,
+    "order": 3,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-plimsolls-4_thumbnail_1024.png",
+    "productId": 3
+  },
+  {
+    "id": 10,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-dash-force-1_thumbnail_1024.png",
+    "productId": 4
+  },
+  {
+    "id": 11,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-dash-force-2_thumbnail_1024.png",
+    "productId": 4
+  },
+  {
+    "id": 12,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_1024.png",
+    "productId": 5
+  },
+  {
+    "id": 13,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-pauls-blanace-420-2_thumbnail_1024.png",
+    "productId": 5
+  },
+  {
+    "id": 14,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-grey-hoodie_thumbnail_1024.png",
+    "productId": 6
+  },
+  {
+    "id": 15,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-hoodie_thumbnail_1024.png",
+    "productId": 7
+  },
+  {
+    "id": 16,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-hoodie_thumbnail_1024.png",
+    "productId": 8
+  },
+  {
+    "id": 17,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-ascii-shirt-front_thumbnail_1024.png",
+    "productId": 9
+  },
+  {
+    "id": 18,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-ascii-shirt-back_thumbnail_1024.png",
+    "productId": 9
+  },
+  {
+    "id": 19,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-team-tee-front_thumbnail_1024.png",
+    "productId": 10
+  },
+  {
+    "id": 20,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-team-tee-front_pGwe7xE_thumbnail_1024.png",
+    "productId": 10
+  },
+  {
+    "id": 21,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-polo-shirt-front_thumbnail_1024.png",
+    "productId": 11
+  },
+  {
+    "id": 22,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-polo-shirt-back_thumbnail_1024.png",
+    "productId": 11
+  },
+  {
+    "id": 23,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_1024.png",
+    "productId": 12
+  },
+  {
+    "id": 24,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-blue-polygon-tee-back_thumbnail_1024.png",
+    "productId": 12
+  },
+  {
+    "id": 25,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-dark-polygon-tee-front_thumbnail_1024.png",
+    "productId": 13
+  },
+  {
+    "id": 26,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-dark-polygon-tee-back_thumbnail_1024.png",
+    "productId": 13
+  },
+  {
+    "id": 27,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-beanie-1_thumbnail_1024.png",
+    "productId": 14
+  },
+  {
+    "id": 28,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-beanie-2_thumbnail_1024.png",
+    "productId": 14
+  },
+  {
+    "id": 29,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-neck-warmer_thumbnail_1024.png",
+    "productId": 15
+  },
+  {
+    "id": 30,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-sunnies_thumbnail_1024.png",
+    "productId": 16
+  },
+  {
+    "id": 31,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-battle-tested-book_thumbnail_1024.png",
+    "productId": 17
+  },
+  {
+    "id": 32,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-enterprise-cloud-book_thumbnail_1024.png",
+    "productId": 18
+  },
+  {
+    "id": 33,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-own-your-stack-and-data-book_thumbnail_1024.png",
+    "productId": 19
+  },
+  {
+    "id": 34,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-mighty-mug_thumbnail_1024.png",
+    "productId": 20
+  },
+  {
+    "id": 35,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-cushion-blue_thumbnail_1024.png",
+    "productId": 21
+  },
+  {
+    "id": 36,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-apple-drink_thumbnail_1024.png",
+    "productId": 22
+  },
+  {
+    "id": 37,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-bean-drink_thumbnail_1024.png",
+    "productId": 23
+  },
+  {
+    "id": 38,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-banana-drink_thumbnail_1024.png",
+    "productId": 24
+  },
+  {
+    "id": 39,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-carrot-drink_thumbnail_1024.png",
+    "productId": 25
+  },
+  {
+    "id": 40,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-sunnies-dark_thumbnail_1024.png",
+    "productId": 26
+  },
+  {
+    "id": 41,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-monospace-white-tee-front_thumbnail_1024.png",
+    "productId": 27
+  },
+  {
+    "id": 42,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-monospace-white-tee-back_thumbnail_1024.png",
+    "productId": 27
+  },
+  {
+    "id": 43,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-gift-100_thumbnail_1024.png",
+    "productId": 28
+  },
+  {
+    "id": 44,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-cubes-tee-front_thumbnail_1024.png",
+    "productId": 29
+  },
+  {
+    "id": 45,
+    "order": 1,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-cubes-tee-back_thumbnail_1024.png",
+    "productId": 29
+  },
+  {
+    "id": 46,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-white-parrot-cushion_thumbnail_1024.png",
+    "productId": 30
+  },
+  {
+    "id": 47,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-gift-500_thumbnail_1024.png",
+    "productId": 31
+  },
+  {
+    "id": 48,
+    "order": 0,
+    "image": "http://localhost:8000/media/thumbnails/products/saleor-gift-50_thumbnail_1024.png",
+    "productId": 32
+  }
+ ]

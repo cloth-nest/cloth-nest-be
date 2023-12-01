@@ -1,0 +1,110 @@
+[
+  {
+    "id": 193,
+    "order": 0,
+    "assignedProductAttributeId": 1,
+    "attributeValueId": 34
+  },
+  {
+    "id": 194,
+    "order": 0,
+    "assignedProductAttributeId": 2,
+    "attributeValueId": 1
+  },
+  {
+    "id": 195,
+    "order": 0,
+    "assignedProductAttributeId": 3,
+    "attributeValueId": 3
+  },
+  {
+    "id": 196,
+    "order": 0,
+    "assignedProductAttributeId": 4,
+    "attributeValueId": 1
+  },
+  {
+    "id": 197,
+    "order": 0,
+    "assignedProductAttributeId": 5,
+    "attributeValueId": 1
+  },
+  {
+    "id": 198,
+    "order": 0,
+    "assignedProductAttributeId": 6,
+    "attributeValueId": 2
+  },
+  {
+    "id": 199,
+    "order": 0,
+    "assignedProductAttributeId": 7,
+    "attributeValueId": 1
+  },
+  {
+    "id": 200,
+    "order": 0,
+    "assignedProductAttributeId": 8,
+    "attributeValueId": 1
+  },
+  {
+    "id": 201,
+    "order": 0,
+    "assignedProductAttributeId": 9,
+    "attributeValueId": 1
+  },
+  {
+    "id": 204,
+    "order": 0,
+    "assignedProductAttributeId": 10,
+    "attributeValueId": 1
+  },
+  {
+    "id": 206,
+    "order": 0,
+    "assignedProductAttributeId": 11,
+    "attributeValueId": 35
+  },
+  {
+    "id": 207,
+    "order": 0,
+    "assignedProductAttributeId": 12,
+    "attributeValueId": 36
+  },
+  {
+    "id": 208,
+    "order": 0,
+    "assignedProductAttributeId": 13,
+    "attributeValueId": 36
+  },
+  {
+    "id": 210,
+    "order": 0,
+    "assignedProductAttributeId": 14,
+    "attributeValueId": 25
+  },
+  {
+    "id": 211,
+    "order": 0,
+    "assignedProductAttributeId": 15,
+    "attributeValueId": 19
+  },
+  {
+    "id": 212,
+    "order": 0,
+    "assignedProductAttributeId": 16,
+    "attributeValueId": 18
+  },
+  {
+    "id": 213,
+    "order": 0,
+    "assignedProductAttributeId": 17,
+    "attributeValueId": 20
+  },
+  {
+    "id": 214,
+    "order": 0,
+    "assignedProductAttributeId": 18,
+    "attributeValueId": 1
+  }
+]

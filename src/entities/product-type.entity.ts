@@ -26,7 +26,12 @@ export class ProductType {
   @Column({ name: 'is_shipping_required', nullable: true, type: 'boolean' })
   isShippingRequired: boolean;
 
-  @Column({ name: 'weight', nullable: true, type: 'decimal' })
+  @Column({
+    name: 'weight',
+    nullable: true,
+    type: 'double precision',
+    default: 0,
+  })
   weight: number;
 
   @OneToMany(() => Product, (product) => product.productType)

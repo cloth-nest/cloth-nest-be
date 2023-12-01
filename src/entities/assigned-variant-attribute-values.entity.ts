@@ -20,6 +20,9 @@ export class AssignedVariantAttributeValues {
   @Column({ name: 'attribute_value_id', nullable: false })
   attributeValueId: number;
 
+  @Column({ name: 'order', nullable: false, type: 'integer' })
+  order: number;
+
   @ManyToOne(
     () => AssignedVariantAttribute,
     (assignedVariantAttribute) =>
