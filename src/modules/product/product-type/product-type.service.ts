@@ -15,6 +15,7 @@ import {
 import { CustomErrorException } from '../../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../../shared/constants';
 import * as _ from 'lodash';
+import { paginate } from '../../../shared/utils';
 
 @Injectable()
 export class ProductTypeService {
@@ -54,11 +55,7 @@ export class ProductTypeService {
       return {
         data: {
           productTypes,
-          pageInformation: {
-            limit,
-            page,
-            total,
-          },
+          pageInformation: paginate(limit, page, total),
         },
       };
     } catch (err) {
@@ -105,11 +102,7 @@ export class ProductTypeService {
           productAttributes: productAttributes.map(
             (productAttribute) => productAttribute.productAttribute,
           ),
-          pageInformation: {
-            limit,
-            page,
-            total,
-          },
+          pageInformation: paginate(limit, page, total),
         },
       };
     } catch (err) {
