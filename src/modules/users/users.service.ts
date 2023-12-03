@@ -4,12 +4,13 @@ import { User } from '../../entities';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
-import { hashPassword } from '../../shared/utils';
+import { hashPassword, paginate } from '../../shared/utils';
 import { AuthUser } from '../../shared/interfaces';
 import * as _ from 'lodash';
 import { FileUploadService } from '../../shared/services';
 import { ConfigService } from '@nestjs/config';
-import { UpdateProfileDto } from './dto';
+import { GetAllGroupPermissionsQueryDTO, UpdateProfileDto } from './dto';
+import { AccountActiveStatus } from '../../shared/enums';
 
 @Injectable()
 export class UsersService {
@@ -130,6 +131,39 @@ export class UsersService {
         data: {
           userId: currentUser.id,
           ...updateProfileDto,
+        },
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getAllStaffMembers(
+    getAllGroupPermissionsQueryDTO: GetAllGroupPermissionsQueryDTO,
+  ) {
+    try {
+      // Destructure query params
+      const { accountActive, page, limit } = getAllGroupPermissionsQueryDTO;
+
+      const [staffMembers, total] = await this.userRepo.findAndCount({
+        where: {
+          ...(accountActive && {
+            isActive: accountActive === AccountActiveStatus.ACTIVE,
+          }),
+          isStaff: true,
+        },
+        select: ['id', 'email', 'firstName', 'lastName', 'isActive'],
+        order: {
+          lastName: 'ASC',
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+
+      return {
+        data: {
+          staffMembers,
+          pageInformation: paginate(limit, page, total),
         },
       };
     } catch (error) {

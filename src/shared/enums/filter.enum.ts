@@ -6,3 +6,8 @@ export enum PriceRange {
   GTE50 = 'GTE50',
   ALL = 'ALL',
 }
+
+export enum AccountActiveStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
