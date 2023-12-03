@@ -454,10 +454,10 @@ export class ProductService {
           ...(orderDirection === ProductOrderDirection.LATEST && {
             createdAt: 'DESC',
           }),
-          ...(orderDirection === ProductOrderDirection.PRICE_DESC && {
+          ...(orderDirection === ProductOrderDirection.PRICE_ASC && {
             price: 'ASC',
           }),
-          ...(orderDirection === ProductOrderDirection.PRICE_ASC && {
+          ...(orderDirection === ProductOrderDirection.PRICE_DESC && {
             price: 'DESC',
           }),
         },
@@ -476,7 +476,6 @@ export class ProductService {
         price: product.price,
         description: product.description,
         image: product.productImages[0]?.image,
-        productVariantId: product.defaultVariant.id,
         colors: colorProducts[product.id],
       }));
 
