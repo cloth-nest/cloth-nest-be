@@ -23,6 +23,7 @@ import { GlobalModule } from './modules/global/global.module';
 import { AddressModule } from './modules/address/address.module';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductModule } from './modules/product/product.module';
+import { PermissionModule } from './modules/permission/permission.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { ProductModule } from './modules/product/product.module';
     AddressModule,
     CategoryModule,
     ProductModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [
