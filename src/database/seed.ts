@@ -24,6 +24,7 @@ import {
   AssignedProductAttributeValuesSeeder,
   AssignedVariantAttributeValuesSeeder,
   VariantImageSeeder,
+  UserGroupSeeder,
 } from './seeders';
 
 dotenv.config();
@@ -52,6 +53,7 @@ const {
       UserPermissionSeeder,
       GroupSeeder,
       GroupPermissonSeeder,
+      UserGroupSeeder,
       CategorySeeder,
       ProductTypeSeeder,
       ProductSeeder,
