@@ -79,7 +79,9 @@ type Code =
   | 'ProductAttributeValueExist'
   | 'ProductAttributeValueNotExist'
   | 'ProductTypeNotExist'
-  | 'ProductTypeAlreadyExist';
+  | 'ProductTypeAlreadyExist'
+  | 'ColorNotExist'
+  | 'SizeNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -516,6 +518,18 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'G0007',
     message: 'Product type is already existed',
     statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ColorNotExist: {
+    code: 'G0008',
+    message: 'Color not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  SizeNotExist: {
+    code: 'G0009',
+    message: 'Size not exist',
+    statusCode: 404,
     typeError: TYPE_ERRORS.ProductTypeError,
   },
 };

@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Raw, Repository } from 'typeorm';
-import { AttributeValue, ProductAttribute } from '../../entities';
+import { And, In, LessThan, MoreThanOrEqual, Raw, Repository } from 'typeorm';
+import {
+  AttributeValue,
+  Category,
+  Product,
+  ProductAttribute,
+  ProductType,
+} from '../../entities';
 import { paginate } from '../../shared/utils';
 import {
   CreateAttributeValueBodyDTO,
@@ -9,10 +15,13 @@ import {
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesQueryDTO,
   UpdateAttributeValueBodyDTO,
+  GetAllProductsBelongToCategoryQueryDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import * as _ from 'lodash';
+import { PriceRange, ProductOrderDirection } from '../../shared/enums';
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class ProductService {
@@ -21,6 +30,12 @@ export class ProductService {
     private productAttributeRepo: Repository<ProductAttribute>,
     @InjectRepository(AttributeValue)
     private attributeValueRepo: Repository<AttributeValue>,
+    @InjectRepository(Category)
+    private categoryRepo: Repository<Category>,
+    @InjectRepository(Product)
+    private productRepo: Repository<Product>,
+    @InjectRepository(ProductType)
+    private productTypeRepo: Repository<ProductType>,
   ) {}
 
   public async getAllAttributes(
@@ -315,5 +330,228 @@ export class ProductService {
     } catch (err) {
       throw err;
     }
+  }
+
+  public async getAllProductBelongToCategory(
+    categoryId: string,
+    getAllProductBelongToCategoryQueryDTO: GetAllProductsBelongToCategoryQueryDTO,
+  ) {
+    try {
+      // Check category exists
+      const category = await this.categoryRepo.count({
+        where: {
+          id: parseInt(categoryId),
+        },
+      });
+
+      if (!category) {
+        throw new CustomErrorException(ERRORS.CategoryNotExist);
+      }
+
+      // Destructor query
+      const {
+        priceRange,
+        prodTypeIdList,
+        colorIdList,
+        sizeIdList,
+        orderDirection,
+        limit,
+        page,
+      } = getAllProductBelongToCategoryQueryDTO;
+
+      // Check product type valid
+      if (prodTypeIdList) {
+        const countedProductType = await this.productTypeRepo.count({
+          where: {
+            id: In(prodTypeIdList),
+          },
+        });
+
+        if (countedProductType !== prodTypeIdList.length) {
+          throw new CustomErrorException(ERRORS.ProductTypeNotExist);
+        }
+      }
+
+      // Check color valid
+      if (colorIdList) {
+        const countedColor = await this.attributeValueRepo.count({
+          where: {
+            id: In(colorIdList),
+            attribute: {
+              name: 'Color',
+            },
+          },
+        });
+
+        if (countedColor !== colorIdList.length) {
+          throw new CustomErrorException(ERRORS.ColorNotExist);
+        }
+      }
+
+      // Check size valid
+      if (sizeIdList) {
+        const countedSize = await this.attributeValueRepo.count({
+          where: {
+            id: In(sizeIdList),
+            attribute: {
+              name: 'Size',
+            },
+          },
+        });
+
+        if (countedSize !== sizeIdList.length) {
+          throw new CustomErrorException(ERRORS.SizeNotExist);
+        }
+      }
+
+      // Get color size value id list
+      const colorSizeIdList = [];
+      !_.isEmpty(colorIdList) && colorSizeIdList.push(...colorIdList);
+      !_.isEmpty(sizeIdList) && colorSizeIdList.push(...sizeIdList);
+      console.log(colorSizeIdList);
+
+      // Handle criteria price range
+      const criteriaPriceRange = {
+        ...(priceRange === PriceRange.ALL && { price: undefined }),
+        ...(priceRange === PriceRange.LT10 && { price: LessThan(10) }),
+        ...(priceRange === PriceRange.GTE10_LT20 && {
+          price: And(MoreThanOrEqual(10), LessThan(20)),
+        }),
+        ...(priceRange === PriceRange.GTE20_LT30 && {
+          price: And(MoreThanOrEqual(20), LessThan(30)),
+        }),
+        ...(priceRange === PriceRange.GTE30_LT50 && {
+          price: And(MoreThanOrEqual(30), LessThan(50)),
+        }),
+        ...(priceRange === PriceRange.GTE50 && {
+          price: MoreThanOrEqual(50),
+        }),
+      };
+
+      // Get all products && total
+      const [products, total] = await this.productRepo.findAndCount({
+        where: {
+          categoryId: parseInt(categoryId),
+          productTypeId: _.isEmpty(prodTypeIdList)
+            ? undefined
+            : In(prodTypeIdList),
+          price: priceRange ? criteriaPriceRange.price : undefined,
+          productVariants: {
+            assignedVariantAttributes: {
+              assignedVariantAttributeValues: {
+                attributeValue: {
+                  id: _.isEmpty(colorSizeIdList)
+                    ? undefined
+                    : In(colorSizeIdList),
+                },
+              },
+            },
+          },
+        },
+        select: ['id', 'name', 'price', 'description', 'createdAt'],
+        // Sort by order direction
+        order: {
+          ...(orderDirection === ProductOrderDirection.LATEST && {
+            createdAt: 'DESC',
+          }),
+          ...(orderDirection === ProductOrderDirection.PRICE_DESC && {
+            price: 'ASC',
+          }),
+          ...(orderDirection === ProductOrderDirection.PRICE_ASC && {
+            price: 'DESC',
+          }),
+        },
+        relations: ['defaultVariant', 'productImages'],
+        take: limit,
+        skip: limit * (page - 1),
+      });
+
+      const colorProducts = await this.getColorsOfProducts(
+        products.map((product) => product.id),
+      );
+
+      const formatedProducts = products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        image: product.productImages[0]?.image,
+        productVariantId: product.defaultVariant.id,
+        colors: colorProducts[product.id],
+      }));
+
+      return {
+        data: {
+          products: formatedProducts,
+          pageInformation: paginate(limit, page, total),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getColorsOfProducts(productIdList: number[]) {
+    const mockColor = _.mapValues(_.keyBy(productIdList), () =>
+      faker.helpers.arrayElements(
+        [
+          'Red',
+          'Orange',
+          'Yellow',
+          'Green',
+          'Blue',
+          'Purple',
+          'Pink',
+          'Brown',
+          'White',
+          'Black',
+          'Grey',
+          'Multi-Colour',
+        ],
+        {
+          min: 2,
+          max: 6,
+        },
+      ),
+    );
+
+    return mockColor;
+
+    const attributeColorId = await this.productAttributeRepo.findOne({
+      where: {
+        name: 'Color',
+      },
+      select: ['id'],
+    });
+
+    const productColors = await this.productRepo
+      .createQueryBuilder('product')
+      .where('product.id @> ARRAY[:...ids]', {
+        ids: productIdList,
+      })
+      .leftJoinAndSelect('product.productVariants', 'productVariants')
+      .leftJoinAndSelect(
+        'productVariants.assignedVariantAttributes',
+        'assignedVariantAttributes',
+      )
+      .leftJoinAndSelect(
+        'assignedVariantAttributes.assignedVariantAttributeValues',
+        'assignedVariantAttributeValues',
+      )
+      .leftJoinAndSelect(
+        'assignedVariantAttributeValues.attributeValue',
+        'attributeValue',
+      )
+      .select(['product.id AS "productId"', 'attributeValue.value AS "value"'])
+      .where('attributeValue.attributeId = :id', {
+        id: attributeColorId,
+      })
+      .getRawMany();
+    const formatedResult = _.mapValues(
+      _.groupBy(productColors, 'productId'),
+      (productColorList) => productColorList.map((x) => x.value),
+    );
+
+    return formatedResult;
   }
 }

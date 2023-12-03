@@ -214,5 +214,77 @@
     "value": "Saleor Publishing",
     "attributeId": 8,
     "order": 1
+  },
+  {
+    "id": 139,
+    "value": "Red",
+    "attributeId": 9,
+    "order": 0
+  },
+  {
+    "id": 139,
+    "value": "Orange",
+    "attributeId": 9,
+    "order": 1
+  },
+  {
+    "id": 139,
+    "value": "Yellow",
+    "attributeId": 9,
+    "order": 2
+  },
+  {
+    "id": 139,
+    "value": "Green",
+    "attributeId": 9,
+    "order": 3
+  },
+  {
+    "id": 139,
+    "value": "Blue",
+    "attributeId": 9,
+    "order": 4
+  },
+  {
+    "id": 139,
+    "value": "Purple",
+    "attributeId": 9,
+    "order": 5
+  },
+  {
+    "id": 139,
+    "value": "Pink",
+    "attributeId": 9,
+    "order": 6
+  },
+  {
+    "id": 139,
+    "value": "Brown",
+    "attributeId": 9,
+    "order": 7
+  },
+  {
+    "id": 139,
+    "value": "White",
+    "attributeId": 9,
+    "order": 8
+  },
+  {
+    "id": 139,
+    "value": "Grey",
+    "attributeId": 9,
+    "order": 9
+  },
+  {
+    "id": 139,
+    "value": "Black",
+    "attributeId": 9,
+    "order": 10
+  },
+  {
+    "id": 139,
+    "value": "Multi-Colour",
+    "attributeId": 9,
+    "order": 11
   }
 ]

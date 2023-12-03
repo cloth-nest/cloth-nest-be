@@ -6,3 +6,4 @@ export * from './delete-product-attribute.dto';
 export * from './create-atribute-value.dto';
 export * from './update-attribute-value.dto';
 export * from './delete-attribute-value.dto';
+export * from './get-all-product-belong-to-category.dto';

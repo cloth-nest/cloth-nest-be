@@ -46,15 +46,18 @@ export class Product {
   @Column({ name: 'category_id', nullable: false })
   categoryId: number;
 
-  @Column({ name: 'default_variant_id', nullable: false })
-  defaultVariantId: number;
+  @Column({ name: 'product_type_id', nullable: false })
+  productTypeId: number;
 
-  // @OneToOne(() => ProductVariant)
-  // @JoinColumn({
-  //   name: 'default_variant_id',
-  //   referencedColumnName: 'id',
-  // })
-  // defaultVariant: ProductVariant;
+  // @Column({ name: 'default_variant_id', nullable: false })
+  // defaultVariantId: number;
+
+  @OneToOne(() => ProductVariant)
+  @JoinColumn({
+    name: 'default_variant_id',
+    referencedColumnName: 'id',
+  })
+  defaultVariant: ProductVariant;
 
   @OneToMany(
     () => AssignedProductAttribute,

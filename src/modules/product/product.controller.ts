@@ -20,6 +20,8 @@ import {
   GetAllAttributeQueryDTO,
   GetAllAttributeValuesParamDto,
   GetAllAttributeValuesQueryDTO,
+  GetAllProductsBelongToCategoryParamDto,
+  GetAllProductsBelongToCategoryQueryDTO,
   UpdateAttributeValueBodyDTO,
   UpdateAttributeValueParamDto,
   UpdateProductAttributeBodyDTO,
@@ -119,5 +121,18 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   deleteAttributeValue(@Param() param: DeleteAttributeValueParamDto) {
     return this.productService.deleteAttributeValue(param.id);
+  }
+
+  @Get('category/:id')
+  @HttpCode(HttpStatus.OK)
+  getAllProductBelongToCategory(
+    @Param() param: GetAllProductsBelongToCategoryParamDto,
+    @Query()
+    getAllProductsBelongToCategoryQueryDTO: GetAllProductsBelongToCategoryQueryDTO,
+  ) {
+    return this.productService.getAllProductBelongToCategory(
+      param.id,
+      getAllProductsBelongToCategoryQueryDTO,
+    );
   }
 }
