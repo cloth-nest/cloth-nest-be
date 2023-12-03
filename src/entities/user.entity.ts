@@ -9,7 +9,7 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-import { UserPermission, UserAddress, Address } from './';
+import { UserPermission, UserAddress, Address, UserGroup } from './';
 import * as bcrypt from 'bcrypt';
 import { Gender } from '../shared/enums';
 
@@ -79,6 +79,9 @@ export class User {
 
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
   userPermission: UserPermission[];
+
+  @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
+  userGroup: UserGroup[];
 
   @OneToMany(() => UserAddress, (userAddress) => userAddress.user)
   userAddress: UserAddress[];

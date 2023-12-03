@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { GroupPermission } from './';
+import { GroupPermission, UserGroup } from './';
 
 @Entity({ name: 'group' })
 export class Group {
@@ -18,6 +18,9 @@ export class Group {
 
   @OneToMany(() => GroupPermission, (groupPermission) => groupPermission.group)
   groupPermission: GroupPermission[];
+
+  @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
+  userGroup: UserGroup[];
 
   @CreateDateColumn({
     name: 'created_at',
