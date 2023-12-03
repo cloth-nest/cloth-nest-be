@@ -6,8 +6,8 @@ import {
   UpdateOneCategoryBodyDTO,
 } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Category } from '../../entities';
+import { In, Repository } from 'typeorm';
+import { Category, Product } from '../../entities';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import * as _ from 'lodash';
@@ -20,6 +20,8 @@ export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepo: Repository<Category>,
+    @InjectRepository(Product)
+    private productRepo: Repository<Product>,
     private fileUploadSerivce: FileUploadService,
     private configService: ConfigService,
   ) {}
@@ -56,9 +58,51 @@ export class CategoryService {
           skip: (page - 1) * limit,
         });
 
+      // Count each sub category
+      const promises = [];
+      categories.forEach((category) => {
+        promises.push(
+          this.categoryRepo.manager
+            .getTreeRepository(Category)
+            .countDescendants(category),
+        );
+      });
+      const countedSubCategory = await Promise.all(promises);
+
+      // Get all sub categoryId line
+      const promises2 = [];
+      categories.forEach((category) => {
+        promises2.push(
+          this.categoryRepo.manager
+            .getTreeRepository(Category)
+            .findDescendants(category),
+        );
+      });
+      const subCategoryLine = await Promise.all(promises2);
+
+      // Count all products in each sub category
+      const promises3 = [];
+      subCategoryLine.forEach((subCategory) => {
+        promises3.push(
+          this.productRepo.count({
+            where: {
+              categoryId: In(subCategory.map((item) => item.id)),
+            },
+          }),
+        );
+      });
+      const countedProductEachSubCate = await Promise.all(promises3);
+
+      // Format result
+      const formatedResult = categories.map((category, index) => ({
+        ...category,
+        subCategories: countedSubCategory[index] - 1,
+        numOfProducts: countedProductEachSubCate[index],
+      }));
+
       return {
         data: {
-          categories,
+          categories: formatedResult,
           pageInformation: paginate(limit, page, total),
         },
       };
