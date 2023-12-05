@@ -34,6 +34,9 @@ export class ProductType {
   })
   weight: number;
 
+  @Column({ name: 'size_chart', nullable: true, type: 'text' })
+  sizeChartImage: string;
+
   @OneToMany(() => Product, (product) => product.productType)
   products: Product[];
 
