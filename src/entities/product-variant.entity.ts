@@ -8,7 +8,12 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { AssignedVariantAttribute, Product, VariantImage } from './';
+import {
+  AssignedVariantAttribute,
+  Product,
+  VariantImage,
+  WarehouseStock,
+} from './';
 
 @Entity({ name: 'product_variant' })
 export class ProductVariant {
@@ -59,6 +64,9 @@ export class ProductVariant {
 
   @OneToMany(() => VariantImage, (variantImage) => variantImage.productVariant)
   variantImages: VariantImage[];
+
+  @OneToMany(() => WarehouseStock, (warehouseStock) => warehouseStock.warehouse)
+  warehouseStocks: WarehouseStock[];
 
   @CreateDateColumn({
     name: 'created_at',

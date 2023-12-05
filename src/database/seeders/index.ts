@@ -18,3 +18,5 @@ export * from './assigned-product-attribute.seeder';
 export * from './assigned-variant-attribute.seeder';
 export * from './assigned-product-attribute-values.seeder';
 export * from './assigned-variant-attribute-values.seeder';
+export * from './warehouse.seeder';
+export * from './warehouse-stock.seeder';
