@@ -22,6 +22,9 @@ import {
   GetAllAttributeValuesQueryDTO,
   GetAllProductsBelongToCategoryParamDto,
   GetAllProductsBelongToCategoryQueryDTO,
+  GetProductDetailParamDto,
+  GetRecommendationProductsParamDto,
+  GetRecommendationProductsQueryDTO,
   UpdateAttributeValueBodyDTO,
   UpdateAttributeValueParamDto,
   UpdateProductAttributeBodyDTO,
@@ -138,7 +141,20 @@ export class ProductController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getDetailProduct(@Param() param: GetAllProductsBelongToCategoryParamDto) {
+  getDetailProduct(@Param() param: GetProductDetailParamDto) {
     return this.productService.getDetailProduct(param.id);
+  }
+
+  @Get('rcm/:id')
+  @HttpCode(HttpStatus.OK)
+  getRecommendationProducts(
+    @Param() param: GetRecommendationProductsParamDto,
+    @Query()
+    getRecommendationProductsQueryDTO: GetRecommendationProductsQueryDTO,
+  ) {
+    return this.productService.getRecommendationProducts(
+      param.id,
+      getRecommendationProductsQueryDTO,
+    );
   }
 }

@@ -7,3 +7,5 @@ export * from './create-atribute-value.dto';
 export * from './update-attribute-value.dto';
 export * from './delete-attribute-value.dto';
 export * from './get-all-product-belong-to-category.dto';
+export * from './get-product-detail.dto';
+export * from './get-recommendation-products.dto';

@@ -19,6 +19,7 @@ import {
   GetAllAttributeValuesQueryDTO,
   UpdateAttributeValueBodyDTO,
   GetAllProductsBelongToCategoryQueryDTO,
+  GetRecommendationProductsQueryDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -737,6 +738,71 @@ export class ProductService {
 
       return {
         data: formatedProductDetail,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getRecommendationProducts(
+    productId: string,
+    getRecommendationProductsQueryDTO: GetRecommendationProductsQueryDTO,
+  ) {
+    try {
+      // Check product exists
+      const product = await this.productRepo.findOne({
+        where: {
+          id: parseInt(productId),
+        },
+      });
+
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // Destructor query
+      const { limit, page } = getRecommendationProductsQueryDTO;
+
+      // Get all recommendation products && total
+      const [products, total] = await this.productRepo
+        .createQueryBuilder('product')
+        .where('product.id != :id', {
+          id: parseInt(productId),
+        })
+        .andWhere('product.productTypeId = :productTypeId', {
+          productTypeId: product.productTypeId,
+        })
+        .leftJoinAndSelect('product.defaultVariant', 'defaultVariant')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .select([
+          'product.id',
+          'product.name',
+          'product.price',
+          'product.description',
+          'product.createdAt',
+          'productImages.image',
+          'defaultVariant.id',
+          'defaultVariant.name',
+          'defaultVariant.price',
+          'defaultVariant.sku',
+        ])
+        .orderBy('product.createdAt', 'DESC')
+        .take(limit)
+        .skip(limit * (page - 1))
+        .getManyAndCount();
+
+      return {
+        data: {
+          products: products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            image: product.productImages[0]?.image,
+            defaultVariant: product.defaultVariant,
+          })),
+          pageInformation: paginate(limit, page, total),
+        },
       };
     } catch (err) {
       throw err;
