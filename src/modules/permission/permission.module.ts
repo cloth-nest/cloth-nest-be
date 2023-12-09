@@ -5,6 +5,7 @@ import {
   GroupPermission,
   Group,
   UserPermission,
+  UserGroup,
 } from '../../entities';
 import { PermissionController } from './permission.controller';
 import { PermissionService } from './permission.service';
@@ -16,6 +17,7 @@ import { PermissionService } from './permission.service';
       GroupPermission,
       Group,
       UserPermission,
+      UserGroup,
     ]),
   ],
   controllers: [PermissionController],

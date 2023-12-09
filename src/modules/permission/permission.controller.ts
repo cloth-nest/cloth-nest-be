@@ -16,6 +16,7 @@ import { Permission } from '../../shared/enums';
 import {
   CreateGroupPermissionBodyDto,
   CreateOnePermissionBodyDto,
+  DeleteGroupPermissionParamDto,
   DeletePermissionParamDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
@@ -89,6 +90,18 @@ export class PermissionController {
   ) {
     return this.permissionService.createGroupPermission(
       createGroupPermissionBodyDto,
+    );
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Delete('group/:id')
+  @HttpCode(HttpStatus.CREATED)
+  deleteGroupPermission(
+    @Param()
+    deleteGroupPermissionParamDto: DeleteGroupPermissionParamDto,
+  ) {
+    return this.permissionService.deleteGroupPermission(
+      deleteGroupPermissionParamDto.id,
     );
   }
 }

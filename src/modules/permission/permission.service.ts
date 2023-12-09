@@ -23,6 +23,8 @@ export class PermissionService {
     private groupPermissionRepo: Repository<GroupPermission>,
     @InjectRepository(Group)
     private groupRepo: Repository<Group>,
+    @InjectRepository(UserGroup)
+    private userGroupRepo: Repository<UserGroup>,
   ) {}
   public async getAllPermissions(
     getAllPermissionsDTO: GetAllPermissionsQueryDTO,
@@ -235,6 +237,47 @@ export class PermissionService {
       data: {
         data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
         message: 'Create group permission successfully',
+      },
+    };
+  }
+
+  public async deleteGroupPermission(groupPermissionId: string) {
+    const groupPermission = await this.groupRepo.count({
+      where: {
+        id: parseInt(groupPermissionId),
+      },
+    });
+
+    if (!groupPermission) {
+      throw new CustomErrorException(ERRORS.GroupPermissionNotExist);
+    }
+
+    const userGroup = await this.userGroupRepo.count({
+      where: {
+        groupId: parseInt(groupPermissionId),
+      },
+    });
+
+    if (userGroup) {
+      throw new CustomErrorException(ERRORS.GroupPermissionIsUsing);
+    }
+
+    const userPermission = await this.groupPermissionRepo.count({
+      where: {
+        groupId: parseInt(groupPermissionId),
+      },
+    });
+
+    if (userPermission) {
+      throw new CustomErrorException(ERRORS.GroupPermissionIsUsing);
+    }
+
+    await this.groupRepo.delete(groupPermissionId);
+
+    return {
+      message: 'Delete group permission successfully',
+      data: {
+        id: parseInt(groupPermissionId),
       },
     };
   }

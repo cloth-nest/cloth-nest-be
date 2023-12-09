@@ -93,7 +93,9 @@ type Code =
   | 'PermissionNotExist'
   | 'PermissionNameOrCodeExist'
   | 'PermissionIsUsing'
-  | 'GroupPermissionAlreadyExist';
+  | 'GroupPermissionAlreadyExist'
+  | 'GroupPermissionNotExist'
+  | 'GroupPermissionIsUsing';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -604,6 +606,18 @@ export const ERRORS: Record<Code, CustomError> = {
   GroupPermissionAlreadyExist: {
     code: 'H0005',
     message: 'Group permission already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.PermissionError,
+  },
+  GroupPermissionNotExist: {
+    code: 'H0006',
+    message: 'Group permission not existed',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.PermissionError,
+  },
+  GroupPermissionIsUsing: {
+    code: 'H0007',
+    message: 'Group permission is using',
     statusCode: 409,
     typeError: TYPE_ERRORS.PermissionError,
   },
