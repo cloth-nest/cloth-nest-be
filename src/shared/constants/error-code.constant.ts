@@ -81,7 +81,8 @@ type Code =
   | 'ProductTypeNotExist'
   | 'ProductTypeAlreadyExist'
   | 'ColorNotExist'
-  | 'SizeNotExist';
+  | 'SizeNotExist'
+  | 'ProductNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -531,5 +532,11 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Size not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductNotExist: {
+    code: 'G0010',
+    message: 'Product not existed',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 };

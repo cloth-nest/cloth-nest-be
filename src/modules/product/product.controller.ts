@@ -135,4 +135,10 @@ export class ProductController {
       getAllProductsBelongToCategoryQueryDTO,
     );
   }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  getDetailProduct(@Param() param: GetAllProductsBelongToCategoryParamDto) {
+    return this.productService.getDetailProduct(param.id);
+  }
 }

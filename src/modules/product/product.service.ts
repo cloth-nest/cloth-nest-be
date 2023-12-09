@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { And, In, LessThan, MoreThanOrEqual, Raw, Repository } from 'typeorm';
 import {
+  AssignedProductAttribute,
   AttributeValue,
   Category,
   Product,
   ProductAttribute,
+  ProductImage,
   ProductType,
+  ProductVariant,
 } from '../../entities';
 import { paginate } from '../../shared/utils';
 import {
@@ -36,6 +39,12 @@ export class ProductService {
     private productRepo: Repository<Product>,
     @InjectRepository(ProductType)
     private productTypeRepo: Repository<ProductType>,
+    @InjectRepository(ProductImage)
+    private productImgRepo: Repository<ProductImage>,
+    @InjectRepository(AssignedProductAttribute)
+    private assignedProductAttributeRepo: Repository<AssignedProductAttribute>,
+    @InjectRepository(ProductVariant)
+    private productVariantRepo: Repository<ProductVariant>,
   ) {}
 
   public async getAllAttributes(
@@ -552,5 +561,185 @@ export class ProductService {
     );
 
     return formatedResult;
+  }
+
+  public async getDetailProduct(productId: string) {
+    try {
+      // Check product exists
+      const product = await this.productRepo.count({
+        where: {
+          id: parseInt(productId),
+        },
+      });
+
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // Get product detail
+      const [
+        productDetail,
+        images,
+        productType,
+        attributes,
+        variants,
+        attributeVariants,
+      ] = await Promise.all([
+        this.productRepo
+          .createQueryBuilder('product')
+          .where('product.id = :id', {
+            id: parseInt(productId),
+          })
+          .leftJoinAndSelect('product.defaultVariant', 'defaultVariant')
+          .select([
+            'product.id',
+            'product.name',
+            'product.price',
+            'product.description',
+            'defaultVariant.id',
+            'defaultVariant.name',
+            'defaultVariant.sku',
+            'defaultVariant.price',
+          ])
+          .getOne(),
+        this.productImgRepo.find({
+          where: {
+            productId: parseInt(productId),
+          },
+          select: ['id', 'image', 'order'],
+        }),
+        this.productTypeRepo
+          .createQueryBuilder('productType')
+          .leftJoinAndSelect('productType.products', 'products')
+          .where('products.id = :id', {
+            id: parseInt(productId),
+          })
+          .leftJoinAndSelect(
+            'productType.productTypeProductVariants',
+            'productTypeProductVariants',
+          )
+          .leftJoinAndSelect(
+            'productTypeProductVariants.productAttribute',
+            'productAttribute',
+          )
+          .select([
+            'productType.id',
+            'productType.name',
+            'productType.sizeChartImage',
+            'productTypeProductVariants.productAttributeId',
+            'productTypeProductVariants.productAttributeId',
+            'productTypeProductVariants.order',
+            'productAttribute.name',
+          ])
+          .getOne(),
+        this.productAttributeRepo
+          .createQueryBuilder('productAttribute')
+          .leftJoinAndSelect(
+            'productAttribute.productTypeProductAttribute',
+            'productTypeProductAttribute',
+          )
+          .leftJoinAndSelect(
+            'productTypeProductAttribute.assignedProductAttributes',
+            'assignedProductAttributes',
+          )
+          .where('assignedProductAttributes.productId = :id', {
+            id: parseInt(productId),
+          })
+          .leftJoinAndSelect(
+            'assignedProductAttributes.assignedProductAttributeValues',
+            'assignedProductAttributeValues',
+          )
+          .leftJoinAndSelect(
+            'assignedProductAttributeValues.attributeValue',
+            'attributeValue',
+          )
+          .select([
+            'productAttribute.name AS "attributeName"',
+            'attributeValue.value AS "value"',
+          ])
+          .getRawMany(),
+        this.productVariantRepo
+          .createQueryBuilder('variants')
+          .where('variants.productId = :id', {
+            id: parseInt(productId),
+          })
+          .leftJoinAndSelect('variants.variantImages', 'variantImages')
+          .leftJoinAndSelect('variants.warehouseStocks', 'warehouseStocks')
+          .leftJoinAndSelect('warehouseStocks.warehouse', 'warehouse')
+          .select([
+            'variants.id',
+            'variants.name',
+            'variants.order',
+            'variants.sku',
+            'variants.price',
+            'variantImages.productImageId',
+            'warehouse.name',
+            'warehouseStocks.quantity',
+          ])
+          .getMany(),
+        this.attributeValueRepo
+          .createQueryBuilder('attributeValue')
+          .leftJoinAndSelect(
+            'attributeValue.assignedVariantAttributeValues',
+            'assignedVariantAttributeValues',
+          )
+          .leftJoinAndSelect(
+            'assignedVariantAttributeValues.assignedVariantAttribute',
+            'assignedVariantAttribute',
+          )
+          .leftJoinAndSelect(
+            'assignedVariantAttribute.productVariant',
+            'productVariant',
+          )
+          .where('productVariant.productId = :id', {
+            id: parseInt(productId),
+          })
+          .select([
+            'attributeValue.id AS "id"',
+            'attributeValue.value AS "value"',
+            'attributeValue.attributeId AS "attributeId"',
+            'assignedVariantAttributeValues.order AS "order"',
+            'productVariant.id AS "variantId"',
+          ])
+          .getRawMany(),
+      ]);
+
+      const formatedProductDetail = {
+        ...productDetail,
+        attributes,
+        images,
+        productType: {
+          id: productType.id,
+          name: productType.name,
+          sizeChartImage: productType.sizeChartImage,
+          attributeVariants: productType.productTypeProductVariants.map(
+            (x) => ({
+              id: x.productAttributeId,
+              order: x.order,
+              name: x.productAttribute.name,
+            }),
+          ),
+        },
+        variants: variants.map((variant) => ({
+          ...variant,
+          variantImages: variant.variantImages.map(
+            (image) => image.productImageId,
+          ),
+          warehouseStocks: variant.warehouseStocks.map((warehouseStock) => ({
+            ...warehouseStock,
+            warehouse: warehouseStock.warehouse.name,
+          })),
+          attributes: attributeVariants.filter(
+            (x) => x.variantId === variant.id,
+          ),
+        })),
+      };
+
+      return {
+        data: formatedProductDetail,
+      };
+    } catch (err) {
+      throw err;
+    }
   }
 }
