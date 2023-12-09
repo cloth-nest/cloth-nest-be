@@ -193,52 +193,76 @@ export class PermissionService {
   public async createGroupPermission(
     createGroupPermissionBodyDto: CreateGroupPermissionBodyDto,
   ) {
-    const { groupPermissionName, permissionIds } = createGroupPermissionBodyDto;
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    const groupPermission = await this.groupRepo.count({
-      where: {
-        name: groupPermissionName,
-      },
-    });
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (groupPermission) {
-      throw new CustomErrorException(ERRORS.GroupPermissionAlreadyExist);
-    }
+    try {
+      const { groupPermissionName, permissionIds } =
+        createGroupPermissionBodyDto;
 
-    let createdGroup: Group = undefined;
-    if (!permissionIds) {
-      createdGroup = await this.groupRepo.save({
+      const groupPermission = await this.groupRepo.count({
+        where: {
+          name: groupPermissionName,
+        },
+      });
+
+      if (groupPermission) {
+        throw new CustomErrorException(ERRORS.GroupPermissionAlreadyExist);
+      }
+
+      const createdGroup = await queryRunner.manager.save(Group, {
         name: groupPermissionName,
       });
-      return {
-        data: {
-          data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
+
+      if (!permissionIds) {
+        await queryRunner.commitTransaction();
+        return {
           message: 'Create group permission successfully',
+          data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
+        };
+      }
+
+      let groupPermissions: GroupPermission[] = undefined;
+      const countedPermissions = await this.permissionRepo.count({
+        where: {
+          id: In(permissionIds),
+        },
+      });
+
+      if (countedPermissions !== permissionIds.length) {
+        throw new CustomErrorException(ERRORS.PermissionNotExist);
+      }
+
+      groupPermissions = await queryRunner.manager.save(
+        GroupPermission,
+        permissionIds.map((permissionId) =>
+          this.groupPermissionRepo.create({
+            permissionId,
+            groupId: createdGroup.id,
+          }),
+        ),
+      );
+
+      await queryRunner.commitTransaction();
+
+      return {
+        message: 'Create group permission successfully',
+        data: {
+          id: createdGroup.id,
+          name: createdGroup.name,
+          groupPermission: groupPermissions.map((groupPermission) =>
+            _.omit(groupPermission, ['createdAt', 'updatedAt']),
+          ),
         },
       };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
-
-    const countedPermissions = await this.permissionRepo.count({
-      where: {
-        id: In(permissionIds),
-      },
-    });
-
-    if (countedPermissions !== permissionIds.length) {
-      throw new CustomErrorException(ERRORS.PermissionNotExist);
-    }
-
-    createdGroup = await this.groupRepo.save({
-      name: groupPermissionName,
-      groupPermission: permissionIds.map((permissionId) =>
-        this.permissionRepo.create({ id: permissionId }),
-      ),
-    });
-
-    return {
-      message: 'Create group permission successfully',
-      data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
-    };
   }
 
   public async updateGroupPermission(
