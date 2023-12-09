@@ -8,7 +8,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { AssignedVariantAttribute, ProductType } from './';
+import { AssignedVariantAttribute, ProductAttribute, ProductType } from './';
 
 @Entity({ name: 'product_type_product_variant' })
 export class ProductTypeProductVariant {
@@ -30,6 +30,13 @@ export class ProductTypeProductVariant {
   )
   @JoinColumn({ name: 'product_type_id', referencedColumnName: 'id' })
   productType: ProductType;
+
+  @ManyToOne(
+    () => ProductAttribute,
+    (productAttribute) => productAttribute.productTypeProductVariant,
+  )
+  @JoinColumn({ name: 'product_attribute_id', referencedColumnName: 'id' })
+  productAttribute: ProductAttribute;
 
   @OneToMany(
     () => AssignedVariantAttribute,

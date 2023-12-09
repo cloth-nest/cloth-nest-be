@@ -65,7 +65,10 @@ export class ProductVariant {
   @OneToMany(() => VariantImage, (variantImage) => variantImage.productVariant)
   variantImages: VariantImage[];
 
-  @OneToMany(() => WarehouseStock, (warehouseStock) => warehouseStock.warehouse)
+  @OneToMany(
+    () => WarehouseStock,
+    (warehouseStock) => warehouseStock.productVariant,
+  )
   warehouseStocks: WarehouseStock[];
 
   @CreateDateColumn({

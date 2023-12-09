@@ -6,8 +6,11 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { AttributeValue } from './attribute-value.entity';
-import { ProductTypeProductAttribute } from './product-type-product-attribute.entity';
+import {
+  AttributeValue,
+  ProductTypeProductAttribute,
+  ProductTypeProductVariant,
+} from './';
 
 @Entity({ name: 'product_attribute' })
 export class ProductAttribute {
@@ -26,6 +29,12 @@ export class ProductAttribute {
       productTypeProductAttribute.productAttribute,
   )
   productTypeProductAttribute: ProductTypeProductAttribute[];
+
+  @OneToMany(
+    () => ProductTypeProductVariant,
+    (productTypeProductVariant) => productTypeProductVariant.productAttribute,
+  )
+  productTypeProductVariant: ProductTypeProductVariant[];
 
   @CreateDateColumn({
     name: 'created_at',
