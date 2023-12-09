@@ -20,6 +20,7 @@ export type TypeError =
   | 'NewPasswordMatchOldPasswordError'
   | 'ProductAttributeError'
   | 'ProductTypeError'
+  | 'PermissionError'
   | 'UnauthorizedError'
   | 'NotFoundError'
   | 'ForbiddenError';

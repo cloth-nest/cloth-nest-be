@@ -4,6 +4,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -14,6 +16,8 @@ import {
   CreateOnePermissionBodyDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
+  UpdatePermissionBodyDto,
+  UpdatePermissionParamDto,
 } from './dto';
 
 @Controller('permission')
@@ -32,12 +36,26 @@ export class PermissionController {
 
   @Auth(Permission.MANAGE_STAFF)
   @Post('')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   createPermission(
     @Body()
     createOnePermissionBodyDto: CreateOnePermissionBodyDto,
   ) {
     return this.permissionService.createPermission(createOnePermissionBodyDto);
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  updatePermission(
+    @Param() param: UpdatePermissionParamDto,
+    @Body()
+    updatePermissionBodyDto: UpdatePermissionBodyDto,
+  ) {
+    return this.permissionService.updatePermission(
+      param.id,
+      updatePermissionBodyDto,
+    );
   }
 
   @Auth(Permission.MANAGE_STAFF)

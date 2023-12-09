@@ -6,6 +6,7 @@ import {
   CreateOnePermissionBodyDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
+  UpdatePermissionBodyDto,
 } from './dto';
 import { paginate } from '../../shared/utils';
 import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
@@ -111,6 +112,45 @@ export class PermissionService {
       data: {
         data: _.omit(createdPermission, ['createdAt', 'updatedAt']),
         message: 'Create permission successfully',
+      },
+    };
+  }
+
+  public async updatePermission(
+    permissionId: string,
+    updatePermissionBodyDto: UpdatePermissionBodyDto,
+  ) {
+    const { permissionName, permissionCode } = updatePermissionBodyDto;
+
+    const permission = await this.permissionRepo.count({
+      where: {
+        id: parseInt(permissionId),
+      },
+    });
+
+    if (!permission) {
+      throw new CustomErrorException(ERRORS.PermissionNotExist);
+    }
+
+    const permissionCodeNameExist = await this.permissionRepo.count({
+      where: [{ name: permissionName }, { codeName: permissionCode }],
+    });
+
+    if (permissionCodeNameExist) {
+      throw new CustomErrorException(ERRORS.PermissionAlreadyExist);
+    }
+
+    await this.permissionRepo.update(permissionId, {
+      name: permissionName,
+      codeName: permissionCode,
+    });
+
+    return {
+      message: 'Update permission successfully',
+      data: {
+        id: permissionId,
+        name: permissionName,
+        code: permissionCode,
       },
     };
   }

@@ -87,7 +87,9 @@ type Code =
   | 'ProductNotExist'
 
   // Group H (Permission)
-  | 'PermissionAlreadyExist';
+  | 'PermissionAlreadyExist'
+  | 'PermissionNotExist'
+  | 'PermissionNameOrCodeExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -111,6 +113,7 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   NewPasswordMatchOldPasswordError: 'NewPasswordMatchOldPasswordError',
   ProductAttributeError: 'ProductAttributeError',
   ProductTypeError: 'ProductTypeError',
+  PermissionError: 'PermissionError',
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
   ForbiddenError: 'ForbiddenError',
@@ -562,6 +565,18 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'H0001',
     message: 'Permission already existed',
     statusCode: 409,
-    typeError: TYPE_ERRORS.ValidationError,
+    typeError: TYPE_ERRORS.PermissionError,
+  },
+  PermissionNotExist: {
+    code: 'H0002',
+    message: 'Permission not existed',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.PermissionError,
+  },
+  PermissionNameOrCodeExist: {
+    code: 'H0003',
+    message: 'Permission name or code is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.PermissionError,
   },
 };
