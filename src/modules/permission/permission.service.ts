@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Group, GroupPermission, Permission, UserGroup } from '../../entities';
-import { GetAllGroupPermissionsQueryDTO } from './dto';
+import {
+  GetAllGroupPermissionsQueryDTO,
+  GetAllPermissionsQueryDTO,
+} from './dto';
 import { paginate } from '../../shared/utils';
 
 @Injectable()
@@ -44,6 +47,39 @@ export class PermissionService {
     return {
       data: {
         groupPermissions,
+        pageInformation: paginate(limit, page, total),
+      },
+    };
+  }
+
+  public async getAllPermissions(
+    getAllPermissionsDTO: GetAllPermissionsQueryDTO,
+  ) {
+    // Destructor query
+    const { limit, page } = getAllPermissionsDTO;
+
+    const [permissions, total] = await Promise.all([
+      this.permissionRepo
+        .createQueryBuilder('p')
+        .select(['p.id AS "id"', 'p.name AS "name"'])
+        .addSelect(
+          (qb) =>
+            qb
+              .select('COUNT(*)::int as count')
+              .from(GroupPermission, 'g')
+              .where('g.permission_id = p.id'),
+          'groupPermissionsCount',
+        )
+        .orderBy('p.name', 'ASC')
+        .limit(limit)
+        .offset((page - 1) * limit)
+        .getRawMany(),
+      this.permissionRepo.count(),
+    ]);
+
+    return {
+      data: {
+        permissions,
         pageInformation: paginate(limit, page, total),
       },
     };
