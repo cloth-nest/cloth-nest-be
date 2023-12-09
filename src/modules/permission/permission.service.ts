@@ -3,10 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Group, GroupPermission, Permission, UserGroup } from '../../entities';
 import {
+  CreateOnePermissionBodyDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
 } from './dto';
 import { paginate } from '../../shared/utils';
+import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
+import { ERRORS } from 'src/shared/constants';
+import * as _ from 'lodash';
 
 @Injectable()
 export class PermissionService {
@@ -81,6 +85,32 @@ export class PermissionService {
       data: {
         permissions,
         pageInformation: paginate(limit, page, total),
+      },
+    };
+  }
+
+  public async createPermission(
+    createOnePermissionBodyDto: CreateOnePermissionBodyDto,
+  ) {
+    const { permissionName, permissionCode } = createOnePermissionBodyDto;
+
+    const permission = await this.permissionRepo.findOne({
+      where: [{ name: permissionName }, { codeName: permissionCode }],
+    });
+
+    if (permission) {
+      throw new CustomErrorException(ERRORS.PermissionAlreadyExist);
+    }
+
+    const createdPermission = await this.permissionRepo.save({
+      name: permissionName,
+      codeName: permissionCode,
+    });
+
+    return {
+      data: {
+        data: _.omit(createdPermission, ['createdAt', 'updatedAt']),
+        message: 'Create permission successfully',
       },
     };
   }

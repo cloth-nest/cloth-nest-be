@@ -42,6 +42,8 @@ type Code =
   | 'InvalidAttributeId'
   | 'InvalidAttributeValue'
   | 'InvalidProductTypeName'
+  | 'InvalidPermissionName'
+  | 'InvalidPermissionCode'
 
   // Group C
   | 'EmailExisted'
@@ -82,7 +84,10 @@ type Code =
   | 'ProductTypeAlreadyExist'
   | 'ColorNotExist'
   | 'SizeNotExist'
-  | 'ProductNotExist';
+  | 'ProductNotExist'
+
+  // Group H (Permission)
+  | 'PermissionAlreadyExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -337,6 +342,18 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidPermissionName: {
+    code: 'B0032',
+    message: 'Invalid input permissionName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidPermissionCode: {
+    code: 'B0033',
+    message: 'Invalid input permissionCode',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -538,5 +555,13 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Product not existed',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+
+  // Group H (Permission)
+  PermissionAlreadyExist: {
+    code: 'H0001',
+    message: 'Permission already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };

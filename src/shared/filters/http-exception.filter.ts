@@ -190,6 +190,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'requireNotEmpty': {
         return ERRORS.EmptyBody;
       }
+      case 'permissionName': {
+        return ERRORS.InvalidPermissionName;
+      }
+      case 'permissionCode': {
+        return ERRORS.InvalidPermissionCode;
+      }
       default:
         return ERRORS.InternalServerError;
     }
