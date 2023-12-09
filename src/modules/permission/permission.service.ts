@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { Group, GroupPermission, Permission, UserGroup } from '../../entities';
 import {
   CreateGroupPermissionBodyDto,
   CreateOnePermissionBodyDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
+  UpdateGroupPermissionBodyDto,
   UpdatePermissionBodyDto,
 } from './dto';
 import { paginate } from '../../shared/utils';
@@ -25,6 +26,7 @@ export class PermissionService {
     private groupRepo: Repository<Group>,
     @InjectRepository(UserGroup)
     private userGroupRepo: Repository<UserGroup>,
+    private dataSource: DataSource,
   ) {}
   public async getAllPermissions(
     getAllPermissionsDTO: GetAllPermissionsQueryDTO,
@@ -234,11 +236,95 @@ export class PermissionService {
     });
 
     return {
-      data: {
-        data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
-        message: 'Create group permission successfully',
-      },
+      message: 'Create group permission successfully',
+      data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
     };
+  }
+
+  public async updateGroupPermission(
+    groupPermissionId: string,
+    updateGroupPermissionBodyDto: UpdateGroupPermissionBodyDto,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const { groupPermissionName, permissionIds } =
+        updateGroupPermissionBodyDto;
+
+      const groupPermission = await this.groupRepo.count({
+        where: {
+          id: parseInt(groupPermissionId),
+        },
+      });
+
+      if (!groupPermission) {
+        throw new CustomErrorException(ERRORS.GroupPermissionNotExist);
+      }
+
+      if (groupPermissionName) {
+        const groupPermissionNameExist = await this.groupRepo.count({
+          where: {
+            name: groupPermissionName,
+          },
+        });
+        if (groupPermissionNameExist) {
+          throw new CustomErrorException(ERRORS.GroupPermissionAlreadyExist);
+        }
+
+        await queryRunner.manager.update(
+          Group,
+          { id: parseInt(groupPermissionId) },
+          { name: groupPermissionName },
+        );
+      }
+
+      let groupPermissions: GroupPermission[] = undefined;
+      if (permissionIds) {
+        const countedPermissions = await this.permissionRepo.count({
+          where: {
+            id: In(permissionIds),
+          },
+        });
+
+        if (countedPermissions !== permissionIds.length) {
+          throw new CustomErrorException(ERRORS.PermissionNotExist);
+        }
+
+        await queryRunner.manager.delete(GroupPermission, {
+          groupId: parseInt(groupPermissionId),
+        });
+        groupPermissions = await queryRunner.manager.save(
+          GroupPermission,
+          permissionIds.map((permissionId) =>
+            this.groupPermissionRepo.create({
+              permissionId,
+              groupId: parseInt(groupPermissionId),
+            }),
+          ),
+        );
+      }
+
+      await queryRunner.commitTransaction();
+
+      return {
+        message: 'Update group permission successfully',
+        data: {
+          id: parseInt(groupPermissionId),
+          name: groupPermissionName,
+          groupPermission: groupPermissions.map((groupPermission) =>
+            _.omit(groupPermission, ['createdAt', 'updatedAt']),
+          ),
+        },
+      };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   public async deleteGroupPermission(groupPermissionId: string) {

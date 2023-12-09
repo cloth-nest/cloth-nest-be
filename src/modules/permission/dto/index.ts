@@ -4,4 +4,5 @@ export * from './update-permission.dto';
 export * from './delete-permission.dto';
 export * from './get-all-group-permissions.dto';
 export * from './create-group-permission.dto';
+export * from './update-group-permission.dto';
 export * from './delete-group-permission.dto';
