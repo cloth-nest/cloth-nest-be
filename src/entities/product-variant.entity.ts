@@ -14,6 +14,7 @@ import {
   VariantImage,
   WarehouseStock,
 } from './';
+import { ColumnNumericTransformer } from '../shared/utils';
 
 @Entity({ name: 'product_variant' })
 export class ProductVariant {
@@ -35,7 +36,12 @@ export class ProductVariant {
   @Column({ name: 'order', nullable: false, type: 'integer' })
   order: number;
 
-  @Column({ name: 'price_override', nullable: false, type: 'decimal' })
+  @Column({
+    name: 'price_override',
+    nullable: false,
+    type: 'decimal',
+    transformer: new ColumnNumericTransformer(),
+  })
   price: number;
 
   @Column({

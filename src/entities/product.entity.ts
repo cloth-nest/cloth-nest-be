@@ -16,6 +16,7 @@ import {
   ProductType,
   ProductVariant,
 } from './';
+import { ColumnNumericTransformer } from 'src/shared/utils';
 
 @Entity({ name: 'product' })
 export class Product {
@@ -32,6 +33,7 @@ export class Product {
     name: 'price',
     nullable: false,
     type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
   })
   price: number;
 
