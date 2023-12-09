@@ -89,7 +89,8 @@ type Code =
   // Group H (Permission)
   | 'PermissionAlreadyExist'
   | 'PermissionNotExist'
-  | 'PermissionNameOrCodeExist';
+  | 'PermissionNameOrCodeExist'
+  | 'PermissionIsUsing';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -576,6 +577,12 @@ export const ERRORS: Record<Code, CustomError> = {
   PermissionNameOrCodeExist: {
     code: 'H0003',
     message: 'Permission name or code is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.PermissionError,
+  },
+  PermissionIsUsing: {
+    code: 'H0004',
+    message: 'Permission is using',
     statusCode: 409,
     typeError: TYPE_ERRORS.PermissionError,
   },

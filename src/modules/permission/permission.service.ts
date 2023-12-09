@@ -140,7 +140,7 @@ export class PermissionService {
       throw new CustomErrorException(ERRORS.PermissionAlreadyExist);
     }
 
-    await this.permissionRepo.update(permissionId, {
+    await this.permissionRepo.update(parseInt(permissionId), {
       name: permissionName,
       codeName: permissionCode,
     });
@@ -148,9 +148,40 @@ export class PermissionService {
     return {
       message: 'Update permission successfully',
       data: {
-        id: permissionId,
+        id: parseInt(permissionId),
         name: permissionName,
         code: permissionCode,
+      },
+    };
+  }
+
+  public async deletePermission(permissionId: string) {
+    const permission = await this.permissionRepo.count({
+      where: {
+        id: parseInt(permissionId),
+      },
+    });
+
+    if (!permission) {
+      throw new CustomErrorException(ERRORS.PermissionNotExist);
+    }
+
+    const groupPermission = await this.groupPermissionRepo.count({
+      where: {
+        permissionId: parseInt(permissionId),
+      },
+    });
+
+    if (groupPermission) {
+      throw new CustomErrorException(ERRORS.PermissionIsUsing);
+    }
+
+    await this.permissionRepo.delete(permissionId);
+
+    return {
+      message: 'Delete permission successfully',
+      data: {
+        id: parseInt(permissionId),
       },
     };
   }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -14,6 +15,7 @@ import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
 import {
   CreateOnePermissionBodyDto,
+  DeletePermissionParamDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
   UpdatePermissionBodyDto,
@@ -56,6 +58,13 @@ export class PermissionController {
       param.id,
       updatePermissionBodyDto,
     );
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deletePermission(@Param() param: DeletePermissionParamDto) {
+    return this.permissionService.deletePermission(param.id);
   }
 
   @Auth(Permission.MANAGE_STAFF)
