@@ -3502,5 +3502,83 @@
     "quantity": 441,
     "variantId": 52,
     "warehouseId": 7
+  },
+  {
+    "id": 585,
+    "quantity": 25,
+    "variantId": 74,
+    "warehouseId": 1
+  },
+  {
+    "id": 586,
+    "quantity": 49,
+    "variantId": 74,
+    "warehouseId": 2
+  },
+  {
+    "id": 587,
+    "quantity": 115,
+    "variantId": 74,
+    "warehouseId": 3
+  },
+  {
+    "id": 588,
+    "quantity": 14,
+    "variantId": 75,
+    "warehouseId": 1
+  },
+  {
+    "id": 589,
+    "quantity": 24,
+    "variantId": 75,
+    "warehouseId": 2
+  },
+  {
+    "id": 590,
+    "quantity": 33,
+    "variantId": 76,
+    "warehouseId": 1
+  },
+  {
+    "id": 591,
+    "quantity": 36,
+    "variantId": 76,
+    "warehouseId": 2
+  },
+  {
+    "id": 592,
+    "quantity": 44,
+    "variantId": 76,
+    "warehouseId": 3
+  },
+  {
+    "id": 593,
+    "quantity": 21,
+    "variantId": 76,
+    "warehouseId": 4
+  },
+  {
+    "id": 594,
+    "quantity": 11,
+    "variantId": 77,
+    "warehouseId": 3
+  },
+  {
+    "id": 595,
+    "quantity": 22,
+    "variantId": 77,
+    "warehouseId": 4
+  },
+  {
+    "id": 596,
+    "quantity": 33,
+    "variantId": 77,
+    "warehouseId": 5
+  },
+  {
+    "id": 597,
+    "quantity": 29,
+    "variantId": 78,
+    "warehouseId": 1
   }
 ]

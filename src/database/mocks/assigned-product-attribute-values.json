@@ -1,110 +1,116 @@
 [
   {
-    "id": 193,
+    "id": 1,
     "order": 0,
     "assignedProductAttributeId": 1,
     "attributeValueId": 34
   },
   {
-    "id": 194,
+    "id": 2,
     "order": 0,
     "assignedProductAttributeId": 2,
     "attributeValueId": 1
   },
   {
-    "id": 195,
+    "id": 3,
     "order": 0,
     "assignedProductAttributeId": 3,
     "attributeValueId": 3
   },
   {
-    "id": 196,
+    "id": 4,
     "order": 0,
     "assignedProductAttributeId": 4,
     "attributeValueId": 1
   },
   {
-    "id": 197,
+    "id": 5,
     "order": 0,
     "assignedProductAttributeId": 5,
     "attributeValueId": 1
   },
   {
-    "id": 198,
+    "id": 6,
     "order": 0,
     "assignedProductAttributeId": 6,
     "attributeValueId": 2
   },
   {
-    "id": 199,
+    "id": 7,
     "order": 0,
     "assignedProductAttributeId": 7,
     "attributeValueId": 1
   },
   {
-    "id": 200,
+    "id": 8,
     "order": 0,
     "assignedProductAttributeId": 8,
     "attributeValueId": 1
   },
   {
-    "id": 201,
+    "id": 9,
     "order": 0,
     "assignedProductAttributeId": 9,
     "attributeValueId": 1
   },
   {
-    "id": 204,
+    "id": 10,
     "order": 0,
     "assignedProductAttributeId": 10,
     "attributeValueId": 1
   },
   {
-    "id": 206,
+    "id": 11,
     "order": 0,
     "assignedProductAttributeId": 11,
     "attributeValueId": 35
   },
   {
-    "id": 207,
+    "id": 12,
     "order": 0,
     "assignedProductAttributeId": 12,
     "attributeValueId": 36
   },
   {
-    "id": 208,
+    "id": 13,
     "order": 0,
     "assignedProductAttributeId": 13,
     "attributeValueId": 36
   },
   {
-    "id": 210,
+    "id": 14,
     "order": 0,
     "assignedProductAttributeId": 14,
     "attributeValueId": 25
   },
   {
-    "id": 211,
+    "id": 15,
     "order": 0,
     "assignedProductAttributeId": 15,
     "attributeValueId": 19
   },
   {
-    "id": 212,
+    "id": 16,
     "order": 0,
     "assignedProductAttributeId": 16,
     "attributeValueId": 18
   },
   {
-    "id": 213,
+    "id": 17,
     "order": 0,
     "assignedProductAttributeId": 17,
     "attributeValueId": 20
   },
   {
-    "id": 214,
+    "id": 18,
     "order": 0,
     "assignedProductAttributeId": 18,
+    "attributeValueId": 1
+  },
+  {
+    "id": 19,
+    "order": 0,
+    "assignedProductAttributeId": 19,
     "attributeValueId": 1
   }
 ]

@@ -8,7 +8,7 @@
     "weight": 0
   },
   {
-    "id": 17,
+    "id": 2,
     "name": "Audiobook",
     "hasVariants": true,
     "isShippingRequired": false,
@@ -16,7 +16,7 @@
     "weight": 0
   },
   {
-    "id": 18,
+    "id": 3,
     "name": "Shoe",
     "hasVariants": true,
     "isShippingRequired": true,
@@ -24,7 +24,7 @@
     "weight": 1000
   },
   {
-    "id": 19,
+    "id": 4,
     "name": "Sweatshirt",
     "hasVariants": false,
     "isShippingRequired": true,
@@ -32,7 +32,7 @@
     "weight": 1000
   },
   {
-    "id": 20,
+    "id": 5,
     "name": "Top",
     "hasVariants": true,
     "isShippingRequired": true,
@@ -40,7 +40,7 @@
     "weight": 1000
   },
   {
-    "id": 21,
+    "id": 6,
     "name": "Beanies & Scarfs",
     "hasVariants": false,
     "isShippingRequired": true,
@@ -48,7 +48,7 @@
     "weight": 1000
   },
   {
-    "id": 22,
+    "id": 7,
     "name": "Simple",
     "hasVariants": false,
     "isShippingRequired": false,
@@ -56,7 +56,7 @@
     "weight": 0
   },
   {
-    "id": 23,
+    "id": 8,
     "name": "Juice",
     "hasVariants": false,
     "isShippingRequired": true,
@@ -64,9 +64,17 @@
     "weight": 100
   },
   {
-    "id": 24,
+    "id": 9,
     "name": "Simple Gift Card",
     "hasVariants": false,
+    "isShippingRequired": false,
+    "sizeChartImage": "https://bizweb.dktcdn.net/100/369/010/files/sc-tbg-2023.png?v=1694771937549",
+    "weight": 0
+  },
+  {
+    "id": 10,
+    "name": "T-Shirt",
+    "hasVariants": true,
     "isShippingRequired": false,
     "sizeChartImage": "https://bizweb.dktcdn.net/100/369/010/files/sc-tbg-2023.png?v=1694771937549",
     "weight": 0

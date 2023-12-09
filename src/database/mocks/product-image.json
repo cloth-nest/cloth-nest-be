@@ -286,5 +286,53 @@
     "order": 0,
     "image": "http://localhost:8000/media/thumbnails/products/saleor-gift-50_thumbnail_1024.png",
     "productId": 32
+  },
+  {
+    "id": 49,
+    "order": 0,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/dm-20230821164209-001.jpg?v=1692694024000",
+    "productId": 33
+  },
+  {
+    "id": 50,
+    "order": 1,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/dm-20230821164209-001-copy.jpg?v=1692694026730",
+    "productId": 33
+  },
+  {
+    "id": 51,
+    "order": 2,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/back-a6c42be6-2b03-420c-8a03-47f71d749800.jpg?v=1694769233527",
+    "productId": 33
+  },
+  {
+    "id": 52,
+    "order": 3,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/front-a7cc5c58-ea26-4fde-b1fe-d617bc91fd09.jpg?v=1694769233527",
+    "productId": 33
+  },
+  {
+    "id": 53,
+    "order": 4,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/dsc0028.jpg?v=1694769232147",
+    "productId": 33
+  },
+  {
+    "id": 54,
+    "order": 5,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/dsc0022-copy.jpg?v=1694769232147",
+    "productId": 33
+  },
+  {
+    "id": 55,
+    "order": 6,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/nta101-ag7p6ur2-1-5hyw-hinh-chi-tiet-truc-dien-khac-1.jpg?v=1694769232147",
+    "productId": 33
+  },
+  {
+    "id": 56,
+    "order": 7,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/nta101-ag7p6ur2-1-5hyw-hinh-chi-tiet-truc-dien-khac-0.jpg?v=1694769232147",
+    "productId": 33
   }
  ]

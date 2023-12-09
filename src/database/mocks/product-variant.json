@@ -728,5 +728,50 @@
     "weight": 0,
     "price": 0,
     "order": 0
+  },
+  {
+    "id": 74,
+    "sku": "dc-x-br-thuong-ban-gai-t-shirt-s-black",
+    "name": "DC x BR Thương Bạn Gái T-shirt - S-Black",
+    "productId": 33,
+    "weight": 0,
+    "price": 25,
+    "order": 0
+  },
+  {
+    "id": 75,
+    "sku": "dc-x-br-thuong-ban-gai-t-shirt-s-white",
+    "name": "DC x BR Thương Bạn Gái T-shirt - S-White",
+    "productId": 33,
+    "weight": 0,
+    "price": 25,
+    "order": 1
+  },
+  {
+    "id": 76,
+    "sku": "dc-x-br-thuong-ban-gai-t-shirt-m-black",
+    "name": "DC x BR Thương Bạn Gái T-shirt - M-Black",
+    "productId": 33,
+    "weight": 0,
+    "price": 25,
+    "order": 2
+  },
+  {
+    "id": 77,
+    "sku": "dc-x-br-thuong-ban-gai-t-shirt-m-white",
+    "name": "DC x BR Thương Bạn Gái T-shirt - M-White",
+    "productId": 33,
+    "weight": 0,
+    "price": 25,
+    "order": 3
+  },
+  {
+    "id": 78,
+    "sku": "dc-x-br-thuong-ban-gai-t-shirt-l-white",
+    "name": "DC x BR Thương Bạn Gái T-shirt - L-White",
+    "productId": 33,
+    "weight": 0,
+    "price": 25,
+    "order": 4
   }
 ]

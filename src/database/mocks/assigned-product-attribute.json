@@ -1,92 +1,97 @@
 [
   {
-    "id": 37,
+    "id": 1,
     "productId": 1,
     "productTypeProductAttributeId": 1
   },
   {
-    "id": 38,
+    "id": 2,
     "productId": 6,
     "productTypeProductAttributeId": 2
   },
   {
-    "id": 39,
+    "id": 3,
     "productId": 7,
     "productTypeProductAttributeId": 2
   },
   {
-    "id": 40,
+    "id": 4,
     "productId": 8,
     "productTypeProductAttributeId": 2
   },
   {
-    "id": 41,
+    "id": 5,
     "productId": 9,
     "productTypeProductAttributeId": 3
   },
   {
-    "id": 42,
+    "id": 6,
     "productId": 10,
     "productTypeProductAttributeId": 3
   },
   {
-    "id": 43,
+    "id": 7,
     "productId": 11,
     "productTypeProductAttributeId": 3
   },
   {
-    "id": 44,
+    "id": 8,
     "productId": 12,
     "productTypeProductAttributeId": 3
   },
   {
-    "id": 45,
+    "id": 9,
     "productId": 13,
     "productTypeProductAttributeId": 3
   },
   {
-    "id": 48,
+    "id": 10,
     "productId": 14,
     "productTypeProductAttributeId": 4
   },
   {
-    "id": 50,
+    "id": 11,
     "productId": 15,
     "productTypeProductAttributeId": 4
   },
   {
-    "id": 51,
+    "id": 12,
     "productId": 18,
     "productTypeProductAttributeId": 1
   },
   {
-    "id": 52,
+    "id": 13,
     "productId": 19,
     "productTypeProductAttributeId": 1
   },
   {
-    "id": 54,
+    "id": 14,
     "productId": 22,
     "productTypeProductAttributeId": 5
   },
   {
-    "id": 55,
+    "id": 15,
     "productId": 23,
     "productTypeProductAttributeId": 5
   },
   {
-    "id": 56,
+    "id": 16,
     "productId": 24,
     "productTypeProductAttributeId": 5
   },
   {
-    "id": 57,
+    "id": 17,
     "productId": 25,
     "productTypeProductAttributeId": 5
   },
   {
-    "id": 58,
+    "id": 18,
     "productId": 29,
     "productTypeProductAttributeId": 3
+  },
+  {
+    "id": 19,
+    "productId": 33,
+    "productTypeProductAttributeId": 6
   }
 ]

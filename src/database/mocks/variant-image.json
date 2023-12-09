@@ -363,5 +363,30 @@
     "id": 73,
     "productImageId": 48,
     "productVariantId": 73
+  },
+  {
+    "id": 74,
+    "productImageId": 49,
+    "productVariantId": 74
+  },
+  {
+    "id": 75,
+    "productImageId": 50,
+    "productVariantId": 75
+  },
+  {
+    "id": 76,
+    "productImageId": 49,
+    "productVariantId": 76
+  },
+  {
+    "id": 77,
+    "productImageId": 50,
+    "productVariantId": 77
+  },
+  {
+    "id": 78,
+    "productImageId": 49,
+    "productVariantId": 78
   }
 ]

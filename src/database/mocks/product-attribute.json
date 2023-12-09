@@ -1,38 +1,38 @@
 [
   {
-    "id": 36,
+    "id": 1,
     "name": "Material"
   },
   {
-    "id": 37,
+    "id": 2,
     "name": "Shoe size"
   },
   {
-    "id": 38,
+    "id": 3,
     "name": "Size"
   },
   {
-    "id": 39,
+    "id": 4,
     "name": "Volume"
   },
   {
-    "id": 40,
+    "id": 5,
     "name": "Flavor"
   },
   {
-    "id": 41,
+    "id": 6,
     "name": "EBook Format"
   },
   {
-    "id": 42,
+    "id": 7,
     "name": "Medium"
   },
   {
-    "id": 43,
+    "id": 8,
     "name": "Publisher"
   },
   {
-    "id": 44,
+    "id": 9,
     "name": "Color"
   }
 ]

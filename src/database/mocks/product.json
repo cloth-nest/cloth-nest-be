@@ -350,5 +350,15 @@
     "price": 40.1,
     "weight": 0,
     "categoryId": 4
+  },
+  {
+    "id": 33,
+    "name": "DC x BR Thuong Ban Gai T-shirt",
+    "description": "",
+    "defaultVariantId": 74,
+    "productTypeId": 10,
+    "price": 22,
+    "weight": 0,
+    "categoryId": 13
   }
 ]
