@@ -44,6 +44,8 @@ type Code =
   | 'InvalidProductTypeName'
   | 'InvalidPermissionName'
   | 'InvalidPermissionCode'
+  | 'InvalidGroupPermissionName'
+  | 'InvalidPermissionIds'
 
   // Group C
   | 'EmailExisted'
@@ -90,7 +92,8 @@ type Code =
   | 'PermissionAlreadyExist'
   | 'PermissionNotExist'
   | 'PermissionNameOrCodeExist'
-  | 'PermissionIsUsing';
+  | 'PermissionIsUsing'
+  | 'GroupPermissionAlreadyExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -358,6 +361,18 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidGroupPermissionName: {
+    code: 'B0034',
+    message: 'Invalid input groupPermissionName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidPermissionIds: {
+    code: 'B0035',
+    message: 'Invalid input permissionIds',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -583,6 +598,12 @@ export const ERRORS: Record<Code, CustomError> = {
   PermissionIsUsing: {
     code: 'H0004',
     message: 'Permission is using',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.PermissionError,
+  },
+  GroupPermissionAlreadyExist: {
+    code: 'H0005',
+    message: 'Group permission already existed',
     statusCode: 409,
     typeError: TYPE_ERRORS.PermissionError,
   },

@@ -196,6 +196,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'permissionCode': {
         return ERRORS.InvalidPermissionCode;
       }
+      case 'permissionIds': {
+        return ERRORS.InvalidPermissionIds;
+      }
+      case 'groupPermissionName': {
+        return ERRORS.InvalidGroupPermissionName;
+      }
       default:
         return ERRORS.InternalServerError;
     }

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Group, GroupPermission, Permission, UserGroup } from '../../entities';
 import {
+  CreateGroupPermissionBodyDto,
   CreateOnePermissionBodyDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
@@ -23,40 +24,6 @@ export class PermissionService {
     @InjectRepository(Group)
     private groupRepo: Repository<Group>,
   ) {}
-
-  public async getAllGroupPermissions(
-    getAllGroupPermissionsDTO: GetAllGroupPermissionsQueryDTO,
-  ) {
-    // Destructor query
-    const { limit, page } = getAllGroupPermissionsDTO;
-
-    const [groupPermissions, total] = await Promise.all([
-      this.groupRepo
-        .createQueryBuilder('g')
-        .select(['g.id AS "id"', 'g.name AS "name"'])
-        .addSelect(
-          (qb) =>
-            qb
-              .select('COUNT(*)::int as count')
-              .from(UserGroup, 'ug')
-              .where('ug.group_id = g.id'),
-          'members',
-        )
-        .orderBy('g.name', 'ASC')
-        .limit(limit)
-        .offset((page - 1) * limit)
-        .getRawMany(),
-      this.groupRepo.count(),
-    ]);
-
-    return {
-      data: {
-        groupPermissions,
-        pageInformation: paginate(limit, page, total),
-      },
-    };
-  }
-
   public async getAllPermissions(
     getAllPermissionsDTO: GetAllPermissionsQueryDTO,
   ) {
@@ -182,6 +149,92 @@ export class PermissionService {
       message: 'Delete permission successfully',
       data: {
         id: parseInt(permissionId),
+      },
+    };
+  }
+
+  public async getAllGroupPermissions(
+    getAllGroupPermissionsDTO: GetAllGroupPermissionsQueryDTO,
+  ) {
+    // Destructor query
+    const { limit, page } = getAllGroupPermissionsDTO;
+
+    const [groupPermissions, total] = await Promise.all([
+      this.groupRepo
+        .createQueryBuilder('g')
+        .select(['g.id AS "id"', 'g.name AS "name"'])
+        .addSelect(
+          (qb) =>
+            qb
+              .select('COUNT(*)::int as count')
+              .from(UserGroup, 'ug')
+              .where('ug.group_id = g.id'),
+          'members',
+        )
+        .orderBy('g.name', 'ASC')
+        .limit(limit)
+        .offset((page - 1) * limit)
+        .getRawMany(),
+      this.groupRepo.count(),
+    ]);
+
+    return {
+      data: {
+        groupPermissions,
+        pageInformation: paginate(limit, page, total),
+      },
+    };
+  }
+
+  public async createGroupPermission(
+    createGroupPermissionBodyDto: CreateGroupPermissionBodyDto,
+  ) {
+    const { groupPermissionName, permissionIds } = createGroupPermissionBodyDto;
+
+    const groupPermission = await this.groupRepo.count({
+      where: {
+        name: groupPermissionName,
+      },
+    });
+
+    if (groupPermission) {
+      throw new CustomErrorException(ERRORS.GroupPermissionAlreadyExist);
+    }
+
+    let createdGroup: Group = undefined;
+    if (!permissionIds) {
+      createdGroup = await this.groupRepo.save({
+        name: groupPermissionName,
+      });
+      return {
+        data: {
+          data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
+          message: 'Create group permission successfully',
+        },
+      };
+    }
+
+    const countedPermissions = await this.permissionRepo.count({
+      where: {
+        id: In(permissionIds),
+      },
+    });
+
+    if (countedPermissions !== permissionIds.length) {
+      throw new CustomErrorException(ERRORS.PermissionNotExist);
+    }
+
+    createdGroup = await this.groupRepo.save({
+      name: groupPermissionName,
+      groupPermission: permissionIds.map((permissionId) =>
+        this.permissionRepo.create({ id: permissionId }),
+      ),
+    });
+
+    return {
+      data: {
+        data: _.omit(createdGroup, ['createdAt', 'updatedAt']),
+        message: 'Create group permission successfully',
       },
     };
   }
