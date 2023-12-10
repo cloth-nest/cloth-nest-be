@@ -24,6 +24,7 @@ import { AddressModule } from './modules/address/address.module';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductModule } from './modules/product/product.module';
 import { PermissionModule } from './modules/permission/permission.module';
+import { WishlistModule } from './modules/wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { PermissionModule } from './modules/permission/permission.module';
     CategoryModule,
     ProductModule,
     PermissionModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [
