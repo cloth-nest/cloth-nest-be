@@ -27,6 +27,7 @@ import {
   UserGroupSeeder,
   WarehouseSeeder,
   WarehouseStockSeeder,
+  UserWishlistSeeder,
 } from './seeders';
 
 dotenv.config();
@@ -72,6 +73,7 @@ const {
       AssignedVariantAttributeValuesSeeder,
       WarehouseSeeder,
       WarehouseStockSeeder,
+      UserWishlistSeeder,
     ],
   };
 

@@ -20,3 +20,4 @@ export * from './assigned-product-attribute-values.seeder';
 export * from './assigned-variant-attribute-values.seeder';
 export * from './warehouse.seeder';
 export * from './warehouse-stock.seeder';
+export * from './user-wishlist.seeder';
