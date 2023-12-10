@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../entities';
-import { Repository } from 'typeorm';
+import { Group, User, UserGroup } from '../../entities';
+import { DataSource, In, Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
 import { hashPassword, paginate } from '../../shared/utils';
@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   GetAllGroupPermissionsQueryDTO,
   InviteStaffMemberDto,
+  UpdateGroupPermissionStaffBodyDto,
   UpdateProfileDto,
 } from './dto';
 import { AccountActiveStatus } from '../../shared/enums';
@@ -24,9 +25,12 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    @InjectRepository(Group)
+    private groupRepo: Repository<Group>,
     private fileUploadSerivce: FileUploadService,
     private configService: ConfigService,
     private mailService: MailService,
+    private dataSource: DataSource,
   ) {}
   public async getProfile(currentUser: AuthUser) {
     try {
@@ -258,6 +262,108 @@ export class UsersService {
       };
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async updateGroupPermissionStaff(
+    user: AuthUser,
+    staffMemberId: string,
+    updateGroupPermissionStaffBodyDto: UpdateGroupPermissionStaffBodyDto,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Extract data from dto
+      const { groupPermissionIds, isActive } =
+        updateGroupPermissionStaffBodyDto;
+
+      // Check if staff member exist
+      const staffMember = await this.userRepo.findOne({
+        where: {
+          id: parseInt(staffMemberId),
+          isStaff: true,
+        },
+      });
+
+      if (!staffMember) {
+        throw new CustomErrorException(ERRORS.StaffMemberNotFound);
+      }
+
+      if (isActive) {
+        // Check if staff member is super user
+        if (staffMember.isSuperUser) {
+          throw new CustomErrorException(ERRORS.CannotChangeSuperUserStatus);
+        }
+
+        // Check if staff member is current user
+        if (staffMember.id === user.id) {
+          throw new CustomErrorException(ERRORS.CannotChangeCurrentUserStatus);
+        }
+
+        // Update isActive field
+        await this.userRepo.update(
+          {
+            id: parseInt(staffMemberId),
+          },
+          {
+            isActive,
+          },
+        );
+      }
+
+      let groupPermissions: Group[] = undefined;
+      if (groupPermissionIds) {
+        // Check groupPermissionIds correct
+        const groupPermissionsExist = await this.groupRepo.count({
+          where: {
+            id: In(groupPermissionIds),
+          },
+        });
+
+        if (groupPermissionsExist !== groupPermissionIds.length) {
+          throw new CustomErrorException(ERRORS.GroupPermissionNotExist);
+        }
+
+        // Remove old group permission
+        await queryRunner.manager.delete(UserGroup, {
+          userId: parseInt(staffMemberId),
+        });
+
+        // Insert new group permission
+        await queryRunner.manager.save(
+          UserGroup,
+          groupPermissionIds.map((item) => ({
+            userId: parseInt(staffMemberId),
+            groupId: item,
+          })),
+        );
+
+        groupPermissions = await this.groupRepo.find({
+          where: {
+            id: In(groupPermissionIds),
+          },
+          select: ['id', 'name'],
+        });
+      }
+
+      await queryRunner.commitTransaction();
+
+      return {
+        message: 'Update group permission successfully',
+        data: {
+          userId: parseInt(staffMemberId),
+          isActive,
+          groupPermissions,
+        },
+      };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
   }
 

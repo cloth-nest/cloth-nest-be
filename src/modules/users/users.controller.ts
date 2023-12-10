@@ -23,6 +23,8 @@ import {
   GetAllGroupPermissionsQueryDTO,
   InviteStaffMemberDto,
   GetStaffMemberDetailParamDTO,
+  UpdateGroupPermissionStaffParamDto,
+  UpdateGroupPermissionStaffBodyDto,
 } from './dto';
 import { Permission } from '../../shared/enums';
 
@@ -94,6 +96,23 @@ export class UserController {
   ) {
     return this.userService.getStaffMemberDetail(
       getStaffMemberDetailParamDTO.id,
+    );
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Patch('staff/:id')
+  @HttpCode(HttpStatus.OK)
+  updateGroupPermissionStaff(
+    @CurrentUser() user: AuthUser,
+    @Param()
+    updateGroupPermissionStaffParamDto: UpdateGroupPermissionStaffParamDto,
+    @Body()
+    updateGroupPermissionStaffBodyDto: UpdateGroupPermissionStaffBodyDto,
+  ) {
+    return this.userService.updateGroupPermissionStaff(
+      user,
+      updateGroupPermissionStaffParamDto.id,
+      updateGroupPermissionStaffBodyDto,
     );
   }
 }

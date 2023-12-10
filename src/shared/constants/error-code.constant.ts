@@ -46,6 +46,8 @@ type Code =
   | 'InvalidPermissionCode'
   | 'InvalidGroupPermissionName'
   | 'InvalidPermissionIds'
+  | 'InvalidGroupPermissionIds'
+  | 'InvalidIsActive'
 
   // Group C
   | 'EmailExisted'
@@ -60,6 +62,8 @@ type Code =
   | 'SessionResetPassword'
   | 'NewPasswordMatchOldPassword'
   | 'StaffMemberNotFound'
+  | 'CannotChangeSuperUserStatus'
+  | 'CannotChangeCurrentUserStatus'
 
   // Group D
   | 'Unauthorized'
@@ -376,6 +380,18 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidGroupPermissionIds: {
+    code: 'B0036',
+    message: 'Invalid input groupPermissionIds',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidIsActive: {
+    code: 'B0037',
+    message: 'Invalid input isActive',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
   InvalidRoute: {
     code: 'A0005',
     message: 'Invalid route',
@@ -455,6 +471,18 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Staff member not found',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+  CannotChangeSuperUserStatus: {
+    code: 'C0013',
+    message: 'Cannot change super user status',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  CannotChangeCurrentUserStatus: {
+    code: 'C0014',
+    message: 'Cannot change current user status',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 
   // Group D
