@@ -208,6 +208,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'isActive': {
         return ERRORS.InvalidIsActive;
       }
+      case 'variantIds': {
+        return ERRORS.InvalidVariantsIds;
+      }
       default:
         return ERRORS.InternalServerError;
     }

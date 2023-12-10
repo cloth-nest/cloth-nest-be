@@ -48,6 +48,7 @@ type Code =
   | 'InvalidPermissionIds'
   | 'InvalidGroupPermissionIds'
   | 'InvalidIsActive'
+  | 'InvalidVariantsIds'
 
   // Group C
   | 'EmailExisted'
@@ -92,6 +93,7 @@ type Code =
   | 'ColorNotExist'
   | 'SizeNotExist'
   | 'ProductNotExist'
+  | 'ProductVariantNotExist'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -100,7 +102,12 @@ type Code =
   | 'PermissionIsUsing'
   | 'GroupPermissionAlreadyExist'
   | 'GroupPermissionNotExist'
-  | 'GroupPermissionIsUsing';
+  | 'GroupPermissionIsUsing'
+
+  // Group I (Wishlist)
+  | 'DuplicateProductVariantIds'
+  | 'ProductVariantAlreadyExist'
+  | 'WishlistItemLimit';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -124,7 +131,9 @@ export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   NewPasswordMatchOldPasswordError: 'NewPasswordMatchOldPasswordError',
   ProductAttributeError: 'ProductAttributeError',
   ProductTypeError: 'ProductTypeError',
+  ProductVariantError: 'ProductVariantError',
   PermissionError: 'PermissionError',
+  WishlistError: 'WishlistError',
   UnauthorizedError: 'UnauthorizedError',
   NotFoundError: 'NotFoundError',
   ForbiddenError: 'ForbiddenError',
@@ -484,6 +493,12 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidVariantsIds: {
+    code: 'C0015',
+    message: 'Invalid input variantsIds',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
 
   // Group D
   Unauthorized: {
@@ -612,6 +627,12 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
   },
+  ProductVariantNotExist: {
+    code: 'G0011',
+    message: 'Product variant not existed',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ProductVariantError,
+  },
 
   // Group H (Permission)
   PermissionAlreadyExist: {
@@ -655,5 +676,25 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Group permission is using',
     statusCode: 409,
     typeError: TYPE_ERRORS.PermissionError,
+  },
+
+  // Group I (Wishlist)
+  DuplicateProductVariantIds: {
+    code: 'I0001',
+    message: 'Duplicate productVariantIds',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.WishlistError,
+  },
+  ProductVariantAlreadyExist: {
+    code: 'I0002',
+    message: 'Product variant already exist',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.WishlistError,
+  },
+  WishlistItemLimit: {
+    code: 'I0003',
+    message: 'Wishlist item limit is 10',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.WishlistError,
   },
 };
