@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductVariant, User, UserWishlist } from '../../entities';
 import { DataSource, In, Repository } from 'typeorm';
 import { AuthUser } from '../../shared/interfaces';
-import { AddWishlistItemsBodyDto } from './dto';
+import { AddWishlistItemsBodyDto, RemoveWishlistItemsBodyDto } from './dto';
 import { hasDuplicates } from '../../shared/utils';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -114,6 +114,43 @@ export class WishlistService {
         data: createdWishlistItems.map((item) =>
           _.omit(item, ['createdAt', 'updatedAt']),
         ),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async removeWishlistItems(
+    user: AuthUser,
+    removeWishlistItemsBodyDto: RemoveWishlistItemsBodyDto,
+  ) {
+    try {
+      const { variantIds } = removeWishlistItemsBodyDto;
+
+      // Check duplicate productVariantIds
+      const hasDuplicateProductVariantIds = hasDuplicates(variantIds);
+      if (hasDuplicateProductVariantIds) {
+        throw new CustomErrorException(ERRORS.DuplicateProductVariantIds);
+      }
+
+      // Check if productVariantIds must be existed in wishlist
+      const countedWishlistItemsExist = await this.userWishlistRepo.count({
+        where: {
+          productVariantId: In(variantIds),
+        },
+      });
+      if (countedWishlistItemsExist !== variantIds.length) {
+        throw new CustomErrorException(ERRORS.ProductVariantNotExist);
+      }
+
+      // Remove wishlist items
+      await this.userWishlistRepo.delete({
+        userId: user.id,
+        productVariantId: In(variantIds),
+      });
+
+      return {
+        message: 'Remove wishlist items successfully',
       };
     } catch (err) {
       throw err;

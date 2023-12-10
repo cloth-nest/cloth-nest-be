@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -9,7 +10,7 @@ import {
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { WishlistService } from './wishlist.service';
-import { AddWishlistItemsBodyDto } from './dto';
+import { AddWishlistItemsBodyDto, RemoveWishlistItemsBodyDto } from './dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -30,5 +31,18 @@ export class WishlistController {
     @Body() addWishlistItemsBodyDto: AddWishlistItemsBodyDto,
   ) {
     return this.wishlistService.addWishlistItems(user, addWishlistItemsBodyDto);
+  }
+
+  @Auth()
+  @Delete('')
+  @HttpCode(HttpStatus.OK)
+  removeWishlistItems(
+    @CurrentUser() user: AuthUser,
+    @Body() removeWishlistItemsBodyDto: RemoveWishlistItemsBodyDto,
+  ) {
+    return this.wishlistService.removeWishlistItems(
+      user,
+      removeWishlistItemsBodyDto,
+    );
   }
 }
