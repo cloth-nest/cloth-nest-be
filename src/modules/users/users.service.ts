@@ -197,15 +197,17 @@ export class UsersService {
       const password = this.generatePassword();
 
       // Create new user
-      await this.userRepo.save({
-        email,
-        firstName,
-        lastName,
-        password,
-        isStaff: true,
-        isActive: true,
-        dateJoined: new Date(),
-      });
+      await this.userRepo.save(
+        this.userRepo.create({
+          email,
+          firstName,
+          lastName,
+          password,
+          isStaff: true,
+          isActive: true,
+          dateJoined: new Date(),
+        }),
+      );
 
       // Send email to staff
       await this.mailService.sendUserStaffPassword(email, firstName, password);
