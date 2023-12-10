@@ -22,3 +22,4 @@ export * from './assigned-product-attribute-values.entity';
 export * from './assigned-variant-attribute-values.entity';
 export * from './warehouse.entity';
 export * from './warehouse-stock.entity';
+export * from './user-wishlist.entity';

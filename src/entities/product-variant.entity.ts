@@ -11,6 +11,7 @@ import {
 import {
   AssignedVariantAttribute,
   Product,
+  UserWishlist,
   VariantImage,
   WarehouseStock,
 } from './';
@@ -76,6 +77,9 @@ export class ProductVariant {
     (warehouseStock) => warehouseStock.productVariant,
   )
   warehouseStocks: WarehouseStock[];
+
+  @OneToMany(() => UserWishlist, (userWishlist) => userWishlist.productVariant)
+  userWishlist: UserWishlist[];
 
   @CreateDateColumn({
     name: 'created_at',
