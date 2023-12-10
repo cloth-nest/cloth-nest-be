@@ -59,6 +59,7 @@ type Code =
   | 'WrongRefreshToken'
   | 'SessionResetPassword'
   | 'NewPasswordMatchOldPassword'
+  | 'StaffMemberNotFound'
 
   // Group D
   | 'Unauthorized'
@@ -448,6 +449,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'The new password must not be the same as the old password',
     statusCode: 409,
     typeError: TYPE_ERRORS.NewPasswordMatchOldPasswordError,
+  },
+  StaffMemberNotFound: {
+    code: 'C0012',
+    message: 'Staff member not found',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 
   // Group D

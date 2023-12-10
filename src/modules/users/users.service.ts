@@ -219,6 +219,48 @@ export class UsersService {
     }
   }
 
+  public async getStaffMemberDetail(staffMemberId: string) {
+    try {
+      const staffMember = await this.userRepo.findOne({
+        where: {
+          id: parseInt(staffMemberId),
+          isStaff: true,
+        },
+        select: [
+          'id',
+          'email',
+          'firstName',
+          'lastName',
+          'isActive',
+          'dateJoined',
+          'avatar',
+          'phone',
+        ],
+        relations: {
+          userGroup: {
+            group: true,
+          },
+        },
+      });
+
+      if (!staffMember) {
+        throw new CustomErrorException(ERRORS.StaffMemberNotFound);
+      }
+
+      return {
+        data: _.omit(
+          {
+            ...staffMember,
+            groupPermissions: staffMember.userGroup.map((item) => item.group),
+          },
+          'userGroup',
+        ),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   private getS3Key(userId: number, fileName: string): string {
     return `${this.configService.get<string>(
       'AWS_S3_AVATAR_FOLDER',

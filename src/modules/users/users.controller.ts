@@ -10,6 +10,7 @@ import {
   ParseFilePipeBuilder,
   Body,
   Query,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthUser } from '../../shared/interfaces';
@@ -21,6 +22,7 @@ import {
   UpdateProfileDto,
   GetAllGroupPermissionsQueryDTO,
   InviteStaffMemberDto,
+  GetStaffMemberDetailParamDTO,
 } from './dto';
 import { Permission } from '../../shared/enums';
 
@@ -82,5 +84,16 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   inviteStaffMember(@Body() inviteStaffMemberDto: InviteStaffMemberDto) {
     return this.userService.inviteStaffMember(inviteStaffMemberDto);
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Get('staff/:id')
+  @HttpCode(HttpStatus.OK)
+  getStaffMemberDetail(
+    @Param() getStaffMemberDetailParamDTO: GetStaffMemberDetailParamDTO,
+  ) {
+    return this.userService.getStaffMemberDetail(
+      getStaffMemberDetailParamDTO.id,
+    );
   }
 }
