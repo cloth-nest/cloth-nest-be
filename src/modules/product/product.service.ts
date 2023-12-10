@@ -718,6 +718,12 @@ export class ProductService {
               id: x.productAttributeId,
               order: x.order,
               name: x.productAttribute.name,
+              value: _.uniqBy(
+                attributeVariants.filter(
+                  (y) => y.attributeId === x.productAttributeId,
+                ),
+                'value',
+              ).map((z) => z.value),
             }),
           ),
         },

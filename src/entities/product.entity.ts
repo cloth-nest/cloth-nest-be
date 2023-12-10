@@ -16,7 +16,7 @@ import {
   ProductType,
   ProductVariant,
 } from './';
-import { ColumnNumericTransformer } from 'src/shared/utils';
+import { ColumnNumericTransformer } from '../shared/utils';
 
 @Entity({ name: 'product' })
 export class Product {
