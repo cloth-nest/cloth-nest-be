@@ -17,7 +17,11 @@ import { Auth, CurrentUser } from '../../shared/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { extensionImageReg } from '../../shared/constants';
-import { UpdateProfileDto, GetAllGroupPermissionsQueryDTO } from './dto';
+import {
+  UpdateProfileDto,
+  GetAllGroupPermissionsQueryDTO,
+  InviteStaffMemberDto,
+} from './dto';
 import { Permission } from '../../shared/enums';
 
 @Controller('user')
@@ -71,5 +75,12 @@ export class UserController {
     @Query() getAllGroupPermissionsQueryDTO: GetAllGroupPermissionsQueryDTO,
   ) {
     return this.userService.getAllStaffMembers(getAllGroupPermissionsQueryDTO);
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Post('staff/invite')
+  @HttpCode(HttpStatus.CREATED)
+  inviteStaffMember(@Body() inviteStaffMemberDto: InviteStaffMemberDto) {
+    return this.userService.inviteStaffMember(inviteStaffMemberDto);
   }
 }

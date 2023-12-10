@@ -9,8 +9,15 @@ import { AuthUser } from '../../shared/interfaces';
 import * as _ from 'lodash';
 import { FileUploadService } from '../../shared/services';
 import { ConfigService } from '@nestjs/config';
-import { GetAllGroupPermissionsQueryDTO, UpdateProfileDto } from './dto';
+import {
+  GetAllGroupPermissionsQueryDTO,
+  InviteStaffMemberDto,
+  UpdateProfileDto,
+} from './dto';
 import { AccountActiveStatus } from '../../shared/enums';
+import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
+import { ERRORS } from '../../shared/constants';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +26,7 @@ export class UsersService {
     private userRepo: Repository<User>,
     private fileUploadSerivce: FileUploadService,
     private configService: ConfigService,
+    private mailService: MailService,
   ) {}
   public async getProfile(currentUser: AuthUser) {
     try {
@@ -171,6 +179,46 @@ export class UsersService {
     }
   }
 
+  public async inviteStaffMember(inviteStaffMemberDto: InviteStaffMemberDto) {
+    try {
+      // Extract data from dto
+      const { email, firstName, lastName } = inviteStaffMemberDto;
+
+      const user = await this.findUserByEmail(email);
+      if (user) {
+        throw new CustomErrorException(ERRORS.EmailExisted);
+      }
+
+      // Gen password
+      const password = this.generatePassword();
+
+      // Create new user
+      await this.userRepo.save({
+        email,
+        firstName,
+        lastName,
+        password,
+        isStaff: true,
+        isActive: true,
+        dateJoined: new Date(),
+      });
+
+      // Send email to staff
+      await this.mailService.sendUserStaffPassword(email, firstName, password);
+
+      return {
+        message: 'Invite staff member successfully',
+        data: {
+          email,
+          firstName,
+          lastName,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   private getS3Key(userId: number, fileName: string): string {
     return `${this.configService.get<string>(
       'AWS_S3_AVATAR_FOLDER',
@@ -304,5 +352,26 @@ export class UsersService {
       },
       ['userPermission'],
     );
+  }
+
+  private generatePassword() {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@$!%*#?&';
+    const randomIndex = () => Math.floor(Math.random() * characters.length);
+
+    // Select at least one letter, one digit, and one special character
+    const validString =
+      characters[randomIndex()] + // Letter
+      characters[randomIndex() + 26] + // Digit
+      characters[randomIndex() + 52] + // Special character
+      characters.slice(0, 9); // 9 random characters
+
+    // Randomize the string to create a random valid string
+    const shuffledString = validString
+      .split('')
+      .sort(() => 0.5 - Math.random())
+      .join('');
+
+    return shuffledString;
   }
 }
