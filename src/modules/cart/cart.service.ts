@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductVariant, User } from '../../entities';
-import { DataSource, Repository } from 'typeorm';
+import { Cart, ProductVariant } from '../../entities';
+import { Repository } from 'typeorm';
 import { AuthUser } from '../../shared/interfaces';
+import { AddToCartBodyDto } from './dto';
+import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
+import { ERRORS } from 'src/shared/constants';
+import * as _ from 'lodash';
 
 @Injectable()
 export class CartService {
   constructor(
-    @InjectRepository(User)
-    private userRepo: Repository<User>,
     @InjectRepository(ProductVariant)
     private productVariantRepo: Repository<ProductVariant>,
-    private dataSource: DataSource,
+    @InjectRepository(Cart)
+    private cartRepo: Repository<Cart>,
   ) {}
   public async getAllCartItem(user: AuthUser) {
     try {
@@ -42,6 +45,54 @@ export class CartService {
           quantity: item.cart[0].quantity,
           image: item.variantImages[0].productImage.image,
         })),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async addToCart(user: AuthUser, addToCartBodyDto: AddToCartBodyDto) {
+    try {
+      const { variantId, quantity } = addToCartBodyDto;
+      const productVariant = await this.productVariantRepo.count({
+        where: { id: variantId },
+      });
+      if (!productVariant) {
+        throw new CustomErrorException(ERRORS.ProductVariantNotExist);
+      }
+
+      // Check productVariant is in cart
+      const cartItemExist = await this.cartRepo.findOne({
+        where: { userId: user.id, productVariantId: variantId },
+        select: ['id', 'productVariantId', 'quantity'],
+      });
+
+      // If productVariant is in cart, update quantity
+      if (cartItemExist) {
+        const cartItem = await this.cartRepo.save({
+          id: cartItemExist.id,
+          userId: user.id,
+          productVariantId: variantId,
+          quantity: cartItemExist.quantity + quantity,
+        });
+
+        return {
+          data: {
+            productVariantId: cartItem.productVariantId,
+            quantity: cartItem.quantity,
+          },
+        };
+      }
+
+      const cartItem = await this.cartRepo.save({
+        userId: user.id,
+        productVariantId: variantId,
+        quantity,
+      });
+
+      return {
+        message: 'Add to cart successfully',
+        data: _.pick(cartItem, ['productVariantId', 'quantity']),
       };
     } catch (err) {
       throw err;

@@ -1,7 +1,15 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { CartService } from './cart.service';
+import { AddToCartBodyDto } from './dto';
 
 @Controller('cart')
 export class CartController {
@@ -12,5 +20,15 @@ export class CartController {
   @HttpCode(HttpStatus.OK)
   getAllCartItem(@CurrentUser() user: AuthUser) {
     return this.cartService.getAllCartItem(user);
+  }
+
+  @Auth()
+  @Post('')
+  @HttpCode(HttpStatus.CREATED)
+  addToCart(
+    @CurrentUser() user: AuthUser,
+    @Body() addToCartBodyDto: AddToCartBodyDto,
+  ) {
+    return this.cartService.addToCart(user, addToCartBodyDto);
   }
 }
