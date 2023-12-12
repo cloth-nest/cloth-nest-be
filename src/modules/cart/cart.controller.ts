@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -9,7 +10,7 @@ import {
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { CartService } from './cart.service';
-import { AddToCartBodyDto } from './dto';
+import { AddToCartBodyDto, RemoveCartItemBodyDto } from './dto';
 
 @Controller('cart')
 export class CartController {
@@ -30,5 +31,15 @@ export class CartController {
     @Body() addToCartBodyDto: AddToCartBodyDto,
   ) {
     return this.cartService.addToCart(user, addToCartBodyDto);
+  }
+
+  @Auth()
+  @Delete('')
+  @HttpCode(HttpStatus.OK)
+  removeCartItem(
+    @CurrentUser() user: AuthUser,
+    @Body() removeCartItemBodyDto: RemoveCartItemBodyDto,
+  ) {
+    return this.cartService.removeCartitem(user, removeCartItemBodyDto);
   }
 }

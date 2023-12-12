@@ -107,7 +107,11 @@ type Code =
   // Group I (Wishlist)
   | 'DuplicateProductVariantIds'
   | 'ProductVariantAlreadyExist'
-  | 'WishlistItemLimit';
+  | 'WishlistItemLimit'
+
+  // Group J (Cart)
+  | 'CartItemNotExist'
+  | 'QuantityGreaterThanCart';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -696,5 +700,19 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Wishlist item limit is 10',
     statusCode: 409,
     typeError: TYPE_ERRORS.WishlistError,
+  },
+
+  // Group J (Cart)
+  CartItemNotExist: {
+    code: 'J0001',
+    message: 'Cart item not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
+  },
+  QuantityGreaterThanCart: {
+    code: 'J0002',
+    message: 'Quantity is greater than quantity in cart',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };
