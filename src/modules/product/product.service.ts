@@ -487,6 +487,7 @@ export class ProductService {
         price: product.price,
         description: product.description,
         image: product.productImages[0]?.image,
+        defautVariantId: product?.defaultVariant?.id,
         colors: colorProducts[product.id],
       }));
 
@@ -833,7 +834,7 @@ export class ProductService {
         },
         take: limit,
         skip: limit * (page - 1),
-        relations: ['productImages'],
+        relations: ['productImages', 'defaultVariant'],
       });
 
       const colorProducts = await this.getColorsOfProducts(
@@ -848,6 +849,7 @@ export class ProductService {
             price: product.price,
             description: product.description,
             image: product.productImages[0]?.image,
+            defaultVariant: product?.defaultVariant?.id,
             colors: colorProducts[product.id],
           })),
           pageInformation: paginate(limit, page, total),
