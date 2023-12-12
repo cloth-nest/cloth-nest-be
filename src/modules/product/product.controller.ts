@@ -25,6 +25,7 @@ import {
   GetProductDetailParamDto,
   GetRecommendationProductsParamDto,
   GetRecommendationProductsQueryDTO,
+  SearchQueryDTO,
   UpdateAttributeValueBodyDTO,
   UpdateAttributeValueParamDto,
   UpdateProductAttributeBodyDTO,
@@ -137,6 +138,15 @@ export class ProductController {
       param.id,
       getAllProductsBelongToCategoryQueryDTO,
     );
+  }
+
+  @Get('search')
+  @HttpCode(HttpStatus.OK)
+  search(
+    @Query()
+    searchQueryDTO: SearchQueryDTO,
+  ) {
+    return this.productService.search(searchQueryDTO);
   }
 
   @Get(':id')
