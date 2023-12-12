@@ -15,6 +15,7 @@ import {
   Address,
   UserGroup,
   UserWishlist,
+  Cart,
 } from './';
 import * as bcrypt from 'bcrypt';
 import { Gender } from '../shared/enums';
@@ -91,6 +92,9 @@ export class User {
 
   @OneToMany(() => UserWishlist, (userWishlist) => userWishlist.user)
   userWishlist: UserWishlist[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  cart: Cart[];
 
   @OneToMany(() => UserAddress, (userAddress) => userAddress.user)
   userAddress: UserAddress[];

@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import {
   AssignedVariantAttribute,
+  Cart,
   Product,
   UserWishlist,
   VariantImage,
@@ -80,6 +81,9 @@ export class ProductVariant {
 
   @OneToMany(() => UserWishlist, (userWishlist) => userWishlist.productVariant)
   userWishlist: UserWishlist[];
+
+  @OneToMany(() => Cart, (cart) => cart.productVariant)
+  cart: Cart[];
 
   @CreateDateColumn({
     name: 'created_at',
