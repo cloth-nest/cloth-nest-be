@@ -33,6 +33,7 @@ export class WishlistService {
           'pv.name',
           'pv.price',
           'pv.productId',
+          'wishlist.productVariantId',
           'variantImages.id',
           'productImage.image',
         ])
@@ -45,6 +46,7 @@ export class WishlistService {
           name: item.name,
           price: item.price,
           productId: item.productId,
+          productVariantId: item.userWishlist[0].productVariantId,
           image: item.variantImages[0].productImage.image,
         })),
       };
