@@ -5,12 +5,17 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { WishlistService } from './wishlist.service';
-import { AddWishlistItemsBodyDto, RemoveWishlistItemsBodyDto } from './dto';
+import {
+  AddWishlistItemsBodyDto,
+  RemoveWishlistItemsBodyDto,
+  SyncWishlistItemsBodyDto,
+} from './dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -31,6 +36,19 @@ export class WishlistController {
     @Body() addWishlistItemsBodyDto: AddWishlistItemsBodyDto,
   ) {
     return this.wishlistService.addWishlistItems(user, addWishlistItemsBodyDto);
+  }
+
+  @Auth()
+  @Patch('')
+  @HttpCode(HttpStatus.OK)
+  syncWishlistItems(
+    @CurrentUser() user: AuthUser,
+    @Body() syncWishlistItemsBodyDto: SyncWishlistItemsBodyDto,
+  ) {
+    return this.wishlistService.syncWishlistItems(
+      user,
+      syncWishlistItemsBodyDto,
+    );
   }
 
   @Auth()

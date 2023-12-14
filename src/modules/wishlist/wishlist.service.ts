@@ -3,7 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductVariant, User, UserWishlist } from '../../entities';
 import { DataSource, In, Repository } from 'typeorm';
 import { AuthUser } from '../../shared/interfaces';
-import { AddWishlistItemsBodyDto, RemoveWishlistItemsBodyDto } from './dto';
+import {
+  AddWishlistItemsBodyDto,
+  RemoveWishlistItemsBodyDto,
+  SyncWishlistItemsBodyDto,
+} from './dto';
 import { hasDuplicates } from '../../shared/utils';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -113,6 +117,55 @@ export class WishlistService {
 
       return {
         message: 'Add wishlist items successfully',
+        data: createdWishlistItems.map((item) =>
+          _.omit(item, ['createdAt', 'updatedAt']),
+        ),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async syncWishlistItems(
+    user: AuthUser,
+    syncWishlistItemsBodyDto: SyncWishlistItemsBodyDto,
+  ) {
+    try {
+      const { variantIds } = syncWishlistItemsBodyDto;
+
+      // Check if productVariantIds is existed
+      const productVariants = await this.productVariantRepo.count({
+        where: {
+          id: In(variantIds),
+        },
+      });
+      if (productVariants !== variantIds.length) {
+        throw new CustomErrorException(ERRORS.ProductVariantNotExist);
+      }
+
+      // Compare wishlist items
+      const wishlistItems = await this.userWishlistRepo.find({
+        where: {
+          userId: user.id,
+          productVariantId: In(variantIds),
+        },
+      });
+
+      const needToAddWishlistItems = variantIds.filter(
+        (variantId) =>
+          !wishlistItems.some((item) => item.productVariantId === variantId),
+      );
+
+      // Add wishlist items
+      const createdWishlistItems = await this.userWishlistRepo.save(
+        needToAddWishlistItems.map((variantId) => ({
+          userId: user.id,
+          productVariantId: variantId,
+        })),
+      );
+
+      return {
+        message: 'Sync wishlist items successfully',
         data: createdWishlistItems.map((item) =>
           _.omit(item, ['createdAt', 'updatedAt']),
         ),
