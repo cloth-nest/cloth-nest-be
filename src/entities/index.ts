@@ -24,3 +24,5 @@ export * from './warehouse.entity';
 export * from './warehouse-stock.entity';
 export * from './user-wishlist.entity';
 export * from './cart.entity';
+export * from './order.entity';
+export * from './order-detail.entity';

@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserAddress } from './';
+import { Order, UserAddress } from './';
 
 @Entity({ name: 'address' })
 export class Address {
@@ -51,6 +51,9 @@ export class Address {
 
   @OneToMany(() => UserAddress, (userAddress) => userAddress.address)
   userAddress: UserAddress[];
+
+  @OneToMany(() => Order, (order) => order.address)
+  order: Order[];
 
   @CreateDateColumn({
     name: 'created_at',

@@ -11,6 +11,7 @@ import {
 import {
   AssignedVariantAttribute,
   Cart,
+  OrderDetail,
   Product,
   UserWishlist,
   VariantImage,
@@ -84,6 +85,9 @@ export class ProductVariant {
 
   @OneToMany(() => Cart, (cart) => cart.productVariant)
   cart: Cart[];
+
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
+  orderDetail: OrderDetail[];
 
   @CreateDateColumn({
     name: 'created_at',
