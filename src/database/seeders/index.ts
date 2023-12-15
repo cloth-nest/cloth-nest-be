@@ -22,3 +22,7 @@ export * from './warehouse.seeder';
 export * from './warehouse-stock.seeder';
 export * from './user-wishlist.seeder';
 export * from './cart.seeder';
+export * from './address.seeder';
+export * from './user-address.seeder';
+export * from './order.seeder';
+export * from './order-detail.seeder';

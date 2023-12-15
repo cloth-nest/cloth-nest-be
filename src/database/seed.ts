@@ -29,6 +29,10 @@ import {
   WarehouseStockSeeder,
   UserWishlistSeeder,
   CartSeeder,
+  AddressSeeder,
+  UserAddressSeeder,
+  OrderSeeder,
+  OrderDetailSeeder,
 } from './seeders';
 
 dotenv.config();
@@ -76,6 +80,10 @@ const {
       WarehouseStockSeeder,
       UserWishlistSeeder,
       CartSeeder,
+      AddressSeeder,
+      UserAddressSeeder,
+      OrderSeeder,
+      OrderDetailSeeder,
     ],
   };
 

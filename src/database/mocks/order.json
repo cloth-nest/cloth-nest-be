@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "addressId": 1,
+    "status": "DELIVERED",
+    "total": 20,
+    "orderDate": "2017-01-01T00:00:00.000Z",
+    "deliveryDate": "2017-01-01T00:00:00.000Z",
+    "shippingFee": 10,
+    "phone": "1234567890",
+    "deliveryMethod": "NORMAL",
+    "paymentMethod": "COD"
+  },
+  {
+    "id": 1,
+    "userId": 1,
+    "addressId": 2,
+    "status": "ON_PROCESS",
+    "total": 11,
+    "orderDate": "2017-01-01T00:00:00.000Z",
+    "deliveryDate": "2017-01-01T00:00:00.000Z",
+    "shippingFee": 5,
+    "phone": "1234567890",
+    "deliveryMethod": "FAST",
+    "paymentMethod": "COD"
+  }
+]

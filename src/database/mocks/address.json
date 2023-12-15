@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "email": "bfosbraey0@yale.edu",
+    "lastName": "Fosbraey",
+    "firstName": "Birch",
+    "provinceCode": 1,
+    "provinceName": "Thành phố Quy Nhơn",
+    "districtCode": 1,
+    "districtName": "Quận Ba Đình",
+    "wardCode": 1,
+    "wardName": "Phường Phúc Xá",
+    "detail": "41.C Nguyễn Lạc",
+    "phone": "0967781796",
+    "isAddressProfile": true
+  },
+  {
+    "id": 2,
+    "email": "maiphamquochung@gmail.com",
+    "lastName": "Hung",
+    "firstName": "Mai",
+    "provinceCode": 1,
+    "provinceName": "Thành phố Quy Nhơn",
+    "districtCode": 1,
+    "districtName": "Quận Ba Đình",
+    "wardCode": 1,
+    "wardName": "Phường Phúc Xá",
+    "detail": "41.C Nguyễn Lạc",
+    "phone": "0967781796",
+    "isAddressProfile": false
+  }
+]
