@@ -111,7 +111,10 @@ type Code =
 
   // Group J (Cart)
   | 'CartItemNotExist'
-  | 'QuantityGreaterThanCart';
+  | 'QuantityGreaterThanCart'
+
+  // Group K (Order)
+  | 'OrderNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -714,5 +717,13 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Quantity is greater than quantity in cart',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+
+  // Group K (Order)
+  OrderNotExist: {
+    code: 'K0001',
+    message: 'Order not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 };
