@@ -52,6 +52,7 @@ export class ProductVariant {
     nullable: true,
     type: 'decimal',
     default: 0,
+    transformer: new ColumnNumericTransformer(),
   })
   weight: number;
 

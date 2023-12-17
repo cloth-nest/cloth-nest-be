@@ -9,6 +9,8 @@ import {
 } from '../../entities';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
+import { OrderLine } from './order-line.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -19,9 +21,16 @@ import { OrderService } from './order.service';
       Order,
       OrderDetail,
     ]),
+    HttpModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService],
+  providers: [
+    {
+      provide: 'OrderLine',
+      useClass: OrderLine,
+    },
+    OrderService,
+  ],
   exports: [OrderService],
 })
 export class OrderModule {}

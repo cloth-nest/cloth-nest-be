@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Order,
@@ -9,9 +9,14 @@ import {
 } from '../../entities';
 import { DataSource, Repository } from 'typeorm';
 import { AuthUser } from '../../shared/interfaces';
-import { GetAllOrdersBelongToUserQueryDTO } from './dto';
+import {
+  CalcBillBodyDto,
+  CreateOrderWithCartBodyDto,
+  GetAllOrdersBelongToUserQueryDTO,
+} from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
+import { OrderLine } from './order-line.service';
 
 @Injectable()
 export class OrderService {
@@ -24,6 +29,8 @@ export class OrderService {
     private orderRepo: Repository<Order>,
     @InjectRepository(OrderDetail)
     private orderDetailRepo: Repository<OrderDetail>,
+    @Inject('OrderLine')
+    private readonly orderLine: OrderLine,
     private dataSource: DataSource,
   ) {}
   public async getAllOrderBelongToUser(
@@ -144,6 +151,72 @@ export class OrderService {
               },
             })),
           },
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async checkInventory(user: AuthUser) {
+    try {
+      await this.orderLine.checkInventory({
+        user,
+      });
+
+      return {
+        data: {
+          isAvailable: true,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async calcBill(user: AuthUser, calcBillBodyDto: CalcBillBodyDto) {
+    try {
+      const { addressId, ghnServerType } = calcBillBodyDto;
+
+      const { bill, cart } = await this.orderLine.calcBill({
+        user,
+        addressId,
+        ghnServerType,
+      });
+
+      return {
+        data: {
+          bill,
+          cart,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createOrderWithCart(
+    user: AuthUser,
+    createOrderWithCartBodyDto: CreateOrderWithCartBodyDto,
+  ) {
+    try {
+      const { addressId, phone, paymentMethod } = createOrderWithCartBodyDto;
+
+      const a = await this.orderLine.calcBill({
+        user,
+        addressId,
+        phone,
+        paymentMethod,
+      });
+
+      console.log(a);
+
+      return {
+        message: 'Create order successfully',
+        data: {
+          addressId,
+          phone,
+          paymentMethod,
         },
       };
     } catch (err) {

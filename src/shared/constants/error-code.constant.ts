@@ -9,6 +9,7 @@ type Code =
   | 'InvalidRoute'
   | 'EmptyBody'
   | 'UnprocessableEntity'
+  | 'GHNThirdPartyError'
 
   // Group B
   | 'InvalidEmail'
@@ -114,7 +115,10 @@ type Code =
   | 'QuantityGreaterThanCart'
 
   // Group K (Order)
-  | 'OrderNotExist';
+  | 'OrderNotExist'
+  | 'InventoryNotEnough'
+  | 'CartEmpty'
+  | 'CartStageInvalid';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -183,6 +187,12 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Unprocessable entity',
     statusCode: 422,
     typeError: TYPE_ERRORS.ImageValidationError,
+  },
+  GHNThirdPartyError: {
+    code: 'A0008',
+    message: 'GHN third party error',
+    statusCode: 500,
+    typeError: TYPE_ERRORS.InternalServerError,
   },
 
   // Group B
@@ -725,5 +735,23 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Order not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+  InventoryNotEnough: {
+    code: 'K0002',
+    message: 'Inventory not enough',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  CartEmpty: {
+    code: 'K0003',
+    message: 'Cart empty',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  CartStageInvalid: {
+    code: 'K0004',
+    message: 'Cart stage invalid',
+    statusCode: 500,
+    typeError: TYPE_ERRORS.InternalServerError,
   },
 };
