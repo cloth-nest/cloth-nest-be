@@ -45,9 +45,8 @@ export class CreateAddressDto {
   districtName: string;
 
   @IsNotEmpty()
-  @IsInt()
-  @IsPositive()
-  wardCode: number;
+  @IsString()
+  wardCode: string;
 
   @IsNotEmpty()
   @IsString()

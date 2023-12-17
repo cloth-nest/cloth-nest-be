@@ -35,7 +35,7 @@ export class Address {
   districtName: string;
 
   @Column({ name: 'ward_code', nullable: false })
-  wardCode: number;
+  wardCode: string;
 
   @Column({ name: 'ward_name', nullable: false })
   wardName: string;

@@ -52,9 +52,8 @@ export class UpdateOneAddressDto {
   districtName: string;
 
   @IsOptional()
-  @IsInt()
-  @IsPositive()
-  wardCode: number;
+  @IsString()
+  wardCode: string;
 
   @IsOptional()
   @IsString()
