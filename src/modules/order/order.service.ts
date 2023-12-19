@@ -160,13 +160,24 @@ export class OrderService {
 
   public async checkInventory(user: AuthUser) {
     try {
-      await this.orderLine.checkInventory({
-        user,
+      const { cart, warehouseStock, errors } =
+        await this.orderLine.checkInventory({
+          user,
+        });
+
+      const warehouseStockFilter = warehouseStock.filter((warehouseItem) => {
+        const { variantId, quantity } = warehouseItem;
+        const cartItem = cart.find(
+          (cartItem) => cartItem.productVariantId === variantId,
+        );
+        return cartItem && quantity < cartItem.quantity;
       });
 
       return {
         data: {
-          isAvailable: true,
+          isAvailable: !errors,
+          cart: errors ? cart : undefined,
+          warehouseStock: errors ? warehouseStockFilter : undefined,
         },
       };
     } catch (err) {

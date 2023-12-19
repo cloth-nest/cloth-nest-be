@@ -37,6 +37,11 @@ export interface IBillInfo {
   items: IBillItemInfo[];
 }
 
+export interface IOrderLineError {
+  line: string;
+  detail: string;
+}
+
 export interface IOrderLineRequest {
   user: AuthUser;
   addressId?: number;
@@ -44,10 +49,11 @@ export interface IOrderLineRequest {
   paymentMethod?: OrderPaymentMethod;
   deliveryMethod?: OrderDeliveryMethod;
   cart?: Cart[];
+  warehouseStock?: WarehouseStock[];
   ghnServerTypeId?: number;
   bill?: IBillInfo;
   order?: Order;
-  emitError?: boolean;
+  errors?: IOrderLineError[];
 }
 
 export interface IOrderLineHandler {
@@ -57,6 +63,7 @@ export interface IOrderLineHandler {
 
 export abstract class OrderLineHandler implements IOrderLineHandler {
   private next: IOrderLineHandler;
+  protected isEmitError: boolean = true;
 
   public setNext(handler: IOrderLineHandler): IOrderLineHandler {
     this.next = handler;
@@ -89,6 +96,7 @@ export class CheckCartHandler extends OrderLineHandler {
     // Assign cart prop to request
     request.cart = cart;
 
+    request.errors = [];
     if (cart.length === 0) {
       throw new CustomErrorException(ERRORS.CartEmpty);
     }
@@ -96,6 +104,11 @@ export class CheckCartHandler extends OrderLineHandler {
 }
 
 export class CheckInventoryHandler extends OrderLineHandler {
+  constructor(isEmitError?: boolean) {
+    super();
+    this.isEmitError = isEmitError;
+  }
+
   protected async LineHandler(
     request: IOrderLineRequest,
     dataSource: DataSource,
@@ -118,6 +131,9 @@ export class CheckInventoryHandler extends OrderLineHandler {
         },
       });
 
+    // Assign warehouseStock prop to request
+    request.warehouseStock = productInventory;
+
     // Check inventory
     const checkInventory = cart.every(
       (item) =>
@@ -128,7 +144,14 @@ export class CheckInventoryHandler extends OrderLineHandler {
     );
 
     if (!checkInventory) {
-      throw new CustomErrorException(ERRORS.InventoryNotEnough);
+      if (this.isEmitError) {
+        throw new CustomErrorException(ERRORS.InventoryNotEnough);
+      }
+
+      request.errors.push({
+        line: 'CheckInventoryHandler',
+        detail: 'Inventory not enough',
+      });
     }
   }
 }
