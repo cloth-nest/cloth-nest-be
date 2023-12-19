@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, Min } from 'class-validator';
+import { IsNotEmpty, IsInt, Min, IsIn } from 'class-validator';
 
 export class CalcBillBodyDto {
   @IsNotEmpty()
@@ -8,5 +8,6 @@ export class CalcBillBodyDto {
 
   @IsNotEmpty()
   @IsInt()
-  ghnServerType: number;
+  @IsIn([2, 5])
+  ghnServerTypeId: number;
 }

@@ -13,6 +13,7 @@ import {
   OrderStatus,
   OrderPaymentMethod,
   OrderDeliveryMethod,
+  OrderPaymentStatus,
 } from '../shared/enums';
 
 @Entity({ name: 'order' })
@@ -34,16 +35,13 @@ export class Order {
   })
   status: OrderStatus;
 
-  @Column({ name: 'total', nullable: false })
+  @Column({ name: 'total', nullable: false, type: 'decimal' })
   total: number;
-
-  @Column({ name: 'order_date', nullable: false })
-  orderDate: Date;
 
   @Column({ name: 'delivery_date', nullable: true })
   deliveryDate: Date;
 
-  @Column({ name: 'shipping_fee', nullable: false })
+  @Column({ name: 'shipping_fee', nullable: false, type: 'decimal' })
   shippingFee: number;
 
   @Column({ name: 'phone', nullable: false, length: 10 })
@@ -58,6 +56,9 @@ export class Order {
 
   @Column({ name: 'payment_method', nullable: false, enum: OrderPaymentMethod })
   paymentMethod: OrderPaymentMethod;
+
+  @Column({ name: 'payment_status', nullable: false, enum: OrderPaymentStatus })
+  paymentStatus: OrderPaymentStatus;
 
   @ManyToOne(() => User, (user) => user.order)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })

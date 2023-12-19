@@ -5,6 +5,7 @@ import {
   Min,
   Length,
   IsEnum,
+  IsIn,
 } from 'class-validator';
 import { OrderPaymentMethod } from '../../../shared/enums';
 
@@ -22,7 +23,12 @@ export class CreateOrderWithCartBodyDto {
   @IsNotEmpty()
   @IsEnum(OrderPaymentMethod, {
     message:
-      'PaymentMethod must be one of the following values: COD, MOMO, ZALOPAY',
+      'PaymentMethod must be one of the following values: CASH, ZALO_PAY, PAYPAL',
   })
   paymentMethod: OrderPaymentMethod;
+
+  @IsNotEmpty()
+  @IsInt()
+  @IsIn([2, 5])
+  ghnServerTypeId: number;
 }

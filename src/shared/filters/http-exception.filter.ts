@@ -211,6 +211,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'variantIds': {
         return ERRORS.InvalidVariantsIds;
       }
+      case 'addressId': {
+        return ERRORS.InvalidAddressId;
+      }
+      case 'paymentMethod': {
+        return ERRORS.InvalidPaymentMethod;
+      }
+      case 'ghnServerTypeId': {
+        return ERRORS.InvalidGhnServerTypeId;
+      }
       default:
         return ERRORS.InternalServerError;
     }

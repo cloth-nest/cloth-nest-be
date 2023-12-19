@@ -50,6 +50,9 @@ type Code =
   | 'InvalidGroupPermissionIds'
   | 'InvalidIsActive'
   | 'InvalidVariantsIds'
+  | 'InvalidAddressId'
+  | 'InvalidPaymentMethod'
+  | 'InvalidGhnServerTypeId'
 
   // Group C
   | 'EmailExisted'
@@ -118,7 +121,11 @@ type Code =
   | 'OrderNotExist'
   | 'InventoryNotEnough'
   | 'CartEmpty'
-  | 'CartStageInvalid';
+  | 'CartStageInvalid'
+  | 'BillInfoNotExist'
+  | 'OrderPhoneNotExist'
+  | 'PaymentMethodNotExist'
+  | 'DeliveryMethodNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -415,6 +422,24 @@ export const ERRORS: Record<Code, CustomError> = {
   InvalidIsActive: {
     code: 'B0037',
     message: 'Invalid input isActive',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidAddressId: {
+    code: 'B0038',
+    message: 'Invalid input addressId',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidPaymentMethod: {
+    code: 'B0039',
+    message: 'Invalid input paymentMethod',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidGhnServerTypeId: {
+    code: 'B0040',
+    message: 'Invalid input ghnServerTypeId',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
@@ -753,5 +778,29 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Cart stage invalid',
     statusCode: 500,
     typeError: TYPE_ERRORS.InternalServerError,
+  },
+  BillInfoNotExist: {
+    code: 'K0005',
+    message: 'Bill info not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.InternalServerError,
+  },
+  OrderPhoneNotExist: {
+    code: 'K0006',
+    message: 'Order phone not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  PaymentMethodNotExist: {
+    code: 'K0007',
+    message: 'Payment method not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  DeliveryMethodNotExist: {
+    code: 'K0008',
+    message: 'Delivery method not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };

@@ -6,8 +6,9 @@ export enum OrderStatus {
 }
 
 export enum OrderPaymentMethod {
-  COD = 'COD',
-  BANK_TRANSFER = 'BANK_TRANSFER',
+  CASH = 'CASH',
+  ZALO_PAY = 'ZALO_PAY',
+  PAYPAL = 'PAYPAL',
 }
 
 export enum OrderPaymentStatus {

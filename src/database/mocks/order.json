@@ -10,7 +10,8 @@
     "shippingFee": 10,
     "phone": "1234567890",
     "deliveryMethod": "NORMAL",
-    "paymentMethod": "COD"
+    "paymentMethod": "CASH",
+    "paymentStatus": "PAID"
   },
   {
     "id": 1,
@@ -23,6 +24,7 @@
     "shippingFee": 5,
     "phone": "1234567890",
     "deliveryMethod": "FAST",
-    "paymentMethod": "COD"
+    "paymentMethod": "ZALO_PAY",
+    "paymentStatus": "UNPAID"
   }
 ]

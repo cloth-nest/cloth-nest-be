@@ -176,12 +176,12 @@ export class OrderService {
 
   public async calcBill(user: AuthUser, calcBillBodyDto: CalcBillBodyDto) {
     try {
-      const { addressId, ghnServerType } = calcBillBodyDto;
+      const { addressId, ghnServerTypeId } = calcBillBodyDto;
 
       const { bill, cart } = await this.orderLine.calcBill({
         user,
         addressId,
-        ghnServerType,
+        ghnServerTypeId,
       });
 
       return {
@@ -200,24 +200,20 @@ export class OrderService {
     createOrderWithCartBodyDto: CreateOrderWithCartBodyDto,
   ) {
     try {
-      const { addressId, phone, paymentMethod } = createOrderWithCartBodyDto;
+      const { addressId, phone, paymentMethod, ghnServerTypeId } =
+        createOrderWithCartBodyDto;
 
-      const a = await this.orderLine.calcBill({
+      const { order } = await this.orderLine.createOrderWithCart({
         user,
         addressId,
         phone,
         paymentMethod,
+        ghnServerTypeId,
       });
-
-      console.log(a);
 
       return {
         message: 'Create order successfully',
-        data: {
-          addressId,
-          phone,
-          paymentMethod,
-        },
+        data: order,
       };
     } catch (err) {
       throw err;
