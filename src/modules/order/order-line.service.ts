@@ -5,6 +5,7 @@ import {
   OrderStatus,
 } from '../../shared/enums';
 import {
+  Address,
   Cart,
   Order,
   OrderDetail,
@@ -21,6 +22,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CurrencyUtil } from '../../shared/utils/currency.util';
+import * as _ from 'lodash';
 
 export interface IBillItemInfo {
   id: number;
@@ -45,10 +47,13 @@ export interface IOrderLineError {
 export interface IOrderLineRequest {
   user: AuthUser;
   addressId?: number;
+  address?: Address;
   phone?: string;
+  variantId?: number;
+  quantity?: number;
   paymentMethod?: OrderPaymentMethod;
   deliveryMethod?: OrderDeliveryMethod;
-  cart?: Cart[];
+  cart?: Partial<Cart>[];
   warehouseStock?: WarehouseStock[];
   ghnServerTypeId?: number;
   bill?: IBillInfo;
@@ -113,13 +118,18 @@ export class CheckInventoryHandler extends OrderLineHandler {
     request: IOrderLineRequest,
     dataSource: DataSource,
   ): Promise<void> {
+    if (request.variantId) {
+      // Get cart direct buy
+      request.cart = [
+        {
+          productVariantId: request.variantId,
+          quantity: request.quantity,
+        },
+      ];
+    }
+
     // Get cart from user
-    const cart = await dataSource.getRepository(Cart).find({
-      where: {
-        userId: request.user.id,
-      },
-      select: ['id', 'quantity', 'productVariantId'],
-    });
+    const cart = request.cart;
 
     // Get warehouse from product variant
     const productInventory = await dataSource
@@ -127,6 +137,7 @@ export class CheckInventoryHandler extends OrderLineHandler {
       .find({
         where: {
           variantId: In(cart.map((item) => item.productVariantId)),
+          // Central warehouse
           warehouseId: 9,
         },
       });
@@ -161,16 +172,25 @@ export class CheckAddressHandler extends OrderLineHandler {
     request: IOrderLineRequest,
     dataSource: DataSource,
   ): Promise<void> {
-    const address = await dataSource.getRepository(UserAddress).findOne({
+    const userAddress = await dataSource.getRepository(UserAddress).findOne({
       where: {
-        id: request.addressId,
+        addressId: request.addressId,
         userId: request.user.id,
       },
     });
 
-    if (!address) {
+    if (!userAddress) {
       throw new CustomErrorException(ERRORS.AddressNotExist);
     }
+
+    const address = await dataSource.getRepository(Address).findOne({
+      where: {
+        id: request.addressId,
+      },
+    });
+
+    // Assign address prop to request
+    request.address = address;
   }
 }
 
@@ -212,6 +232,8 @@ export class CalculateTotalHandler extends OrderLineHandler {
     // Calculate total bill after VAT (VAT = 8%)
     const totalAfterVAT = total * 1.08;
 
+    const totalWeight = _.sumBy(productCart, 'weight');
+
     // Calculate shipping fee
     const shippingFee = await firstValueFrom(
       this.httpService
@@ -225,15 +247,17 @@ export class CalculateTotalHandler extends OrderLineHandler {
               shop_id: this.configService.get<string>('GHN_SHOP_ID'),
             },
             params: {
-              to_ward_code: '1B1517',
-              to_district_id: 1542,
-              service_type_id: 2,
-              weight: 1000,
+              to_ward_code: request.address.wardCode,
+              to_district_id: request.address.districtCode,
+              service_type_id: request.ghnServerTypeId,
+              // Sum weight of all product in cart
+              weight: totalWeight > 200 ? totalWeight : 200,
             },
           },
         )
         .pipe(
-          catchError(() => {
+          catchError((er) => {
+            console.log(er);
             throw new CustomErrorException(ERRORS.GHNThirdPartyError);
           }),
         ),
@@ -330,7 +354,10 @@ export class CreateOrderWithCartHandler extends OrderLineHandler {
         paymentMethod: request.paymentMethod,
         total: request.bill.total,
         shippingFee: request.bill.shippingFee,
-        status: OrderStatus.WAIT_FOR_PAYMENT,
+        status:
+          request.paymentMethod === OrderPaymentMethod.CASH
+            ? OrderStatus.ON_PROCESS
+            : OrderStatus.WAIT_FOR_PAYMENT,
         deliveryMethod,
         paymentStatus: OrderPaymentStatus.UNPAID,
         deliveryDate,
@@ -355,9 +382,135 @@ export class CreateOrderWithCartHandler extends OrderLineHandler {
         userId: request.user.id,
       });
 
+      // Deduct inventory
+      await Promise.all(
+        request.cart.map((item) =>
+          queryRunner.manager.decrement(
+            WarehouseStock,
+            {
+              variantId: item.productVariantId,
+              warehouseId: 9,
+            },
+            'quantity',
+            item.quantity,
+          ),
+        ),
+      );
+
       // Assign order prop to request
       request.order = order;
       request.order.orderDetails = orderDetail;
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+}
+
+export class CreateOrderWithoutCartHandler extends OrderLineHandler {
+  protected async LineHandler(
+    request: IOrderLineRequest,
+    dataSource: DataSource,
+  ): Promise<void> {
+    const queryRunner = dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      // Check request.bill is undefined
+      if (!request.bill) {
+        throw new CustomErrorException(ERRORS.BillInfoNotExist);
+      }
+
+      // Check request.addressId is undefined
+      if (!request.addressId) {
+        throw new CustomErrorException(ERRORS.AddressNotExist);
+      }
+
+      // Check request.phone is undefined
+      if (!request.phone) {
+        throw new CustomErrorException(ERRORS.OrderPhoneNotExist);
+      }
+
+      // Check request.paymentMethod is undefined
+      if (!request.paymentMethod) {
+        throw new CustomErrorException(ERRORS.PaymentMethodNotExist);
+      }
+
+      // Check request.variantId is undefined
+      if (!request.cart) {
+        throw new CustomErrorException(ERRORS.CartEmpty);
+      }
+
+      // Check request.quantity is undefined
+      if (!request.cart) {
+        throw new CustomErrorException(ERRORS.CartEmpty);
+      }
+
+      // Check request.ghnServerTypeId is undefined
+      if (!request.ghnServerTypeId) {
+        throw new CustomErrorException(ERRORS.DeliveryMethodNotExist);
+      }
+      if (request.ghnServerTypeId !== 2 && request.ghnServerTypeId !== 5) {
+        throw new CustomErrorException(ERRORS.DeliveryMethodNotExist);
+      }
+      const deliveryMethod =
+        request.ghnServerTypeId === 2
+          ? OrderDeliveryMethod.FAST
+          : OrderDeliveryMethod.NORMAL;
+
+      const deliveryDate =
+        request.ghnServerTypeId === 2
+          ? // 2 days from current date
+            new Date(new Date().setDate(new Date().getDate() + 2))
+          : // else 5 days from current date
+            new Date(new Date().setDate(new Date().getDate() + 5));
+
+      // Create order
+      const order = await queryRunner.manager.save(Order, {
+        userId: request.user.id,
+        addressId: request.addressId,
+        phone: request.phone,
+        paymentMethod: request.paymentMethod,
+        total: request.bill.total,
+        shippingFee: request.bill.shippingFee,
+        status:
+          request.paymentMethod === OrderPaymentMethod.CASH
+            ? OrderStatus.ON_PROCESS
+            : OrderStatus.WAIT_FOR_PAYMENT,
+        deliveryMethod,
+        paymentStatus: OrderPaymentStatus.UNPAID,
+        deliveryDate,
+      });
+
+      // Create order detail
+      const orderDetail = await queryRunner.manager.save(OrderDetail, {
+        orderId: order.id,
+        variantId: request.variantId,
+        quantity: request.quantity,
+        price: request.bill.items.find(
+          (product) => product.id === request.variantId,
+        ).price,
+      });
+
+      // Deduct inventory
+      await queryRunner.manager.decrement(
+        WarehouseStock,
+        {
+          variantId: request.variantId,
+          warehouseId: 9,
+        },
+        'quantity',
+        request.quantity,
+      );
+
+      // Assign order prop to request
+      request.order = order;
+      request.order.orderDetails = [orderDetail];
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -424,5 +577,23 @@ export class OrderLine {
     calculateTotalHandler.setNext(createOrderWithCartHandler);
 
     return checkCartHandler.handle(request, this.dataSource);
+  }
+
+  public async createOrderWithoutCart(
+    request: IOrderLineRequest,
+  ): Promise<IOrderLineRequest> {
+    const checkInventoryHandler = new CheckInventoryHandler();
+    const checkAddressHandler = new CheckAddressHandler();
+    const calculateTotalHandler = new CalculateTotalHandler(
+      this.httpService,
+      this.configService,
+    );
+    const createOrderWithoutCartHandler = new CreateOrderWithoutCartHandler();
+
+    checkInventoryHandler.setNext(checkAddressHandler);
+    checkAddressHandler.setNext(calculateTotalHandler);
+    calculateTotalHandler.setNext(createOrderWithoutCartHandler);
+
+    return checkInventoryHandler.handle(request, this.dataSource);
   }
 }

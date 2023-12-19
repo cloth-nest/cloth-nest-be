@@ -14,6 +14,7 @@ import { OrderService } from './order.service';
 import {
   CalcBillBodyDto,
   CreateOrderWithCartBodyDto,
+  CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
   GetOrderDetailParamDto,
 } from './dto';
@@ -72,6 +73,19 @@ export class OrderController {
     return this.orderService.createOrderWithCart(
       user,
       createOrderWithCartBodyDto,
+    );
+  }
+
+  @Auth()
+  @Post('/no-cart')
+  @HttpCode(HttpStatus.CREATED)
+  createOrderWithoutCart(
+    @CurrentUser() user: AuthUser,
+    @Body() createOrderWithoutCartBodyDto: CreateOrderWithoutCartBodyDto,
+  ) {
+    return this.orderService.createOrderWithoutCart(
+      user,
+      createOrderWithoutCartBodyDto,
     );
   }
 }

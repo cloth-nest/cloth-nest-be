@@ -12,6 +12,7 @@ import { AuthUser } from '../../shared/interfaces';
 import {
   CalcBillBodyDto,
   CreateOrderWithCartBodyDto,
+  CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
@@ -214,7 +215,7 @@ export class OrderService {
       const { addressId, phone, paymentMethod, ghnServerTypeId } =
         createOrderWithCartBodyDto;
 
-      const { order } = await this.orderLine.createOrderWithCart({
+      const { order, bill } = await this.orderLine.createOrderWithCart({
         user,
         addressId,
         phone,
@@ -224,7 +225,46 @@ export class OrderService {
 
       return {
         message: 'Create order successfully',
-        data: order,
+        data: {
+          order,
+          bill,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createOrderWithoutCart(
+    user: AuthUser,
+    createOrderWithoutCartBodyDto: CreateOrderWithoutCartBodyDto,
+  ) {
+    try {
+      const {
+        addressId,
+        phone,
+        paymentMethod,
+        ghnServerTypeId,
+        variantId,
+        quantity,
+      } = createOrderWithoutCartBodyDto;
+
+      const { order, bill } = await this.orderLine.createOrderWithoutCart({
+        user,
+        addressId,
+        phone,
+        paymentMethod,
+        ghnServerTypeId,
+        variantId,
+        quantity,
+      });
+
+      return {
+        message: 'Create order successfully',
+        data: {
+          order,
+          bill,
+        },
       };
     } catch (err) {
       throw err;
