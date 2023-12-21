@@ -27,6 +27,7 @@ import { PermissionModule } from './modules/permission/permission.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { OrderModule } from './modules/order/order.module';
     WishlistModule,
     CartModule,
     OrderModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [

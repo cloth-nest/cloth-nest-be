@@ -15,6 +15,7 @@ import {
   OrderDeliveryMethod,
   OrderPaymentStatus,
 } from '../shared/enums';
+import { ColumnNumericTransformer } from '../shared/utils';
 
 @Entity({ name: 'order' })
 export class Order {
@@ -35,14 +36,27 @@ export class Order {
   })
   status: OrderStatus;
 
-  @Column({ name: 'total', nullable: false, type: 'decimal' })
+  @Column({
+    name: 'total',
+    nullable: false,
+    type: 'decimal',
+    transformer: new ColumnNumericTransformer(),
+  })
   total: number;
 
   @Column({ name: 'delivery_date', nullable: true })
   deliveryDate: Date;
 
-  @Column({ name: 'shipping_fee', nullable: false, type: 'decimal' })
+  @Column({
+    name: 'shipping_fee',
+    nullable: false,
+    type: 'decimal',
+    transformer: new ColumnNumericTransformer(),
+  })
   shippingFee: number;
+
+  @Column({ name: 'apptransid', nullable: true })
+  apptransid: string;
 
   @Column({ name: 'phone', nullable: false, length: 10 })
   phone: string;

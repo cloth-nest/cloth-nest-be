@@ -125,7 +125,11 @@ type Code =
   | 'BillInfoNotExist'
   | 'OrderPhoneNotExist'
   | 'PaymentMethodNotExist'
-  | 'DeliveryMethodNotExist';
+  | 'DeliveryMethodNotExist'
+  | 'OrderAlreadyPaid'
+
+  // Group L (Payment)
+  | 'ZaloPayPaymentFailed';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -802,5 +806,19 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Delivery method not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+  OrderAlreadyPaid: {
+    code: 'K0009',
+    message: 'Order already paid',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+
+  // Group L (Payment)
+  ZaloPayPaymentFailed: {
+    code: 'L0001',
+    message: 'ZaloPay payment failed',
+    statusCode: 500,
+    typeError: TYPE_ERRORS.InternalServerError,
   },
 };
