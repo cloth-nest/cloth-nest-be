@@ -1,19 +1,4 @@
-import { IsNotEmpty, IsInt, Min, IsNumberString } from 'class-validator';
-import { Type } from 'class-transformer';
-
-export class GetAllProductAttributesQueryDTO {
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsInt()
-  @Min(1)
-  page: number;
-
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsInt()
-  @Min(0)
-  limit: number;
-}
+import { IsNumberString } from 'class-validator';
 
 export class GetAllProductAttributesParamDto {
   @IsNumberString()

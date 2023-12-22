@@ -12,13 +12,12 @@ import { Auth } from '../../../shared/decorators';
 import { Permission } from '../../../shared/enums';
 import { ProductTypeService } from './product-type.service';
 import {
-  GetAllProductAttributesQueryDTO,
   GetAllProductTypeQueryDTO,
   GetAllProductAttributesParamDto,
   CreateProductTypeBodyDTO,
 } from './dto';
 
-@Controller('product/types')
+@Controller('product/type')
 export class ProductTypeController {
   constructor(private readonly productTypeService: ProductTypeService) {}
 
@@ -38,12 +37,8 @@ export class ProductTypeController {
   @HttpCode(HttpStatus.OK)
   getAllAttributeBelongToProductType(
     @Param() param: GetAllProductAttributesParamDto,
-    @Query() getAllProductAttributesQueryDTO: GetAllProductAttributesQueryDTO,
   ) {
-    return this.productTypeService.getAllAttributeBelongToProductType(
-      param.id,
-      getAllProductAttributesQueryDTO,
-    );
+    return this.productTypeService.getAllAttributeBelongToProductType(param.id);
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

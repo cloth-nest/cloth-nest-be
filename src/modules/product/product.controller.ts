@@ -149,7 +149,7 @@ export class ProductController {
     return this.productService.search(searchQueryDTO);
   }
 
-  @Get(':id')
+  @Get('detail/:id')
   @HttpCode(HttpStatus.OK)
   getDetailProduct(@Param() param: GetProductDetailParamDto) {
     return this.productService.getDetailProduct(param.id);

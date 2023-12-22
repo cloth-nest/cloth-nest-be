@@ -7,11 +7,7 @@ import {
   ProductType,
   ProductTypeProductAttribute,
 } from '../../../entities';
-import {
-  CreateProductTypeBodyDTO,
-  GetAllProductAttributesQueryDTO,
-  GetAllProductTypeQueryDTO,
-} from './dto';
+import { CreateProductTypeBodyDTO, GetAllProductTypeQueryDTO } from './dto';
 import { CustomErrorException } from '../../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../../shared/constants';
 import * as _ from 'lodash';
@@ -33,25 +29,25 @@ export class ProductTypeService {
   public async getAllProductTypes(
     getAllProductTypeQueryDTO: GetAllProductTypeQueryDTO,
   ) {
-    // Destructor query
-    const { search, limit, page } = getAllProductTypeQueryDTO;
-
-    // Get all product attributes && total
-    const [productTypes, total] = await this.productTypeRepo.findAndCount({
-      where: {
-        name:
-          search &&
-          Raw((alias) => `LOWER(${alias}) Like '%${search.toLowerCase()}%'`),
-      },
-      select: ['id', 'name'],
-      order: {
-        name: 'ASC',
-      },
-      take: limit,
-      skip: limit * (page - 1),
-    });
-
     try {
+      // Destructor query
+      const { search, limit, page } = getAllProductTypeQueryDTO;
+
+      // Get all product attributes && total
+      const [productTypes, total] = await this.productTypeRepo.findAndCount({
+        where: {
+          name:
+            search &&
+            Raw((alias) => `LOWER(${alias}) Like '%${search.toLowerCase()}%'`),
+        },
+        select: ['id', 'name'],
+        order: {
+          name: 'ASC',
+        },
+        take: limit,
+        skip: limit * (page - 1),
+      });
+
       return {
         data: {
           productTypes,
@@ -63,10 +59,7 @@ export class ProductTypeService {
     }
   }
 
-  public async getAllAttributeBelongToProductType(
-    productTypeId: string,
-    getAllProductAttributesQueryDTO: GetAllProductAttributesQueryDTO,
-  ) {
+  public async getAllAttributeBelongToProductType(productTypeId: string) {
     try {
       // Check product type exist
       const productType = await this.productTypeRepo.count({
@@ -79,30 +72,28 @@ export class ProductTypeService {
         throw new CustomErrorException(ERRORS.ProductTypeNotExist);
       }
 
-      // Destructor query
-      const { limit, page } = getAllProductAttributesQueryDTO;
-
-      // Get all product attributes && total
-      const [productAttributes, total] =
-        await this.productTypeProductTypeRepo.findAndCount({
-          where: {
+      const productAttributes = await this.productAttributeRepo.find({
+        where: {
+          productTypeProductAttribute: {
             productTypeId: parseInt(productTypeId),
           },
-          select: ['productAttribute'],
-          order: {
-            order: 'ASC',
+        },
+        select: ['id', 'name'],
+      });
+
+      const variantAttributes = await this.productAttributeRepo.find({
+        where: {
+          productTypeProductVariant: {
+            productTypeId: parseInt(productTypeId),
           },
-          relations: ['productAttribute'],
-          take: limit,
-          skip: limit * (page - 1),
-        });
+        },
+        select: ['id', 'name'],
+      });
 
       return {
         data: {
-          productAttributes: productAttributes.map(
-            (productAttribute) => productAttribute.productAttribute,
-          ),
-          pageInformation: paginate(limit, page, total),
+          productAttributes,
+          variantAttributes,
         },
       };
     } catch (err) {
