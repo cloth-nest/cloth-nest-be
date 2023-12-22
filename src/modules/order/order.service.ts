@@ -18,6 +18,7 @@ import {
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import { OrderLine } from './order-line.service';
+import { OrderPaymentStatus, OrderStatus } from '../../shared/enums';
 
 @Injectable()
 export class OrderService {
@@ -265,6 +266,48 @@ export class OrderService {
           order,
           bill,
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async cancelOrder(user: AuthUser, orderId: string) {
+    try {
+      const order = await this.orderRepo.findOne({
+        where: {
+          id: parseInt(orderId),
+          userId: user.id,
+        },
+      });
+
+      if (!order) {
+        throw new CustomErrorException(ERRORS.OrderNotExist);
+      }
+
+      if (order.status === OrderStatus.CANCELED) {
+        throw new CustomErrorException(ERRORS.OrderAlreadyCanceled);
+      }
+
+      if (order.status === OrderStatus.DELIVERED) {
+        throw new CustomErrorException(ERRORS.OrderAlreadyDelivered);
+      }
+
+      if (order.paymentStatus === OrderPaymentStatus.PAID) {
+        throw new CustomErrorException(ERRORS.OrderAlreadyPaid);
+      }
+
+      await this.orderRepo.update(
+        {
+          id: parseInt(orderId),
+        },
+        {
+          status: OrderStatus.CANCELED,
+        },
+      );
+
+      return {
+        message: 'Cancel order successfully',
       };
     } catch (err) {
       throw err;

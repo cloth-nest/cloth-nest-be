@@ -129,6 +129,8 @@ type Code =
   | 'PaymentMethodNotExist'
   | 'DeliveryMethodNotExist'
   | 'OrderAlreadyPaid'
+  | 'OrderAlreadyCanceled'
+  | 'OrderAlreadyDelivered'
 
   // Group L (Payment)
   | 'ZaloPayPaymentFailed';
@@ -824,6 +826,18 @@ export const ERRORS: Record<Code, CustomError> = {
   OrderAlreadyPaid: {
     code: 'K0009',
     message: 'Order already paid',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  OrderAlreadyCanceled: {
+    code: 'K0010',
+    message: 'Order already canceled',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  OrderAlreadyDelivered: {
+    code: 'K0011',
+    message: 'Order already delivered',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },

@@ -7,12 +7,14 @@ import {
   Param,
   Query,
   Body,
+  Delete,
 } from '@nestjs/common';
 import { AuthUser } from '../../shared/interfaces';
 import { Auth, CurrentUser } from '../../shared/decorators';
 import { OrderService } from './order.service';
 import {
   CalcBillBodyDto,
+  CancelOrderParamDto,
   CreateOrderWithCartBodyDto,
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
@@ -87,5 +89,15 @@ export class OrderController {
       user,
       createOrderWithoutCartBodyDto,
     );
+  }
+
+  @Auth()
+  @Delete('cancel/:id')
+  @HttpCode(HttpStatus.OK)
+  cancelOrder(
+    @CurrentUser() user: AuthUser,
+    @Param() cancelOrderParamDto: CancelOrderParamDto,
+  ) {
+    return this.orderService.cancelOrder(user, cancelOrderParamDto.id);
   }
 }
