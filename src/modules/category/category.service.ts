@@ -283,6 +283,53 @@ export class CategoryService {
     }
   }
 
+  public async deleteOneCategory(categoryId: string) {
+    try {
+      const category = await this.categoryRepo.findOne({
+        where: { id: parseInt(categoryId) },
+        select: ['id', 'bgImgUrl'],
+      });
+      if (!category) {
+        throw new CustomErrorException(ERRORS.CategoryNotExist);
+      }
+
+      // Check if category has sub category
+      const subCategories = await this.categoryRepo.manager
+        .getTreeRepository(Category)
+        .findDescendants(category);
+
+      if (subCategories.length > 1) {
+        throw new CustomErrorException(ERRORS.CategoryHasSubCategory);
+      }
+
+      // Check if category has product
+      const product = await this.productRepo.findOne({
+        where: {
+          categoryId: category.id,
+        },
+      });
+      if (product) {
+        throw new CustomErrorException(ERRORS.CategoryHasProduct);
+      }
+
+      // Remove category
+      await this.categoryRepo.remove(category);
+
+      // Remove bg image if exist
+      if (category.bgImgUrl) {
+        await this.fileUploadSerivce.removeFileFromS3(
+          this.extractFileDestFromImageUrl(category.bgImgUrl),
+        );
+      }
+
+      return {
+        message: 'Delete category successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   private getS3Key(categoryId: number, fileName: string): string {
     return `${this.configService.get<string>(
       'AWS_S3_CATEGORY_FOLDER',

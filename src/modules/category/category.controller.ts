@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -111,5 +112,12 @@ export class CategoryController {
     file: Express.Multer.File,
   ) {
     return this.categoryService.createOneCategory(createCategoryBodyDto, file);
+  }
+
+  @Auth(Permission.MANAGE_CATEGORIES)
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deleteOneCategory(@Param() param: FindOneCategoryParamDto) {
+    return this.categoryService.deleteOneCategory(param.id);
   }
 }

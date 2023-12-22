@@ -85,6 +85,8 @@ type Code =
   // Group F (Category)
   | 'CategoryNotExist'
   | 'ParentCategoryNotExist'
+  | 'CategoryHasSubCategory'
+  | 'CategoryHasProduct'
 
   // Group G (Product)
   | 'ProductAttributeNotExist'
@@ -610,6 +612,18 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Parent category not exist',
     statusCode: 404,
     typeError: TYPE_ERRORS.NotFoundError,
+  },
+  CategoryHasSubCategory: {
+    code: 'F0003',
+    message: 'Category has sub category',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  CategoryHasProduct: {
+    code: 'F0004',
+    message: 'Category has product',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 
   // Group G
