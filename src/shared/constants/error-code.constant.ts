@@ -111,6 +111,8 @@ type Code =
   | 'ProductAttributeAssignedExist'
   | 'VariantAttributeNotExistInProductType'
   | 'VariantAttributeAssignedExist'
+  | 'ProductTypeHasProduct'
+  | 'ProductTypeHasProductAttribute'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -769,6 +771,18 @@ export const ERRORS: Record<Code, CustomError> = {
   VariantAttributeAssignedExist: {
     code: 'G0019',
     message: 'Variant attribute assigned exist',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductTypeHasProduct: {
+    code: 'G0020',
+    message: 'Product type has product',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductTypeHasProductAttribute: {
+    code: 'G0021',
+    message: 'Product type has product attribute',
     statusCode: 409,
     typeError: TYPE_ERRORS.ProductTypeError,
   },

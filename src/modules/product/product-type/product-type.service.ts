@@ -5,6 +5,7 @@ import {
   AssignedProductAttribute,
   AssignedVariantAttribute,
   AttributeValue,
+  Product,
   ProductAttribute,
   ProductType,
   ProductTypeProductAttribute,
@@ -39,6 +40,8 @@ export class ProductTypeService {
     private assignedProductAttributeRepo: Repository<AssignedProductAttribute>,
     @InjectRepository(AssignedVariantAttribute)
     private assignedVariantAttributeRepo: Repository<AssignedVariantAttribute>,
+    @InjectRepository(Product)
+    private productRepo: Repository<Product>,
   ) {}
 
   public async getAllProductTypes(
@@ -139,6 +142,60 @@ export class ProductTypeService {
       return {
         message: 'Create product type successfully',
         data: _.omit(createdProductType, ['createdAt', 'updatedAt']),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async deleteProductType(productTypeId: string) {
+    try {
+      // Check product type exist
+      const productType = await this.productTypeRepo.findOne({
+        where: {
+          id: parseInt(productTypeId),
+        },
+      });
+      if (!productType) {
+        throw new CustomErrorException(ERRORS.ProductTypeNotExist);
+      }
+
+      // Check productType has product
+      const product = await this.productRepo.findOne({
+        where: {
+          productTypeId: parseInt(productTypeId),
+        },
+      });
+      if (product) {
+        throw new CustomErrorException(ERRORS.ProductTypeHasProduct);
+      }
+
+      // Check productType has product attribute
+      const productAttribute = await this.productAttributeRepo.findOne({
+        where: [
+          {
+            productTypeProductAttribute: {
+              productTypeId: parseInt(productTypeId),
+            },
+          },
+          {
+            productTypeProductAttribute: {
+              productTypeId: parseInt(productTypeId),
+            },
+          },
+        ],
+      });
+      if (productAttribute) {
+        throw new CustomErrorException(ERRORS.ProductTypeHasProductAttribute);
+      }
+
+      // Delete product type
+      await this.productTypeRepo.delete({
+        id: parseInt(productTypeId),
+      });
+
+      return {
+        message: 'Delete product type successfully',
       };
     } catch (err) {
       throw err;

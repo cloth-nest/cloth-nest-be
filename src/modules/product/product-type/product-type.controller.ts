@@ -18,6 +18,7 @@ import {
   CreateProductTypeBodyDTO,
   AddAttributeBodyDTO,
   RemoveAttributeBodyDTO,
+  DeleteProductTypeParamDto,
 } from './dto';
 
 @Controller('product/type')
@@ -51,6 +52,17 @@ export class ProductTypeController {
     @Body() createProductTypeBodyDTO: CreateProductTypeBodyDTO,
   ) {
     return this.productTypeService.createProductType(createProductTypeBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deleteProductType(
+    @Param() deleteProductTypeParamDto: DeleteProductTypeParamDto,
+  ) {
+    return this.productTypeService.deleteProductType(
+      deleteProductTypeParamDto.id,
+    );
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)
