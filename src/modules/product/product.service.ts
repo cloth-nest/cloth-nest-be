@@ -1022,4 +1022,32 @@ export class ProductService {
       throw err;
     }
   }
+
+  public async getAllImagesBelongToProduct(productId: string) {
+    try {
+      const product = await this.productRepo.count({
+        where: {
+          id: parseInt(productId),
+        },
+      });
+
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // Get all images
+      const images = await this.productImgRepo.find({
+        where: {
+          productId: parseInt(productId),
+        },
+        select: ['id', 'image', 'order'],
+      });
+
+      return {
+        data: images,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

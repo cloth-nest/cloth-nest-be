@@ -33,6 +33,7 @@ import {
   UpdateProductAttributeBodyDTO,
   UpdateProductAttributeParamDto,
   GetProductVariantAdminParamDTO,
+  GetAllImagesBelongToProductParamDto,
 } from './dto';
 import { ProductService } from './product.service';
 
@@ -197,6 +198,17 @@ export class ProductController {
   ) {
     return this.productService.getProductVariantAdmin(
       getProductVariantAdminParamDTO.id,
+    );
+  }
+
+  @Get('/:id/images')
+  @HttpCode(HttpStatus.OK)
+  getAllImagesBelongToProduct(
+    @Param()
+    getAllImagesBelongToProductParamDto: GetAllImagesBelongToProductParamDto,
+  ) {
+    return this.productService.getAllImagesBelongToProduct(
+      getAllImagesBelongToProductParamDto.id,
     );
   }
 }
