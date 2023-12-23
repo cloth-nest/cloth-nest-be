@@ -28,6 +28,7 @@ import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { WarehouseModule } from './modules/warehouse/warehouse.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { PaymentModule } from './modules/payment/payment.module';
     CartModule,
     OrderModule,
     PaymentModule,
+    WarehouseModule,
   ],
   controllers: [AppController],
   providers: [
