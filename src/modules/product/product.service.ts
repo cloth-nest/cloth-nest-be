@@ -897,4 +897,53 @@ export class ProductService {
       throw err;
     }
   }
+
+  public async getDetailProductAdmin(productId: string) {
+    try {
+      const product = await this.productRepo
+        .createQueryBuilder('product')
+        .where('product.id = :id', {
+          id: parseInt(productId),
+        })
+        .leftJoinAndSelect('product.productImages', 'images')
+        .leftJoinAndSelect('product.productType', 'productType')
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.productVariants', 'variants')
+        .leftJoinAndSelect('variants.warehouseStocks', 'stock')
+        .leftJoinAndSelect('stock.warehouse', 'warehouse')
+        .select([
+          'product.id',
+          'product.name',
+          'product.description',
+          'images.id',
+          'images.image',
+          'images.order',
+          'productType.id',
+          'productType.name',
+          'category.id',
+          'category.name',
+          'variants.id',
+          'variants.sku',
+          'variants.name',
+          'variants.order',
+          'variants.price',
+          'variants.weight',
+          'stock.id',
+          'stock.quantity',
+          'warehouse.id',
+          'warehouse.name',
+        ])
+        .getOne();
+
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      return {
+        data: product,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

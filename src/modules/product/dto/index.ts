@@ -11,3 +11,4 @@ export * from './get-product-detail.dto';
 export * from './get-recommendation-products.dto';
 export * from './search.dto';
 export * from './get-all-products.dto';
+export * from './get-product-detail-admin.dto';
