@@ -22,6 +22,7 @@ import {
   GetAllAttributeValuesQueryDTO,
   GetAllProductsBelongToCategoryParamDto,
   GetAllProductsBelongToCategoryQueryDTO,
+  GetAllProductsQueryDTO,
   GetProductDetailParamDto,
   GetRecommendationProductsParamDto,
   GetRecommendationProductsQueryDTO,
@@ -166,5 +167,12 @@ export class ProductController {
       param.id,
       getRecommendationProductsQueryDTO,
     );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Get('/admin')
+  @HttpCode(HttpStatus.OK)
+  getAllProducts(@Query() getAllProductsQueryDto: GetAllProductsQueryDTO) {
+    return this.productService.getAllProducts(getAllProductsQueryDto);
   }
 }

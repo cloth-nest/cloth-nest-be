@@ -21,6 +21,7 @@ import {
   GetAllProductsBelongToCategoryQueryDTO,
   GetRecommendationProductsQueryDTO,
   SearchQueryDTO,
+  GetAllProductsQueryDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -851,6 +852,43 @@ export class ProductService {
             image: product.productImages[0]?.image,
             defaultVariant: product?.defaultVariant?.id,
             colors: colorProducts[product.id],
+          })),
+          pageInformation: paginate(limit, page, total),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getAllProducts(getAllProductsQueryDto: GetAllProductsQueryDTO) {
+    try {
+      // Destructor query
+      const { search, limit, page } = getAllProductsQueryDto;
+
+      const [products, total] = await this.productRepo.findAndCount({
+        where: {
+          name:
+            search &&
+            Raw((alias) => `LOWER(${alias}) Like '%${search.toLowerCase()}%'`),
+        },
+        select: ['id', 'name', 'description'],
+        order: {
+          name: 'ASC',
+        },
+        take: limit,
+        skip: limit * (page - 1),
+        relations: ['productImages', 'productType'],
+      });
+
+      return {
+        data: {
+          products: products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            image: product.productImages[0]?.image,
+            productType: product.productType.name,
           })),
           pageInformation: paginate(limit, page, total),
         },
