@@ -22,6 +22,7 @@ import {
   GetRecommendationProductsQueryDTO,
   SearchQueryDTO,
   GetAllProductsQueryDTO,
+  CreateProductBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -892,6 +893,89 @@ export class ProductService {
           })),
           pageInformation: paginate(limit, page, total),
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async createProduct(createProductBodyDTO: CreateProductBodyDTO) {
+    try {
+      // Destructor body
+      const {
+        productTypeId,
+        categoryId,
+        productName,
+        productDescription,
+        attributes,
+      } = createProductBodyDTO;
+
+      // Check product type exists
+      const productType = await this.productTypeRepo.count({
+        where: {
+          id: productTypeId,
+        },
+      });
+      if (!productType) {
+        throw new CustomErrorException(ERRORS.ProductTypeNotExist);
+      }
+
+      // Check category exists
+      const category = await this.categoryRepo.count({
+        where: {
+          id: categoryId,
+        },
+      });
+      if (!category) {
+        throw new CustomErrorException(ERRORS.CategoryNotExist);
+      }
+
+      // Check attributes belong to product type
+      const productTypeAttributes = await this.productAttributeRepo.find({
+        where: {
+          productTypeProductAttribute: {
+            productTypeId,
+          },
+        },
+        select: ['id'],
+        relations: ['attributeValues'],
+      });
+
+      if (
+        _.xor(
+          attributes.map((attribute) => attribute.id),
+          productTypeAttributes.map((attribute) => attribute.id),
+        ).length !== 0
+      ) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNotBelongToType);
+      }
+
+      // Check attribute values belong to attribute
+      attributes.forEach((attribute) => {
+        const attributeValue = productTypeAttributes
+          .filter((x) => x.id === attribute.id)[0]
+          .attributeValues.filter((x) => x.id === attribute.valueId)[0];
+
+        if (!attributeValue) {
+          throw new CustomErrorException(
+            ERRORS.ProductAttributeValueNotBelongToAttribute,
+          );
+        }
+      });
+
+      // Create product
+      const createdProduct = await this.productRepo.save({
+        productTypeId,
+        categoryId,
+        name: productName,
+        description: productDescription,
+        price: 0,
+        weight: 0,
+      });
+
+      return {
+        message: 'Create product successfully',
+        data: createdProduct,
       };
     } catch (err) {
       throw err;

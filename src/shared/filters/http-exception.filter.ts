@@ -229,6 +229,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'productAttributeIds': {
         return ERRORS.InvalidProductAttributeIds;
       }
+      case 'categoryId': {
+        return ERRORS.InvalidCategoryId;
+      }
+      case 'productName': {
+        return ERRORS.InvalidProductName;
+      }
+      case 'productDescription': {
+        return ERRORS.InvalidProductDescription;
+      }
       default:
         return ERRORS.InternalServerError;
     }

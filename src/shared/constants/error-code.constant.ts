@@ -56,6 +56,9 @@ type Code =
   | 'InvalidProductTypeId'
   | 'InvalidAttributeType'
   | 'InvalidProductAttributeIds'
+  | 'InvalidCategoryId'
+  | 'InvalidProductName'
+  | 'InvalidProductDescription'
 
   // Group C
   | 'EmailExisted'
@@ -113,6 +116,8 @@ type Code =
   | 'VariantAttributeAssignedExist'
   | 'ProductTypeHasProduct'
   | 'ProductTypeHasProductAttribute'
+  | 'ProductAttributeNotBelongToType'
+  | 'ProductAttributeValueNotBelongToAttribute'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -488,6 +493,24 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  InvalidCategoryId: {
+    code: 'B0044',
+    message: 'Invalid input categoryId',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidProductName: {
+    code: 'B0045',
+    message: 'Invalid input productName',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidProductDescription: {
+    code: 'B0046',
+    message: 'Invalid input productDescription',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
 
   // Group C
   EmailExisted: {
@@ -783,6 +806,18 @@ export const ERRORS: Record<Code, CustomError> = {
   ProductTypeHasProductAttribute: {
     code: 'G0021',
     message: 'Product type has product attribute',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductAttributeNotBelongToType: {
+    code: 'G0022',
+    message: 'Product attribute not belong to type',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductAttributeValueNotBelongToAttribute: {
+    code: 'G0023',
+    message: 'Product attribute value not belong to attribute',
     statusCode: 409,
     typeError: TYPE_ERRORS.ProductTypeError,
   },

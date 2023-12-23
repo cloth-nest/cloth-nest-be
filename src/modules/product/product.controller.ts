@@ -34,6 +34,7 @@ import {
   UpdateProductAttributeParamDto,
   GetProductVariantAdminParamDTO,
   GetAllImagesBelongToProductParamDto,
+  CreateProductBodyDTO,
 } from './dto';
 import { ProductService } from './product.service';
 
@@ -177,6 +178,13 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   getAllProducts(@Query() getAllProductsQueryDto: GetAllProductsQueryDTO) {
     return this.productService.getAllProducts(getAllProductsQueryDto);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('/admin')
+  @HttpCode(HttpStatus.CREATED)
+  createProduct(@Body() createProductBodyDTO: CreateProductBodyDTO) {
+    return this.productService.createProduct(createProductBodyDTO);
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)
