@@ -15,6 +15,7 @@ import {
   GetAllProductTypeQueryDTO,
   GetAllProductAttributesParamDto,
   CreateProductTypeBodyDTO,
+  AddAttributeBodyDTO,
 } from './dto';
 
 @Controller('product/type')
@@ -48,5 +49,12 @@ export class ProductTypeController {
     @Body() createProductTypeBodyDTO: CreateProductTypeBodyDTO,
   ) {
     return this.productTypeService.createProductType(createProductTypeBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('/attribute')
+  @HttpCode(HttpStatus.CREATED)
+  addAttributes(@Body() addAttributeBodyDTO: AddAttributeBodyDTO) {
+    return this.productTypeService.addAttributes(addAttributeBodyDTO);
   }
 }

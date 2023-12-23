@@ -5,6 +5,7 @@ import {
   ProductAttribute,
   ProductType,
   ProductTypeProductAttribute,
+  ProductTypeProductVariant,
 } from '../../../entities';
 import { ProductTypeController } from './product-type.controller';
 import { ProductTypeService } from './product-type.service';
@@ -16,6 +17,7 @@ import { ProductTypeService } from './product-type.service';
       AttributeValue,
       ProductType,
       ProductTypeProductAttribute,
+      ProductTypeProductVariant,
     ]),
   ],
   controllers: [ProductTypeController],

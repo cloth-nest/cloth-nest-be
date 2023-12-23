@@ -100,6 +100,10 @@ type Code =
   | 'SizeNotExist'
   | 'ProductNotExist'
   | 'ProductVariantNotExist'
+  | 'ProductTypeProductAttributeAlreadyExist'
+  | 'ProductTypeVariantAttributeAlreadyExist'
+  | 'AttributeExistInVariantAttribute'
+  | 'AttributeExistInProductAttribute'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -628,7 +632,7 @@ export const ERRORS: Record<Code, CustomError> = {
     typeError: TYPE_ERRORS.ValidationError,
   },
 
-  // Group G
+  // Group G (Product)
   ProductAttributeNotExist: {
     code: 'G0001',
     message: 'Product attribute not exist',
@@ -694,6 +698,30 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Product variant not existed',
     statusCode: 404,
     typeError: TYPE_ERRORS.ProductVariantError,
+  },
+  ProductTypeProductAttributeAlreadyExist: {
+    code: 'G0012',
+    message: 'Product type attribute already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductTypeVariantAttributeAlreadyExist: {
+    code: 'G0013',
+    message: 'Product type variant attribute already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  AttributeExistInVariantAttribute: {
+    code: 'G0014',
+    message: 'Attribute exist in variant attribute',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  AttributeExistInProductAttribute: {
+    code: 'G0015',
+    message: 'Attribute exist in product attribute',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
   },
 
   // Group H (Permission)
