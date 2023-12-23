@@ -946,4 +946,80 @@ export class ProductService {
       throw err;
     }
   }
+
+  public async getProductVariantAdmin(variantId: string) {
+    try {
+      const [variant, attributes, attributeValues] = await Promise.all([
+        this.productVariantRepo
+          .createQueryBuilder('variant')
+          .where('variant.id = :id', {
+            id: parseInt(variantId),
+          })
+          .leftJoinAndSelect('variant.variantImages', 'variantImages')
+          .leftJoinAndSelect('variantImages.productImage', 'image')
+          .leftJoinAndSelect('variant.warehouseStocks', 'stock')
+          .leftJoinAndSelect('stock.warehouse', 'warehouse')
+          .select([
+            'variant.id',
+            'variant.name',
+            'variant.sku',
+            'variant.price',
+            'variant.order',
+            'variant.weight',
+            'variant.productId',
+            'variantImages.id',
+            'image.id',
+            'image.image',
+            'image.order',
+            'stock.id',
+            'stock.quantity',
+            'warehouse.id',
+            'warehouse.name',
+          ])
+          .getOne(),
+        this.productAttributeRepo.find({
+          where: {
+            productTypeProductVariant: {
+              assignedVariantAttributes: {
+                variantId: parseInt(variantId),
+              },
+            },
+          },
+          select: ['id', 'name'],
+          relations: ['attributeValues'],
+        }),
+        this.attributeValueRepo.find({
+          where: {
+            assignedVariantAttributeValues: {
+              assignedVariantAttribute: {
+                variantId: parseInt(variantId),
+              },
+            },
+          },
+          select: ['id', 'value', 'attributeId'],
+        }),
+      ]);
+
+      if (!variant) {
+        throw new CustomErrorException(ERRORS.ProductVariantNotExist);
+      }
+
+      return {
+        data: {
+          ...variant,
+          attributes: attributes.map((attribute) => ({
+            ...attribute,
+            attributeValues: _.omit(
+              attributeValues.filter(
+                (value) => value.attributeId === attribute.id,
+              )[0],
+              'attributeId',
+            ),
+          })),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

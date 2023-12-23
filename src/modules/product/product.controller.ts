@@ -32,6 +32,7 @@ import {
   UpdateAttributeValueParamDto,
   UpdateProductAttributeBodyDTO,
   UpdateProductAttributeParamDto,
+  GetProductVariantAdminParamDTO,
 } from './dto';
 import { ProductService } from './product.service';
 
@@ -185,6 +186,17 @@ export class ProductController {
   ) {
     return this.productService.getDetailProductAdmin(
       getProductDetailAdminParamDTO.id,
+    );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Get('/admin/variant/:id')
+  @HttpCode(HttpStatus.OK)
+  getProductVariantAdmin(
+    @Param() getProductVariantAdminParamDTO: GetProductVariantAdminParamDTO,
+  ) {
+    return this.productService.getProductVariantAdmin(
+      getProductVariantAdminParamDTO.id,
     );
   }
 }
