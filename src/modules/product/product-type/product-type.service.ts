@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Raw, Repository } from 'typeorm';
 import {
+  AssignedProductAttribute,
+  AssignedVariantAttribute,
   AttributeValue,
   ProductAttribute,
   ProductType,
@@ -12,6 +14,7 @@ import {
   AddAttributeBodyDTO,
   CreateProductTypeBodyDTO,
   GetAllProductTypeQueryDTO,
+  RemoveAttributeBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../../shared/constants';
@@ -32,6 +35,10 @@ export class ProductTypeService {
     private productTypeProductAttributeRepo: Repository<ProductTypeProductAttribute>,
     @InjectRepository(ProductTypeProductVariant)
     private productTypeProductVariantRepo: Repository<ProductTypeProductVariant>,
+    @InjectRepository(AssignedProductAttribute)
+    private assignedProductAttributeRepo: Repository<AssignedProductAttribute>,
+    @InjectRepository(AssignedVariantAttribute)
+    private assignedVariantAttributeRepo: Repository<AssignedVariantAttribute>,
   ) {}
 
   public async getAllProductTypes(
@@ -265,6 +272,116 @@ export class ProductTypeService {
         return {
           message: 'Add attributes successfully',
           data: createdVariantAttribute,
+        };
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async removeAttributes(
+    removeAttributeBodyDTO: RemoveAttributeBodyDTO,
+  ) {
+    try {
+      // Destructure body
+      const { productTypeId, attributeType, productAttributeIds } =
+        removeAttributeBodyDTO;
+
+      // Check product type exist
+      const productType = await this.productTypeRepo.count({
+        where: {
+          id: productTypeId,
+        },
+      });
+      if (!productType) {
+        throw new CustomErrorException(ERRORS.ProductTypeNotExist);
+      }
+
+      // Check product attributes exist
+      const productAttributes = await this.productAttributeRepo.count({
+        where: {
+          id: In(productAttributeIds),
+        },
+      });
+      if (productAttributes !== productAttributeIds.length) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNotExist);
+      }
+
+      if (attributeType === AttributeType.PRODUCT_ATTRIBUTE) {
+        // Check product type attribute exist
+        const productTypeProductAttribute =
+          await this.productTypeProductAttributeRepo.count({
+            where: {
+              productTypeId,
+              productAttributeId: In(productAttributeIds),
+            },
+          });
+        if (productTypeProductAttribute !== productAttributeIds.length) {
+          throw new CustomErrorException(
+            ERRORS.ProductAttributeNotExistInProductType,
+          );
+        }
+
+        // Check product type attribute assigned exist
+        const countedProductAttributeValue =
+          await this.assignedProductAttributeRepo.count({
+            where: {
+              productTypeProductAttribute: {
+                productTypeId,
+                productAttributeId: In(productAttributeIds),
+              },
+            },
+          });
+        if (countedProductAttributeValue) {
+          throw new CustomErrorException(ERRORS.ProductAttributeAssignedExist);
+        }
+
+        // Remove product type attribute
+        await this.productTypeProductAttributeRepo.delete({
+          productTypeId,
+          productAttributeId: In(productAttributeIds),
+        });
+
+        return {
+          message: 'Remove attributes successfully',
+        };
+      } else {
+        // Check product type variant attribute exist
+        const productTypeVariantAttribute =
+          await this.productTypeProductVariantRepo.count({
+            where: {
+              productTypeId,
+              productAttributeId: In(productAttributeIds),
+            },
+          });
+        if (productTypeVariantAttribute !== productAttributeIds.length) {
+          throw new CustomErrorException(
+            ERRORS.VariantAttributeNotExistInProductType,
+          );
+        }
+
+        // Check product type variant attribute assigned exist
+        const countedProductVariantAttributeValue =
+          await this.assignedVariantAttributeRepo.count({
+            where: {
+              productTypeProductVariant: {
+                productTypeId,
+                productAttributeId: In(productAttributeIds),
+              },
+            },
+          });
+        if (countedProductVariantAttributeValue) {
+          throw new CustomErrorException(ERRORS.VariantAttributeAssignedExist);
+        }
+
+        // Remove product type variant attribute
+        await this.productTypeProductVariantRepo.delete({
+          productTypeId,
+          productAttributeId: In(productAttributeIds),
+        });
+
+        return {
+          message: 'Remove attributes successfully',
         };
       }
     } catch (err) {

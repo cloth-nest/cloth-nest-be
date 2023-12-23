@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
+  AssignedProductAttribute,
+  AssignedVariantAttribute,
   AttributeValue,
   ProductAttribute,
   ProductType,
@@ -18,6 +20,8 @@ import { ProductTypeService } from './product-type.service';
       ProductType,
       ProductTypeProductAttribute,
       ProductTypeProductVariant,
+      AssignedProductAttribute,
+      AssignedVariantAttribute,
     ]),
   ],
   controllers: [ProductTypeController],

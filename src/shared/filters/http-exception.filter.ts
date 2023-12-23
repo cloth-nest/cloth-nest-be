@@ -220,6 +220,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'ghnServerTypeId': {
         return ERRORS.InvalidGhnServerTypeId;
       }
+      case 'productTypeId': {
+        return ERRORS.InvalidProductTypeId;
+      }
+      case 'attributeType': {
+        return ERRORS.InvalidAttributeType;
+      }
+      case 'productAttributeIds': {
+        return ERRORS.InvalidProductAttributeIds;
+      }
       default:
         return ERRORS.InternalServerError;
     }

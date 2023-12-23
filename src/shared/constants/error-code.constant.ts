@@ -53,6 +53,9 @@ type Code =
   | 'InvalidAddressId'
   | 'InvalidPaymentMethod'
   | 'InvalidGhnServerTypeId'
+  | 'InvalidProductTypeId'
+  | 'InvalidAttributeType'
+  | 'InvalidProductAttributeIds'
 
   // Group C
   | 'EmailExisted'
@@ -104,6 +107,10 @@ type Code =
   | 'ProductTypeVariantAttributeAlreadyExist'
   | 'AttributeExistInVariantAttribute'
   | 'AttributeExistInProductAttribute'
+  | 'ProductAttributeNotExistInProductType'
+  | 'ProductAttributeAssignedExist'
+  | 'VariantAttributeNotExistInProductType'
+  | 'VariantAttributeAssignedExist'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -461,6 +468,24 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.InvalidRouteError,
   },
+  InvalidProductTypeId: {
+    code: 'B0041',
+    message: 'Invalid input productTypeId',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidAttributeType: {
+    code: 'B0042',
+    message: 'Invalid input attributeType',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidProductAttributeIds: {
+    code: 'B0043',
+    message: 'Invalid input productAttributeIds',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
 
   // Group C
   EmailExisted: {
@@ -720,6 +745,30 @@ export const ERRORS: Record<Code, CustomError> = {
   AttributeExistInProductAttribute: {
     code: 'G0015',
     message: 'Attribute exist in product attribute',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductAttributeNotExistInProductType: {
+    code: 'G0016',
+    message: 'Product attribute not exist in product type',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ProductAttributeAssignedExist: {
+    code: 'G0017',
+    message: 'Product attribute assigned exist',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  VariantAttributeNotExistInProductType: {
+    code: 'G0018',
+    message: 'Variant attribute not exist in product type',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  VariantAttributeAssignedExist: {
+    code: 'G0019',
+    message: 'Variant attribute assigned exist',
     statusCode: 409,
     typeError: TYPE_ERRORS.ProductTypeError,
   },
