@@ -35,6 +35,7 @@ import {
   GetProductVariantAdminParamDTO,
   GetAllImagesBelongToProductParamDto,
   CreateProductBodyDTO,
+  DeleteImageParamDTO,
 } from './dto';
 import { ProductService } from './product.service';
 
@@ -185,6 +186,13 @@ export class ProductController {
   @HttpCode(HttpStatus.CREATED)
   createProduct(@Body() createProductBodyDTO: CreateProductBodyDTO) {
     return this.productService.createProduct(createProductBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Delete('/admin/image/:id')
+  @HttpCode(HttpStatus.OK)
+  deleteImage(@Param() deleteImageParamDTO: DeleteImageParamDTO) {
+    return this.productService.deleteImage(deleteImageParamDTO.id);
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

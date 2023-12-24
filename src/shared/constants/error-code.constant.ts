@@ -118,6 +118,8 @@ type Code =
   | 'ProductTypeHasProductAttribute'
   | 'ProductAttributeNotBelongToType'
   | 'ProductAttributeValueNotBelongToAttribute'
+  | 'ImageNotExist'
+  | 'ImageBelongToVariant'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -820,6 +822,18 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Product attribute value not belong to attribute',
     statusCode: 409,
     typeError: TYPE_ERRORS.ProductTypeError,
+  },
+  ImageNotExist: {
+    code: 'G0024',
+    message: 'Image not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
+  },
+  ImageBelongToVariant: {
+    code: 'G0025',
+    message: 'Image belong to variant',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 
   // Group H (Permission)

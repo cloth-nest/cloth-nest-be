@@ -982,6 +982,45 @@ export class ProductService {
     }
   }
 
+  public async deleteImage(imageId: string) {
+    try {
+      // Check image exists
+      const image = await this.productImgRepo.count({
+        where: {
+          id: parseInt(imageId),
+        },
+      });
+
+      if (!image) {
+        throw new CustomErrorException(ERRORS.ImageNotExist);
+      }
+
+      // Check image belong to variant
+      const imageBelongToVariant = await this.productVariantRepo.count({
+        where: {
+          variantImages: {
+            productImageId: parseInt(imageId),
+          },
+        },
+      });
+
+      if (imageBelongToVariant) {
+        throw new CustomErrorException(ERRORS.ImageBelongToVariant);
+      }
+
+      // Delete image
+      await this.productImgRepo.delete({
+        id: parseInt(imageId),
+      });
+
+      return {
+        message: 'Delete image successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async getDetailProductAdmin(productId: string) {
     try {
       const product = await this.productRepo
