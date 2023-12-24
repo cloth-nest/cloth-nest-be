@@ -12,6 +12,8 @@ import {
 import {
   AssignedProductAttribute,
   AssignedProductAttributeValues,
+  AssignedVariantAttribute,
+  AssignedVariantAttributeValues,
   AttributeValue,
   Category,
   Product,
@@ -19,7 +21,11 @@ import {
   ProductImage,
   ProductType,
   ProductTypeProductAttribute,
+  ProductTypeProductVariant,
   ProductVariant,
+  VariantImage,
+  Warehouse,
+  WarehouseStock,
 } from '../../entities';
 import { paginate } from '../../shared/utils';
 import {
@@ -35,6 +41,7 @@ import {
   CreateProductBodyDTO,
   BulkCreateImageBodyDTO,
   UpdateProductBodyDTO,
+  CreateProductVariantBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -61,8 +68,16 @@ export class ProductService {
     private productImgRepo: Repository<ProductImage>,
     @InjectRepository(ProductTypeProductAttribute)
     private productTypeProductAttributeRepo: Repository<ProductTypeProductAttribute>,
+    @InjectRepository(ProductTypeProductVariant)
+    private productTypeProductVariantRepo: Repository<ProductTypeProductVariant>,
     @InjectRepository(ProductVariant)
     private productVariantRepo: Repository<ProductVariant>,
+    @InjectRepository(Warehouse)
+    private warehouseRepo: Repository<Warehouse>,
+    @InjectRepository(WarehouseStock)
+    private warehouseStockRepo: Repository<WarehouseStock>,
+    @InjectRepository(VariantImage)
+    private variantImageRepo: Repository<VariantImage>,
     private fileUploadSerivce: FileUploadService,
     private configService: ConfigService,
     private dataSource: DataSource,
@@ -1433,6 +1448,222 @@ export class ProductService {
       };
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async createProductVariant(
+    createProductVariantBodyDTO: CreateProductVariantBodyDTO,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      // Destructor body
+      const {
+        productId,
+        variantName,
+        imageIds,
+        price,
+        sku,
+        weight,
+        stocks,
+        variantAttributes,
+      } = createProductVariantBodyDTO;
+
+      // Check product exists
+      const product = await this.productRepo.count({
+        where: {
+          id: productId,
+        },
+      });
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // Check sku exists
+      const variant = await this.productVariantRepo.count({
+        where: {
+          sku,
+        },
+      });
+      if (variant) {
+        throw new CustomErrorException(ERRORS.ProductSkuExist);
+      }
+
+      // Check imageIds belong to product
+      const productImages = await this.productImgRepo.count({
+        where: {
+          productId,
+          id: In(imageIds),
+        },
+      });
+      if (productImages !== imageIds.length) {
+        throw new CustomErrorException(ERRORS.ImageNotExist);
+      }
+
+      // Check warehouse exists
+      if (stocks) {
+        const warehouse = await this.warehouseRepo.count({
+          where: {
+            id: In(stocks.map((stock) => stock.warehouseId)),
+          },
+        });
+        if (warehouse !== stocks.length) {
+          throw new CustomErrorException(ERRORS.WarehouseNotExist);
+        }
+      }
+
+      // Get product type
+      const productType = await this.productTypeRepo.findOne({
+        where: {
+          products: {
+            id: productId,
+          },
+        },
+      });
+      if (productType.hasVariants) {
+        // Check variant attributes
+        if (!variantAttributes) {
+          throw new CustomErrorException(ERRORS.ProductVariantAttributesEmpty);
+        }
+
+        // Check attributes belong to product type
+        const productTypeAttributes = await this.productAttributeRepo.find({
+          where: {
+            productTypeProductVariant: {
+              productTypeId: productType.id,
+            },
+          },
+          select: ['id'],
+          relations: ['attributeValues'],
+        });
+
+        if (
+          _.xor(
+            variantAttributes.map((attribute) => attribute.id),
+            productTypeAttributes.map((attribute) => attribute.id),
+          ).length !== 0
+        ) {
+          throw new CustomErrorException(
+            ERRORS.ProductAttributeNotBelongToType,
+          );
+        }
+
+        // Check attribute values belong to attribute
+        variantAttributes.forEach((attribute) => {
+          const attributeValue = productTypeAttributes
+            .filter((x) => x.id === attribute.id)[0]
+            .attributeValues.filter((x) => x.id === attribute.valueId)[0];
+
+          if (!attributeValue) {
+            throw new CustomErrorException(
+              ERRORS.ProductAttributeValueNotBelongToAttribute,
+            );
+          }
+        });
+      }
+
+      // Get max order
+      let { maxOrder } = await this.productVariantRepo
+        .createQueryBuilder('variant')
+        .where('variant.productId = :id', {
+          id: productId,
+        })
+        .select('MAX(variant.order)', 'maxOrder')
+        .getRawOne();
+      if (!maxOrder) {
+        maxOrder = -1;
+      }
+
+      // Create product variant
+      const createdProductVariant = await queryRunner.manager.save(
+        ProductVariant,
+        {
+          productId,
+          sku,
+          name: variantName,
+          order: maxOrder + 1,
+          price,
+          weight,
+        },
+      );
+      // Add default variant if product has no variant
+      if (maxOrder === -1) {
+        await queryRunner.manager.update(Product, productId, {
+          defaultVariant: createdProductVariant,
+        });
+      }
+
+      // Create variant images
+      if (imageIds) {
+        await queryRunner.manager.save(
+          VariantImage,
+          imageIds.map((imageId, index) => ({
+            productVariantId: createdProductVariant.id,
+            productImageId: imageId,
+            order: index,
+          })),
+        );
+      }
+
+      // Create variant attributes
+      if (productType.hasVariants) {
+        // Get product type product variant attributes
+        const productTypeProductVariantAttributes =
+          await this.productTypeProductVariantRepo.find({
+            where: {
+              productTypeId: productType.id,
+            },
+            select: ['id', 'productAttributeId', 'order'],
+          });
+
+        // Create assigned variant attributes
+        const assignedVariantAttributes = await queryRunner.manager.save(
+          AssignedVariantAttribute,
+          productTypeProductVariantAttributes.map((x) => ({
+            variantId: createdProductVariant.id,
+            productTypeProductVariantId: x.id,
+          })),
+        );
+
+        // Create assigned variant attribute values
+        await queryRunner.manager.save(
+          AssignedVariantAttributeValues,
+          productTypeProductVariantAttributes.map((x) => ({
+            assignedVariantAttributeId: assignedVariantAttributes.filter(
+              (y) => y.productTypeProductVariantId === x.id,
+            )[0].id,
+            attributeValueId: variantAttributes.filter(
+              (y) => y.id === x.productAttributeId,
+            )[0].valueId,
+            order: 0,
+          })),
+        );
+      }
+
+      // Create stock
+      if (stocks) {
+        await queryRunner.manager.save(
+          WarehouseStock,
+          stocks.map((stock) => ({
+            variantId: createdProductVariant.id,
+            warehouseId: stock.warehouseId,
+            quantity: stock.quantity,
+          })),
+        );
+      }
+
+      await queryRunner.commitTransaction();
+      return {
+        message: 'Create product variant successfully',
+        data: createProductVariantBodyDTO,
+      };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
   }
 

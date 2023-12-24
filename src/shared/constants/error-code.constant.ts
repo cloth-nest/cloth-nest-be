@@ -122,6 +122,9 @@ type Code =
   | 'ImageBelongToVariant'
   | 'MinimumImageUploadIsOne'
   | 'ProductHasNoVariant'
+  | 'ProductSkuExist'
+  | 'WarehouseNotExist'
+  | 'ProductVariantAttributesEmpty'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -512,6 +515,24 @@ export const ERRORS: Record<Code, CustomError> = {
   InvalidProductDescription: {
     code: 'B0046',
     message: 'Invalid input productDescription',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  ProductSkuExist: {
+    code: 'B0047',
+    message: 'Product sku is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  WarehouseNotExist: {
+    code: 'B0048',
+    message: 'Warehouse not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  ProductVariantAttributesEmpty: {
+    code: 'B0049',
+    message: 'Product variant attributes is empty',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },

@@ -8,7 +8,11 @@ import {
   ProductImage,
   ProductType,
   ProductTypeProductAttribute,
+  ProductTypeProductVariant,
   ProductVariant,
+  VariantImage,
+  Warehouse,
+  WarehouseStock,
 } from '../../entities';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
@@ -27,6 +31,10 @@ import { FileUploadService } from '../../shared/services';
       ProductImage,
       ProductVariant,
       ProductTypeProductAttribute,
+      Warehouse,
+      WarehouseStock,
+      VariantImage,
+      ProductTypeProductVariant,
     ]),
   ],
   controllers: [ProductController],

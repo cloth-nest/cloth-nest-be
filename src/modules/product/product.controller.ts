@@ -43,6 +43,7 @@ import {
   UpdateProductBodyDTO,
   UpdateProductParamDto,
   GetAllVariantAttributeBelongToProductParamDTO,
+  CreateProductVariantBodyDTO,
 } from './dto';
 import { ProductService } from './product.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -260,6 +261,17 @@ export class ProductController {
   ) {
     return this.productService.getProductVariantAdmin(
       getProductVariantAdminParamDTO.id,
+    );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('/admin/variant')
+  @HttpCode(HttpStatus.CREATED)
+  createProductVariant(
+    @Body() createProductVariantBodyDTO: CreateProductVariantBodyDTO,
+  ) {
+    return this.productService.createProductVariant(
+      createProductVariantBodyDTO,
     );
   }
 
