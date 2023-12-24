@@ -19,9 +19,10 @@ import {
 } from './dto';
 import { CustomErrorException } from '../../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../../shared/constants';
-import * as _ from 'lodash';
 import { paginate } from '../../../shared/utils';
 import { AttributeType } from '../../../shared/enums';
+import { ConfigService } from '@nestjs/config';
+import { FileUploadService } from '../../../shared/services';
 
 @Injectable()
 export class ProductTypeService {
@@ -42,6 +43,8 @@ export class ProductTypeService {
     private assignedVariantAttributeRepo: Repository<AssignedVariantAttribute>,
     @InjectRepository(Product)
     private productRepo: Repository<Product>,
+    private configService: ConfigService,
+    private fileUploadSerivce: FileUploadService,
   ) {}
 
   public async getAllProductTypes(
@@ -121,6 +124,7 @@ export class ProductTypeService {
 
   public async createProductType(
     createProductTypeBodyDTO: CreateProductTypeBodyDTO,
+    sizeChartImg: Express.Multer.File,
   ) {
     try {
       // Check product type exist
@@ -139,9 +143,28 @@ export class ProductTypeService {
         name: createProductTypeBodyDTO.productTypeName,
       });
 
+      let sizeChartImgUrl: string = undefined;
+      if (sizeChartImg) {
+        // Upload size chart image to S3 & return url
+        sizeChartImgUrl = await this.fileUploadSerivce.uploadFileToS3(
+          sizeChartImg.buffer,
+          this.getS3Key(createdProductType.id, sizeChartImg.originalname),
+        );
+
+        // Update product type
+        await this.productTypeRepo.update(
+          {
+            id: createdProductType.id,
+          },
+          {
+            sizeChartImage: sizeChartImgUrl,
+          },
+        );
+      }
+
       return {
         message: 'Create product type successfully',
-        data: _.omit(createdProductType, ['createdAt', 'updatedAt']),
+        data: createdProductType.id,
       };
     } catch (err) {
       throw err;
@@ -187,6 +210,13 @@ export class ProductTypeService {
       });
       if (productAttribute) {
         throw new CustomErrorException(ERRORS.ProductTypeHasProductAttribute);
+      }
+
+      // Remove old sizeChartImage if exist
+      if (productType.sizeChartImage) {
+        await this.fileUploadSerivce.removeFileFromS3(
+          this.extractFileDestFromImageUrl(productType.sizeChartImage),
+        );
       }
 
       // Delete product type
@@ -444,5 +474,15 @@ export class ProductTypeService {
     } catch (err) {
       throw err;
     }
+  }
+
+  private getS3Key(productTypeId: number, fileName: string): string {
+    return `${this.configService.get<string>(
+      'AWS_S3_PRODUCT_TYPE_FOLDER',
+    )}/${productTypeId}-${Date.now()}-${fileName}`;
+  }
+
+  private extractFileDestFromImageUrl(imageUrl: string): string {
+    return imageUrl.replace(`${this.fileUploadSerivce.getS3Url()}/`, '');
   }
 }

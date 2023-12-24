@@ -6,8 +6,11 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Auth } from '../../../shared/decorators';
 import { Permission } from '../../../shared/enums';
@@ -20,6 +23,8 @@ import {
   RemoveAttributeBodyDTO,
   DeleteProductTypeParamDto,
 } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extensionImageReg } from '../../../shared/constants';
 
 @Controller('product/type')
 export class ProductTypeController {
@@ -48,10 +53,28 @@ export class ProductTypeController {
   @Auth(Permission.MANAGE_PRODUCTS)
   @Post('')
   @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('file'))
   createProductType(
     @Body() createProductTypeBodyDTO: CreateProductTypeBodyDTO,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: extensionImageReg,
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          fileIsRequired: false,
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    sizeChartImg: Express.Multer.File,
   ) {
-    return this.productTypeService.createProductType(createProductTypeBodyDTO);
+    return this.productTypeService.createProductType(
+      createProductTypeBodyDTO,
+      sizeChartImg,
+    );
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

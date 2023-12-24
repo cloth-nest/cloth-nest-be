@@ -12,6 +12,7 @@ import {
 } from '../../../entities';
 import { ProductTypeController } from './product-type.controller';
 import { ProductTypeService } from './product-type.service';
+import { FileUploadService } from '../../../shared/services';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { ProductTypeService } from './product-type.service';
     ]),
   ],
   controllers: [ProductTypeController],
-  providers: [ProductTypeService],
+  providers: [ProductTypeService, FileUploadService],
   exports: [ProductTypeService],
 })
 export class ProductTypeModule {}
