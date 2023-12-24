@@ -105,8 +105,6 @@ export class UsersService {
 
       // Remove old avatar if exist
       if (currentUser.avatar) {
-        console.log(this.extractFileDestFromImageUrl(currentUser.avatar));
-
         await this.fileUploadSerivce.removeFileFromS3(
           this.extractFileDestFromImageUrl(currentUser.avatar),
         );

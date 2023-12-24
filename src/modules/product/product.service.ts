@@ -990,10 +990,11 @@ export class ProductService {
   public async deleteImage(imageId: string) {
     try {
       // Check image exists
-      const image = await this.productImgRepo.count({
+      const image = await this.productImgRepo.findOne({
         where: {
           id: parseInt(imageId),
         },
+        select: ['id', 'image'],
       });
 
       if (!image) {
@@ -1012,6 +1013,10 @@ export class ProductService {
       if (imageBelongToVariant) {
         throw new CustomErrorException(ERRORS.ImageBelongToVariant);
       }
+
+      // Delete image from S3
+      const imageDest = this.extractFileDestFromImageUrl(image.image);
+      await this.fileUploadSerivce.removeFileFromS3(imageDest);
 
       // Delete image
       await this.productImgRepo.delete({
@@ -1099,6 +1104,10 @@ export class ProductService {
     return `${this.configService.get<string>(
       'AWS_S3_PRODUCT_FOLDER',
     )}/${productId}-${order}-${Date.now()}-${fileName}`;
+  }
+
+  private extractFileDestFromImageUrl(imageUrl: string): string {
+    return imageUrl.replace(`${this.fileUploadSerivce.getS3Url()}/`, '');
   }
 
   public async getDetailProductAdmin(productId: string) {
