@@ -40,6 +40,8 @@ import {
   CreateProductBodyDTO,
   DeleteImageParamDTO,
   BulkCreateImageBodyDTO,
+  UpdateProductBodyDTO,
+  UpdateProductParamDto,
 } from './dto';
 import { ProductService } from './product.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -192,6 +194,19 @@ export class ProductController {
   @HttpCode(HttpStatus.CREATED)
   createProduct(@Body() createProductBodyDTO: CreateProductBodyDTO) {
     return this.productService.createProduct(createProductBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Patch('/admin/:id')
+  @HttpCode(HttpStatus.OK)
+  updateProduct(
+    @Param() updateProductParamDto: UpdateProductParamDto,
+    @Body() updateProductBodyDTO: UpdateProductBodyDTO,
+  ) {
+    return this.productService.updateProduct(
+      updateProductParamDto.id,
+      updateProductBodyDTO,
+    );
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

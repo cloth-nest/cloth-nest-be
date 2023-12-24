@@ -34,6 +34,7 @@ import {
   GetAllProductsQueryDTO,
   CreateProductBodyDTO,
   BulkCreateImageBodyDTO,
+  UpdateProductBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -1029,6 +1030,133 @@ export class ProductService {
       return {
         message: 'Create product successfully',
         data: createdProduct,
+      };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async updateProduct(
+    productId: string,
+    updateProductBodyDTO: UpdateProductBodyDTO,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      // Check product exists
+      const product = await this.productRepo.count({
+        where: {
+          id: parseInt(productId),
+        },
+      });
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // Destructor body
+      const { categoryId, productName, productDescription, attributes } =
+        updateProductBodyDTO;
+
+      // Check category exists
+      const category = await this.categoryRepo.count({
+        where: {
+          id: categoryId,
+        },
+      });
+      if (!category) {
+        throw new CustomErrorException(ERRORS.CategoryNotExist);
+      }
+
+      // Check attributes belong to product type
+      const productTypeAttributes = await this.productAttributeRepo.find({
+        where: {
+          productTypeProductAttribute: {
+            productType: {
+              products: {
+                id: parseInt(productId),
+              },
+            },
+          },
+        },
+        select: ['id'],
+        relations: ['attributeValues'],
+      });
+
+      if (
+        _.xor(
+          attributes.map((attribute) => attribute.id),
+          productTypeAttributes.map((attribute) => attribute.id),
+        ).length !== 0
+      ) {
+        throw new CustomErrorException(ERRORS.ProductAttributeNotBelongToType);
+      }
+
+      // Check attribute values belong to attribute
+      attributes.forEach((attribute) => {
+        const attributeValue = productTypeAttributes
+          .filter((x) => x.id === attribute.id)[0]
+          .attributeValues.filter((x) => x.id === attribute.valueId)[0];
+
+        if (!attributeValue) {
+          throw new CustomErrorException(
+            ERRORS.ProductAttributeValueNotBelongToAttribute,
+          );
+        }
+      });
+
+      // Update product
+      await queryRunner.manager.update(
+        Product,
+        {
+          id: parseInt(productId),
+        },
+        {
+          categoryId,
+          name: productName,
+          description: productDescription,
+        },
+      );
+
+      // Find assigned product attributes values belong to product
+      const assignedProductAttributeValues = await queryRunner.manager.find(
+        AssignedProductAttributeValues,
+        {
+          where: {
+            assignedProductAttribute: {
+              productId: parseInt(productId),
+            },
+          },
+          select: ['id', 'attributeValueId'],
+          relations: ['attributeValue'],
+        },
+      );
+
+      // Update assigned product attributes values
+      await Promise.all(
+        assignedProductAttributeValues.map((x) => {
+          queryRunner.manager.update(
+            AssignedProductAttributeValues,
+            {
+              id: x.id,
+            },
+            {
+              attributeValueId: attributes.filter(
+                (y) => y.id === x.attributeValue.attributeId,
+              )[0].valueId,
+            },
+          );
+        }),
+      );
+
+      await queryRunner.commitTransaction();
+      return {
+        message: 'Update product successfully',
+        data: updateProductBodyDTO,
       };
     } catch (err) {
       await queryRunner.rollbackTransaction();
