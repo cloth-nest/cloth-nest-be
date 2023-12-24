@@ -1,14 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { And, In, LessThan, MoreThanOrEqual, Raw, Repository } from 'typeorm';
+import {
+  And,
+  DataSource,
+  In,
+  LessThan,
+  MoreThanOrEqual,
+  Raw,
+  Repository,
+} from 'typeorm';
 import {
   AssignedProductAttribute,
+  AssignedProductAttributeValues,
   AttributeValue,
   Category,
   Product,
   ProductAttribute,
   ProductImage,
   ProductType,
+  ProductTypeProductAttribute,
   ProductVariant,
 } from '../../entities';
 import { paginate } from '../../shared/utils';
@@ -48,12 +58,13 @@ export class ProductService {
     private productTypeRepo: Repository<ProductType>,
     @InjectRepository(ProductImage)
     private productImgRepo: Repository<ProductImage>,
-    @InjectRepository(AssignedProductAttribute)
-    private assignedProductAttributeRepo: Repository<AssignedProductAttribute>,
+    @InjectRepository(ProductTypeProductAttribute)
+    private productTypeProductAttributeRepo: Repository<ProductTypeProductAttribute>,
     @InjectRepository(ProductVariant)
     private productVariantRepo: Repository<ProductVariant>,
     private fileUploadSerivce: FileUploadService,
     private configService: ConfigService,
+    private dataSource: DataSource,
   ) {}
 
   public async getAllAttributes(
@@ -905,6 +916,10 @@ export class ProductService {
   }
 
   public async createProduct(createProductBodyDTO: CreateProductBodyDTO) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       // Destructor body
       const {
@@ -969,7 +984,7 @@ export class ProductService {
       });
 
       // Create product
-      const createdProduct = await this.productRepo.save({
+      const createdProduct = await queryRunner.manager.save(Product, {
         productTypeId,
         categoryId,
         name: productName,
@@ -978,12 +993,48 @@ export class ProductService {
         weight: 0,
       });
 
+      // Get product type product attributes
+      const productTypeProductAttributes =
+        await this.productTypeProductAttributeRepo.find({
+          where: {
+            productTypeId,
+          },
+          select: ['id', 'productAttributeId', 'order'],
+        });
+
+      // Create assigned product attributes
+      const assignedProductAttributes = await queryRunner.manager.save(
+        AssignedProductAttribute,
+        productTypeProductAttributes.map((x) => ({
+          productId: createdProduct.id,
+          productTypeProductAttributeId: x.id,
+        })),
+      );
+
+      // Create assigned product attribute values
+      await queryRunner.manager.save(
+        AssignedProductAttributeValues,
+        productTypeProductAttributes.map((x) => ({
+          assignedProductAttributeId: assignedProductAttributes.filter(
+            (y) => y.productTypeProductAttributeId === x.id,
+          )[0].id,
+          attributeValueId: attributes.filter(
+            (y) => y.id === x.productAttributeId,
+          )[0].valueId,
+          order: 0,
+        })),
+      );
+
+      await queryRunner.commitTransaction();
       return {
         message: 'Create product successfully',
         data: createdProduct,
       };
     } catch (err) {
+      await queryRunner.rollbackTransaction();
       throw err;
+    } finally {
+      await queryRunner.release();
     }
   }
 

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
-  AssignedProductAttribute,
   AttributeValue,
   Category,
   Product,
   ProductAttribute,
   ProductImage,
   ProductType,
+  ProductTypeProductAttribute,
   ProductVariant,
 } from '../../entities';
 import { ProductController } from './product.controller';
@@ -25,8 +25,8 @@ import { FileUploadService } from '../../shared/services';
       Product,
       ProductType,
       ProductImage,
-      AssignedProductAttribute,
       ProductVariant,
+      ProductTypeProductAttribute,
     ]),
   ],
   controllers: [ProductController],
