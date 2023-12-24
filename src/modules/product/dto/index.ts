@@ -16,3 +16,4 @@ export * from './get-product-variant-admin.dto';
 export * from './get-all-images-belong-to-product.dto';
 export * from './create-product.dto';
 export * from './delete-image.dto';
+export * from './bulk-create-image.dto';

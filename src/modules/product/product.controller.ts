@@ -6,9 +6,12 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Auth } from '../../shared/decorators';
 import { Permission } from '../../shared/enums';
@@ -36,8 +39,11 @@ import {
   GetAllImagesBelongToProductParamDto,
   CreateProductBodyDTO,
   DeleteImageParamDTO,
+  BulkCreateImageBodyDTO,
 } from './dto';
 import { ProductService } from './product.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { extensionImageReg } from '../../shared/constants';
 
 @Controller('product')
 export class ProductController {
@@ -193,6 +199,30 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   deleteImage(@Param() deleteImageParamDTO: DeleteImageParamDTO) {
     return this.productService.deleteImage(deleteImageParamDTO.id);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Post('/admin/image')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FilesInterceptor('files', 8))
+  bulkCreateImage(
+    @Body() bulkCreateImageBodyDTO: BulkCreateImageBodyDTO,
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: extensionImageReg,
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          fileIsRequired: false,
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    files: Express.Multer.File[],
+  ) {
+    return this.productService.bulkCreateImage(bulkCreateImageBodyDTO, files);
   }
 
   @Auth(Permission.MANAGE_PRODUCTS)

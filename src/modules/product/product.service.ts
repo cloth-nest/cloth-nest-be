@@ -23,12 +23,15 @@ import {
   SearchQueryDTO,
   GetAllProductsQueryDTO,
   CreateProductBodyDTO,
+  BulkCreateImageBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import * as _ from 'lodash';
 import { PriceRange, ProductOrderDirection } from '../../shared/enums';
 import { faker } from '@faker-js/faker';
+import { FileUploadService } from '../../shared/services';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductService {
@@ -49,6 +52,8 @@ export class ProductService {
     private assignedProductAttributeRepo: Repository<AssignedProductAttribute>,
     @InjectRepository(ProductVariant)
     private productVariantRepo: Repository<ProductVariant>,
+    private fileUploadSerivce: FileUploadService,
+    private configService: ConfigService,
   ) {}
 
   public async getAllAttributes(
@@ -1019,6 +1024,81 @@ export class ProductService {
     } catch (err) {
       throw err;
     }
+  }
+
+  public async bulkCreateImage(
+    bulkCreateImageBodyDTO: BulkCreateImageBodyDTO,
+    files: Express.Multer.File[],
+  ) {
+    try {
+      // Destructor body
+      const { productId } = bulkCreateImageBodyDTO;
+
+      // Check product exists
+      const product = await this.productRepo.count({
+        where: {
+          id: productId,
+        },
+      });
+
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // Check minimum image upload is 1
+      if (files.length < 1) {
+        throw new CustomErrorException(ERRORS.MinimumImageUploadIsOne);
+      }
+
+      // Get max order
+      let { maxOrder } = await this.productImgRepo
+        .createQueryBuilder('productImage')
+        .where('productImage.productId = :id', {
+          id: productId,
+        })
+        .select('MAX(productImage.order)', 'maxOrder')
+        .getRawOne();
+
+      if (!maxOrder) {
+        maxOrder = -1;
+      }
+
+      // Upload images to S3
+      const uploadedImages = await Promise.all(
+        files.map((file, index) =>
+          this.fileUploadSerivce.uploadFileToS3(
+            file.buffer,
+            this.getS3Key(productId, maxOrder + index + 1, file.originalname),
+          ),
+        ),
+      );
+
+      // Create product images
+      const createdProductImages = await this.productImgRepo.save(
+        uploadedImages.map((image, index) => ({
+          productId,
+          image,
+          order: maxOrder + index + 1,
+        })),
+      );
+
+      return {
+        message: 'Create product images successfully',
+        data: createdProductImages.map((image) => ({
+          id: image.id,
+          image: image.image,
+          order: image.order,
+        })),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private getS3Key(productId: number, order: number, fileName: string): string {
+    return `${this.configService.get<string>(
+      'AWS_S3_PRODUCT_FOLDER',
+    )}/${productId}-${order}-${Date.now()}-${fileName}`;
   }
 
   public async getDetailProductAdmin(productId: string) {

@@ -120,6 +120,7 @@ type Code =
   | 'ProductAttributeValueNotBelongToAttribute'
   | 'ImageNotExist'
   | 'ImageBelongToVariant'
+  | 'MinimumImageUploadIsOne'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -832,6 +833,12 @@ export const ERRORS: Record<Code, CustomError> = {
   ImageBelongToVariant: {
     code: 'G0025',
     message: 'Image belong to variant',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  MinimumImageUploadIsOne: {
+    code: 'G0026',
+    message: 'Minimum image upload is one',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },

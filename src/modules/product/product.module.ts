@@ -13,6 +13,7 @@ import {
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { ProductTypeModule } from './product-type/product-type.module';
+import { FileUploadService } from '../../shared/services';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { ProductTypeModule } from './product-type/product-type.module';
     ]),
   ],
   controllers: [ProductController],
-  providers: [ProductService],
+  providers: [ProductService, FileUploadService],
   exports: [ProductService],
 })
 export class ProductModule {}
