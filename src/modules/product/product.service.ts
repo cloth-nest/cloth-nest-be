@@ -251,7 +251,7 @@ export class ProductService {
           where: {
             attributeId: parseInt(attributeId),
           },
-          select: ['id', 'value'],
+          select: ['id', 'value', 'order'],
           order: {
             value: 'ASC',
           },
@@ -297,10 +297,24 @@ export class ProductService {
         throw new CustomErrorException(ERRORS.ProductAttributeValueExist);
       }
 
+      // Get max order
+      let { maxOrder } = await this.attributeValueRepo
+        .createQueryBuilder('attributeValue')
+        .where('attributeValue.attributeId = :id', {
+          id: createAttributeValueBodyDTO.attributeId,
+        })
+        .select('MAX(attributeValue.order)', 'maxOrder')
+        .getRawOne();
+
+      if (maxOrder === null) {
+        maxOrder = -1;
+      }
+
       // Create attribute value
       const createdAttributeValue = await this.attributeValueRepo.save({
         attributeId: createAttributeValueBodyDTO.attributeId,
         value: createAttributeValueBodyDTO.attributeValue,
+        order: maxOrder + 1,
       });
 
       return {
