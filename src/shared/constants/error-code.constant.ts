@@ -121,6 +121,7 @@ type Code =
   | 'ImageNotExist'
   | 'ImageBelongToVariant'
   | 'MinimumImageUploadIsOne'
+  | 'ProductHasNoVariant'
 
   // Group H (Permission)
   | 'PermissionAlreadyExist'
@@ -839,6 +840,12 @@ export const ERRORS: Record<Code, CustomError> = {
   MinimumImageUploadIsOne: {
     code: 'G0026',
     message: 'Minimum image upload is one',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  ProductHasNoVariant: {
+    code: 'G0027',
+    message: 'Product has no variant',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },

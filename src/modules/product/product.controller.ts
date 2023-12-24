@@ -42,6 +42,7 @@ import {
   BulkCreateImageBodyDTO,
   UpdateProductBodyDTO,
   UpdateProductParamDto,
+  GetAllVariantAttributeBelongToProductParamDTO,
 } from './dto';
 import { ProductService } from './product.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -259,6 +260,18 @@ export class ProductController {
   ) {
     return this.productService.getProductVariantAdmin(
       getProductVariantAdminParamDTO.id,
+    );
+  }
+
+  @Auth(Permission.MANAGE_PRODUCTS)
+  @Get('/admin/:id/variant')
+  @HttpCode(HttpStatus.OK)
+  getAllVariantAtributesBelongToProduct(
+    @Param()
+    getAllVariantAttributeBelongToProductParamDTO: GetAllVariantAttributeBelongToProductParamDTO,
+  ) {
+    return this.productService.getAllVariantAtributesBelongToProduct(
+      getAllVariantAttributeBelongToProductParamDTO.id,
     );
   }
 

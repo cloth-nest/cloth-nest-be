@@ -1436,6 +1436,62 @@ export class ProductService {
     }
   }
 
+  public async getAllVariantAtributesBelongToProduct(productId: string) {
+    try {
+      // Check product exists
+      const product = await this.productRepo.count({
+        where: {
+          id: parseInt(productId),
+        },
+      });
+
+      if (!product) {
+        throw new CustomErrorException(ERRORS.ProductNotExist);
+      }
+
+      // // Check product type has variants
+      // const productType = await this.productTypeRepo.findOne({
+      //   where: {
+      //     products: {
+      //       id: parseInt(productId),
+      //     },
+      //   },
+      // });
+
+      // if (!productType.hasVariants) {
+      //   throw new CustomErrorException(ERRORS.ProductHasNoVariant);
+      // }
+
+      // Get all product attributes
+      const productAttributes = await this.productAttributeRepo.find({
+        where: {
+          productTypeProductVariant: {
+            productType: {
+              products: {
+                id: parseInt(productId),
+              },
+            },
+          },
+        },
+        select: ['id', 'name'],
+        relations: ['attributeValues'],
+      });
+
+      return {
+        data: productAttributes.map((attribute) => ({
+          ...attribute,
+          attributeValues: attribute.attributeValues.map((value) => ({
+            id: value.id,
+            value: value.value,
+            order: value.order,
+          })),
+        })),
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async getAllImagesBelongToProduct(productId: string) {
     try {
       const product = await this.productRepo.count({

@@ -18,3 +18,4 @@ export * from './create-product.dto';
 export * from './delete-image.dto';
 export * from './bulk-create-image.dto';
 export * from './update-product.dto';
+export * from './get-all-variant-attribute-belong-to-product.dto';
