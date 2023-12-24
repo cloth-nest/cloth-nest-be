@@ -1202,8 +1202,30 @@ export class ProductService {
         throw new CustomErrorException(ERRORS.ProductNotExist);
       }
 
+      // Get all product attributes belong to product
+      const productAttributes = await this.attributeValueRepo.find({
+        where: {
+          assignedProductAttributeValues: {
+            assignedProductAttribute: {
+              productId: parseInt(productId),
+            },
+          },
+        },
+        select: ['id', 'value', 'attributeId'],
+        relations: ['attribute'],
+      });
+
       return {
-        data: product,
+        data: {
+          ...product,
+          productAttributes: productAttributes.map((attribute) => ({
+            attributeId: attribute.attributeId,
+            value: {
+              id: attribute.id,
+              value: attribute.value,
+            },
+          })),
+        },
       };
     } catch (err) {
       throw err;
