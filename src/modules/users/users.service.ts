@@ -195,7 +195,7 @@ export class UsersService {
       const password = this.generatePassword();
 
       // Create new user
-      await this.userRepo.save(
+      const newStaff = await this.userRepo.save(
         this.userRepo.create({
           email,
           firstName,
@@ -213,6 +213,7 @@ export class UsersService {
       return {
         message: 'Invite staff member successfully',
         data: {
+          userId: newStaff.id,
           email,
           firstName,
           lastName,
