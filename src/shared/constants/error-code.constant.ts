@@ -158,7 +158,11 @@ type Code =
   | 'OrderAlreadyDelivered'
 
   // Group L (Payment)
-  | 'ZaloPayPaymentFailed';
+  | 'ZaloPayPaymentFailed'
+
+  // Group M Statistic
+  | 'StartDateEndDateRequired'
+  | 'StartDateMustBeBeforeEndDate';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -1023,5 +1027,19 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'ZaloPay payment failed',
     statusCode: 500,
     typeError: TYPE_ERRORS.InternalServerError,
+  },
+
+  // Group M Statistic
+  StartDateEndDateRequired: {
+    code: 'M0001',
+    message: 'Start date and end date are required',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  StartDateMustBeBeforeEndDate: {
+    code: 'M0002',
+    message: 'Start date must be before end date',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
   },
 };

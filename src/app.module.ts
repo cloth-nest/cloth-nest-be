@@ -29,6 +29,7 @@ import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { WarehouseModule } from './modules/warehouse/warehouse.module';
+import { StatisticModule } from './modules/statistic/statistic.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { WarehouseModule } from './modules/warehouse/warehouse.module';
     OrderModule,
     PaymentModule,
     WarehouseModule,
+    StatisticModule,
   ],
   controllers: [AppController],
   providers: [
