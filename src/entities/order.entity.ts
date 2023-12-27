@@ -22,10 +22,10 @@ export class Order {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'user_id', nullable: false })
+  @Column({ name: 'user_id', nullable: true })
   userId: number;
 
-  @Column({ name: 'address_id', nullable: false })
+  @Column({ name: 'address_id', nullable: true })
   addressId: number;
 
   @Column({
@@ -49,7 +49,7 @@ export class Order {
 
   @Column({
     name: 'shipping_fee',
-    nullable: false,
+    nullable: true,
     type: 'decimal',
     transformer: new ColumnNumericTransformer(),
   })
@@ -58,12 +58,12 @@ export class Order {
   @Column({ name: 'apptransid', nullable: true })
   apptransid: string;
 
-  @Column({ name: 'phone', nullable: false, length: 10 })
+  @Column({ name: 'phone', nullable: true, length: 10 })
   phone: string;
 
   @Column({
     name: 'delivery_method',
-    nullable: false,
+    nullable: true,
     enum: OrderDeliveryMethod,
   })
   deliveryMethod: OrderDeliveryMethod;

@@ -7,3 +7,4 @@ export * from './cancel-order.dto';
 export * from './get-all-order.dto';
 export * from './get-order-detail-admin.dto';
 export * from './update-order-status.dto';
+export * from './import-order.dto';

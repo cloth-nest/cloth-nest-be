@@ -5,9 +5,10 @@ import {
   OrderDetail,
   ProductVariant,
   User,
-  UserWishlist,
+  Warehouse,
+  WarehouseStock,
 } from '../../entities';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { AuthUser } from '../../shared/interfaces';
 import {
   CalcBillBodyDto,
@@ -15,24 +16,33 @@ import {
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
   GetAllOrdersQueryDTO,
+  ImportOrderBodyDTO,
   UpdateOrderStatusBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import { OrderLine } from './order-line.service';
-import { OrderPaymentStatus, OrderStatus } from '../../shared/enums';
+import {
+  OrderPaymentMethod,
+  OrderPaymentStatus,
+  OrderStatus,
+} from '../../shared/enums';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
-    @InjectRepository(UserWishlist)
+    @InjectRepository(ProductVariant)
     private productVariantRepo: Repository<ProductVariant>,
     @InjectRepository(Order)
     private orderRepo: Repository<Order>,
     @InjectRepository(OrderDetail)
     private orderDetailRepo: Repository<OrderDetail>,
+    @InjectRepository(Warehouse)
+    private warehouseRepo: Repository<Warehouse>,
+    @InjectRepository(WarehouseStock)
+    private warehouseStockRepo: Repository<WarehouseStock>,
     @Inject('OrderLine')
     private readonly orderLine: OrderLine,
     private dataSource: DataSource,
@@ -352,6 +362,140 @@ export class OrderService {
       };
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async importOrder(importOrderBodyDTO: ImportOrderBodyDTO) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { userId, warehouseId, carts } = importOrderBodyDTO;
+
+      // Check user exist
+      if (userId) {
+        const userExist = await this.userRepo.count({
+          where: {
+            id: userId,
+          },
+        });
+        if (!userExist) {
+          throw new CustomErrorException(ERRORS.UserNotExist);
+        }
+      }
+
+      // Check product variant exist
+      const productVariantExist = await this.productVariantRepo.count({
+        where: {
+          id: In(carts.map((item) => item.variantId)),
+        },
+      });
+      if (productVariantExist !== carts.length) {
+        throw new CustomErrorException(ERRORS.ProductVariantNotExist);
+      }
+
+      // Check warehouse exist
+      const warehouseExist = await this.warehouseRepo.count({
+        where: {
+          id: warehouseId,
+        },
+      });
+      if (!warehouseExist) {
+        throw new CustomErrorException(ERRORS.WarehouseNotExist);
+      }
+
+      // Get warehouse from product variant
+      const productInventory = await this.warehouseStockRepo.find({
+        where: {
+          variantId: In(carts.map((item) => item.variantId)),
+          warehouseId,
+        },
+      });
+
+      if (productInventory.length === 0) {
+        throw new CustomErrorException(ERRORS.InventoryNotEnough);
+      }
+
+      // Check inventory
+      const checkInventory = carts.every(
+        (item) =>
+          item.quantity <=
+          productInventory.find(
+            (product) => product.variantId === item.variantId,
+          ).quantity,
+      );
+
+      if (!checkInventory) {
+        throw new CustomErrorException(ERRORS.InventoryNotEnough);
+      }
+
+      const productCart = await this.productVariantRepo.find({
+        where: {
+          id: In(carts.map((item) => item.variantId)),
+        },
+        select: ['id', 'price', 'weight'],
+      });
+
+      // Calculate total bill before VAT
+      const total = carts.reduce((acc: number, item) => {
+        const product = productCart.find(
+          (product) => product.id === item.variantId,
+        );
+        return acc + product.price * item.quantity;
+      }, 0);
+
+      // Calculate total bill after VAT (VAT = 8%)
+      const totalBill = total * 1.08;
+
+      // Create order
+      const order = await queryRunner.manager.save(Order, {
+        userId,
+        total: totalBill,
+        status: OrderStatus.DELIVERED,
+        paymentMethod: OrderPaymentMethod.CASH,
+        paymentStatus: OrderPaymentStatus.PAID,
+      });
+
+      // Create order detail
+      await queryRunner.manager.save(
+        OrderDetail,
+        carts.map((item) => ({
+          orderId: order.id,
+          variantId: item.variantId,
+          quantity: item.quantity,
+          price: productCart.find((product) => product.id === item.variantId)
+            .price,
+        })),
+      );
+
+      // Deduct inventory
+      await Promise.all(
+        carts.map((item) =>
+          queryRunner.manager.decrement(
+            WarehouseStock,
+            {
+              variantId: item.variantId,
+              warehouseId,
+            },
+            'quantity',
+            item.quantity,
+          ),
+        ),
+      );
+
+      await queryRunner.commitTransaction();
+      return {
+        message: 'Import order successfully',
+        data: {
+          order,
+        },
+      };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
   }
 

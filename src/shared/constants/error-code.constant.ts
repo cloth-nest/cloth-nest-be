@@ -158,6 +158,7 @@ type Code =
   | 'OrderAlreadyCanceled'
   | 'OrderAlreadyDelivered'
   | 'OrderAlreadyUpdated'
+  | 'UserNotExist'
 
   // Group L (Payment)
   | 'ZaloPayPaymentFailed'
@@ -1032,6 +1033,12 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'K0012',
     message: 'Order already updated',
     statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  UserNotExist: {
+    code: 'K0013',
+    message: 'User not exist',
+    statusCode: 404,
     typeError: TYPE_ERRORS.ValidationError,
   },
 

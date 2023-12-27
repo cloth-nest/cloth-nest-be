@@ -21,6 +21,7 @@ import {
   GetAllOrdersQueryDTO,
   GetOrderDetailAdminParamDto,
   GetOrderDetailParamDto,
+  ImportOrderBodyDTO,
   UpdateOrderStatusBodyDTO,
   UpdateOrderStatusParamDTO,
 } from './dto';
@@ -101,6 +102,13 @@ export class OrderController {
   @HttpCode(HttpStatus.OK)
   getAllOrder(@Query() getAllOrderQueryDTO: GetAllOrdersQueryDTO) {
     return this.orderService.getAllOrder(getAllOrderQueryDTO);
+  }
+
+  @Auth(Permission.MANAGE_ORDERS_IMPORT)
+  @Post('admin/import')
+  @HttpCode(HttpStatus.CREATED)
+  importOrder(@Body() importOrderBodyDTO: ImportOrderBodyDTO) {
+    return this.orderService.importOrder(importOrderBodyDTO);
   }
 
   @Auth(Permission.MANAGE_ORDERS)

@@ -6,6 +6,8 @@ import {
   ProductVariant,
   User,
   UserWishlist,
+  Warehouse,
+  WarehouseStock,
 } from '../../entities';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
@@ -20,6 +22,8 @@ import { HttpModule } from '@nestjs/axios';
       ProductVariant,
       Order,
       OrderDetail,
+      Warehouse,
+      WarehouseStock,
     ]),
     HttpModule,
   ],
