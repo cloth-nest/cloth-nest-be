@@ -19,6 +19,7 @@ import {
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
   GetAllOrdersQueryDTO,
+  GetOrderDetailAdminParamDto,
   GetOrderDetailParamDto,
 } from './dto';
 import { Permission } from '../../shared/enums';
@@ -98,6 +99,17 @@ export class OrderController {
   @HttpCode(HttpStatus.OK)
   getAllOrder(@Query() getAllOrderQueryDTO: GetAllOrdersQueryDTO) {
     return this.orderService.getAllOrder(getAllOrderQueryDTO);
+  }
+
+  @Auth(Permission.MANAGE_ORDERS)
+  @Get('admin/:id')
+  @HttpCode(HttpStatus.OK)
+  getOrderDetailAdmin(
+    @Param() getOrderDetailAdminParamDto: GetOrderDetailAdminParamDto,
+  ) {
+    return this.orderService.getOrderDetailAdmin(
+      getOrderDetailAdminParamDto.id,
+    );
   }
 
   @Auth()

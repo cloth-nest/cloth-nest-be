@@ -353,4 +353,75 @@ export class OrderService {
       throw err;
     }
   }
+
+  public async getOrderDetailAdmin(orderId: string) {
+    try {
+      const order = await this.orderRepo
+        .createQueryBuilder('order')
+        .where('order.id = :id', { id: orderId })
+        .leftJoinAndSelect('order.address', 'address')
+        .leftJoinAndSelect('order.orderDetails', 'detail')
+        .leftJoinAndSelect('detail.productVariant', 'productVariant')
+        .leftJoinAndSelect('productVariant.variantImages', 'variantImages')
+        .leftJoinAndSelect('variantImages.productImage', 'image')
+        .leftJoinAndSelect('order.user', 'user')
+        .select([
+          'order.id',
+          'order.userId',
+          'order.addressId',
+          'order.total',
+          'order.status',
+          'order.total',
+          'order.deliveryDate',
+          'order.shippingFee',
+          'order.phone',
+          'order.deliveryMethod',
+          'order.paymentMethod',
+          'order.paymentStatus',
+          'order.createdAt',
+          'address.id',
+          'address.email',
+          'address.lastName',
+          'address.firstName',
+          'address.provinceName',
+          'address.districtName',
+          'address.wardName',
+          'address.detail',
+          'address.phone',
+          'address.isAddressProfile',
+          'detail.id',
+          'detail.quantity',
+          'detail.price',
+          'user.id',
+          'user.firstName',
+          'user.lastName',
+          'productVariant.id',
+          'productVariant.name',
+          'productVariant.sku',
+          'variantImages.id',
+          'image.image',
+        ])
+        .getOne();
+
+      if (!order) {
+        throw new CustomErrorException(ERRORS.OrderNotExist);
+      }
+
+      return {
+        data: {
+          ...order,
+          orderDetails: order.orderDetails.map((detail) => ({
+            ...detail,
+            productVariant: undefined,
+            variantId: detail.productVariant.id,
+            name: detail.productVariant.name,
+            sku: detail.productVariant.sku,
+            image: detail.productVariant.variantImages[0].productImage.image,
+          })),
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }
