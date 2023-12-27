@@ -18,8 +18,10 @@ import {
   CreateOrderWithCartBodyDto,
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
+  GetAllOrdersQueryDTO,
   GetOrderDetailParamDto,
 } from './dto';
+import { Permission } from '../../shared/enums';
 
 @Controller('order')
 export class OrderController {
@@ -56,16 +58,6 @@ export class OrderController {
   }
 
   @Auth()
-  @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  getOrderDetail(
-    @CurrentUser() user: AuthUser,
-    @Param() getOrderDetailParamDto: GetOrderDetailParamDto,
-  ) {
-    return this.orderService.getOrderDetail(user, getOrderDetailParamDto.id);
-  }
-
-  @Auth()
   @Post('')
   @HttpCode(HttpStatus.CREATED)
   createOrderWithCart(
@@ -99,5 +91,22 @@ export class OrderController {
     @Param() cancelOrderParamDto: CancelOrderParamDto,
   ) {
     return this.orderService.cancelOrder(user, cancelOrderParamDto.id);
+  }
+
+  @Auth(Permission.MANAGE_ORDERS)
+  @Get('admin')
+  @HttpCode(HttpStatus.OK)
+  getAllOrder(@Query() getAllOrderQueryDTO: GetAllOrdersQueryDTO) {
+    return this.orderService.getAllOrder(getAllOrderQueryDTO);
+  }
+
+  @Auth()
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  getOrderDetail(
+    @CurrentUser() user: AuthUser,
+    @Param() getOrderDetailParamDto: GetOrderDetailParamDto,
+  ) {
+    return this.orderService.getOrderDetail(user, getOrderDetailParamDto.id);
   }
 }

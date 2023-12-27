@@ -14,6 +14,7 @@ import {
   CreateOrderWithCartBodyDto,
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
+  GetAllOrdersQueryDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -308,6 +309,45 @@ export class OrderService {
 
       return {
         message: 'Cancel order successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getAllOrder(getAllOrderQueryDTO: GetAllOrdersQueryDTO) {
+    try {
+      const { page, limit } = getAllOrderQueryDTO;
+
+      const [orders, total] = await this.orderRepo
+        .createQueryBuilder('order')
+        .leftJoinAndSelect('order.user', 'user')
+        .select([
+          'order.id',
+          'order.total',
+          'order.status',
+          'order.total',
+          'order.deliveryMethod',
+          'order.paymentMethod',
+          'order.paymentStatus',
+          'order.createdAt',
+          'user.firstName',
+          'user.lastName',
+        ])
+        .skip((page - 1) * limit)
+        .take(limit)
+        .orderBy('order.createdAt', 'DESC')
+        .getManyAndCount();
+
+      return {
+        data: {
+          orders,
+          pagination: {
+            page,
+            limit,
+            total,
+          },
+        },
       };
     } catch (err) {
       throw err;
