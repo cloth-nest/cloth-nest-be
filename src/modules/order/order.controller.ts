@@ -21,6 +21,8 @@ import {
   GetAllOrdersQueryDTO,
   GetOrderDetailAdminParamDto,
   GetOrderDetailParamDto,
+  UpdateOrderStatusBodyDTO,
+  UpdateOrderStatusParamDTO,
 } from './dto';
 import { Permission } from '../../shared/enums';
 
@@ -109,6 +111,19 @@ export class OrderController {
   ) {
     return this.orderService.getOrderDetailAdmin(
       getOrderDetailAdminParamDto.id,
+    );
+  }
+
+  @Auth(Permission.MANAGE_ORDERS)
+  @Post('admin/:id')
+  @HttpCode(HttpStatus.OK)
+  updateOrderStatus(
+    @Param() updateOrderStatusParamDTO: UpdateOrderStatusParamDTO,
+    @Body() updateOrderStatusBodyDTO: UpdateOrderStatusBodyDTO,
+  ) {
+    return this.orderService.updateOrderStatus(
+      updateOrderStatusParamDTO.id,
+      updateOrderStatusBodyDTO,
     );
   }
 

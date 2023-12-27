@@ -59,6 +59,7 @@ type Code =
   | 'InvalidCategoryId'
   | 'InvalidProductName'
   | 'InvalidProductDescription'
+  | 'InvalidOrderStatus'
 
   // Group C
   | 'EmailExisted'
@@ -156,6 +157,7 @@ type Code =
   | 'OrderAlreadyPaid'
   | 'OrderAlreadyCanceled'
   | 'OrderAlreadyDelivered'
+  | 'OrderAlreadyUpdated'
 
   // Group L (Payment)
   | 'ZaloPayPaymentFailed'
@@ -522,21 +524,9 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
-  ProductSkuExist: {
+  InvalidOrderStatus: {
     code: 'B0047',
-    message: 'Product sku is already existed',
-    statusCode: 409,
-    typeError: TYPE_ERRORS.ValidationError,
-  },
-  WarehouseNotExist: {
-    code: 'B0048',
-    message: 'Warehouse not exist',
-    statusCode: 404,
-    typeError: TYPE_ERRORS.ValidationError,
-  },
-  ProductVariantAttributesEmpty: {
-    code: 'B0049',
-    message: 'Product variant attributes is empty',
+    message: 'Invalid input orderStatus',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
@@ -874,6 +864,24 @@ export const ERRORS: Record<Code, CustomError> = {
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },
+  ProductSkuExist: {
+    code: 'G0028',
+    message: 'Product sku is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  WarehouseNotExist: {
+    code: 'G0029',
+    message: 'Warehouse not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  ProductVariantAttributesEmpty: {
+    code: 'G0030',
+    message: 'Product variant attributes is empty',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
 
   // Group H (Permission)
   PermissionAlreadyExist: {
@@ -1017,6 +1025,12 @@ export const ERRORS: Record<Code, CustomError> = {
   OrderAlreadyDelivered: {
     code: 'K0011',
     message: 'Order already delivered',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  OrderAlreadyUpdated: {
+    code: 'K0012',
+    message: 'Order already updated',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },

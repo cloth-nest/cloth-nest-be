@@ -15,6 +15,7 @@ import {
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
   GetAllOrdersQueryDTO,
+  UpdateOrderStatusBodyDTO,
 } from './dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
@@ -419,6 +420,44 @@ export class OrderService {
             image: detail.productVariant.variantImages[0].productImage.image,
           })),
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async updateOrderStatus(
+    orderId: string,
+    updateOrderStatusBodyDTO: UpdateOrderStatusBodyDTO,
+  ) {
+    try {
+      const { orderStatus } = updateOrderStatusBodyDTO;
+
+      const order = await this.orderRepo.findOne({
+        where: {
+          id: parseInt(orderId),
+        },
+      });
+
+      if (!order) {
+        throw new CustomErrorException(ERRORS.OrderNotExist);
+      }
+
+      if (order.status === orderStatus) {
+        throw new CustomErrorException(ERRORS.OrderAlreadyUpdated);
+      }
+
+      await this.orderRepo.update(
+        {
+          id: parseInt(orderId),
+        },
+        {
+          status: orderStatus,
+        },
+      );
+
+      return {
+        message: 'Update order status successfully',
       };
     } catch (err) {
       throw err;
