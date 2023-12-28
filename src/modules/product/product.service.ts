@@ -919,7 +919,7 @@ export class ProductService {
             search &&
             Raw((alias) => `LOWER(${alias}) Like '%${search.toLowerCase()}%'`),
         },
-        select: ['id', 'name', 'description'],
+        select: ['id', 'name', 'description', 'productTypeId'],
         order: {
           name: 'ASC',
         },
@@ -935,6 +935,7 @@ export class ProductService {
             name: product.name,
             description: product.description,
             image: product.productImages[0]?.image,
+            productTypeId: product.productTypeId,
             productType: product.productType.name,
           })),
           pageInformation: paginate(limit, page, total),
