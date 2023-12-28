@@ -25,6 +25,7 @@ import {
   GetStaffMemberDetailParamDTO,
   UpdateGroupPermissionStaffParamDto,
   UpdateGroupPermissionStaffBodyDto,
+  GetFirebaseTokenDTO,
 } from './dto';
 import { Permission } from '../../shared/enums';
 
@@ -114,5 +115,11 @@ export class UserController {
       updateGroupPermissionStaffParamDto.id,
       updateGroupPermissionStaffBodyDto,
     );
+  }
+
+  @Post('ft')
+  @HttpCode(HttpStatus.OK)
+  getFirebaseToken(@Body() getFirebaseTokenDTO: GetFirebaseTokenDTO) {
+    return this.userService.getFirebaseToken(getFirebaseTokenDTO.email);
   }
 }

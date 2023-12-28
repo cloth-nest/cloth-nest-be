@@ -535,4 +535,27 @@ export class UsersService {
 
     return shuffledString;
   }
+
+  public async getFirebaseToken(email: string) {
+    try {
+      const user = await this.userRepo.findOne({
+        where: {
+          email,
+        },
+        select: ['id', 'email', 'firstName', 'lastName', 'firebaseToken'],
+      });
+
+      if (!user) {
+        throw new CustomErrorException(ERRORS.UserNotExist);
+      }
+
+      return {
+        data: {
+          firebaseToken: user.firebaseToken,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }
