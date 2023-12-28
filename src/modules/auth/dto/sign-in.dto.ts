@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -20,4 +21,8 @@ export class SignInDto {
   @NotContains(' ')
   @Matches(passwordReg)
   password: string;
+
+  @IsOptional()
+  @IsString()
+  firebaseToken: string;
 }

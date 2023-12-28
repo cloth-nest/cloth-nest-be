@@ -52,6 +52,7 @@ export class UsersService {
           'avatar',
           'phone',
           'userPermission',
+          'firebaseToken',
         ],
         relations: {
           defaultShippingAddress: true,
@@ -435,6 +436,17 @@ export class UsersService {
       },
       {
         refreshToken: rt,
+      },
+    );
+  }
+
+  public async saveFirebaseToken(ft: string, userId: number) {
+    return await this.userRepo.update(
+      {
+        id: userId,
+      },
+      {
+        firebaseToken: ft,
       },
     );
   }

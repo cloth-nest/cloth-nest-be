@@ -182,6 +182,9 @@ export class AuthService {
 
   public async signIn(signInDto: SignInDto) {
     try {
+      // Destruct body
+      const { firebaseToken } = signInDto;
+
       // Check email existed
       const user = await this.usersService.findUserByEmail(signInDto.email);
       if (!user) {
@@ -228,6 +231,11 @@ export class AuthService {
 
       // Save refresh token
       await this.usersService.saveRefreshToken(refreshToken, user.id);
+
+      // Save firebase token if exist
+      if (firebaseToken) {
+        await this.usersService.saveFirebaseToken(firebaseToken, user.id);
+      }
 
       return {
         data: {

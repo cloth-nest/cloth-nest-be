@@ -56,6 +56,9 @@ export class User {
   @Column({ name: 'default_billing_address_id', nullable: true })
   defaultBillingAddressId: number;
 
+  @Column({ name: 'firebase_token', nullable: true })
+  firebaseToken: string;
+
   @OneToOne(() => Address, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({
     name: 'default_shipping_address_id',
