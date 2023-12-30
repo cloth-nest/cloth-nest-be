@@ -163,9 +163,12 @@ type Code =
   // Group L (Payment)
   | 'ZaloPayPaymentFailed'
 
-  // Group M Statistic
+  // Group M (Statistic)
   | 'StartDateEndDateRequired'
-  | 'StartDateMustBeBeforeEndDate';
+  | 'StartDateMustBeBeforeEndDate'
+
+  // Group N (Warehouse)
+  | 'WarehouseNameExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -1050,7 +1053,7 @@ export const ERRORS: Record<Code, CustomError> = {
     typeError: TYPE_ERRORS.InternalServerError,
   },
 
-  // Group M Statistic
+  // Group M (Statistic)
   StartDateEndDateRequired: {
     code: 'M0001',
     message: 'Start date and end date are required',
@@ -1061,6 +1064,14 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'M0002',
     message: 'Start date must be before end date',
     statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+
+  // Group N (Warehouse)
+  WarehouseNameExist: {
+    code: 'N0001',
+    message: 'Warehouse name is already existed',
+    statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },
 };
