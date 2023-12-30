@@ -1610,6 +1610,19 @@ export class ProductService {
         });
       }
 
+      // Get price min of all variants
+      const minPrice = await this.productVariantRepo
+        .createQueryBuilder('variant')
+        .where('variant.productId = :id', {
+          id: productId,
+        })
+        .select('MIN(variant.price)', 'minPrice')
+        .getRawOne();
+      // Update min price of product
+      await queryRunner.manager.update(Product, productId, {
+        price: minPrice.minPrice,
+      });
+
       // Create variant images
       if (imageIds) {
         await queryRunner.manager.save(
