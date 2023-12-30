@@ -140,6 +140,7 @@ export class CheckInventoryHandler extends OrderLineHandler {
           // Central warehouse
           warehouseId: 9,
         },
+        select: ['id', 'variantId', 'warehouseId', 'quantity'],
       });
 
     // Assign warehouseStock prop to request

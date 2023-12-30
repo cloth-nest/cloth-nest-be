@@ -184,12 +184,12 @@ export class OrderService {
         const cartItem = cart.find(
           (cartItem) => cartItem.productVariantId === variantId,
         );
-        return cartItem && quantity < cartItem.quantity;
+        return quantity >= cartItem.quantity;
       });
 
       return {
         data: {
-          isAvailable: !errors,
+          isAvailable: !!errors,
           cart: errors ? cart : undefined,
           warehouseStock: errors ? warehouseStockFilter : undefined,
         },
