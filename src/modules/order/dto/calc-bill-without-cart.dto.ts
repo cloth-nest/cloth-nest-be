@@ -12,7 +12,7 @@ class CartItem {
   @IsNotEmpty()
   @IsInt()
   @Min(1)
-  variantId: number;
+  productVariantId: number;
 
   @IsNotEmpty()
   @IsInt()
