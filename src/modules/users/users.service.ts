@@ -393,7 +393,7 @@ export class UsersService {
 
   public async createNewUser(signUpDto: SignUpDto): Promise<User> {
     try {
-      const { email, password, firstName, lastName } = signUpDto;
+      const { email, password, firstName, lastName, firebaseToken } = signUpDto;
 
       const createdUser = this.userRepo.create({
         email,
@@ -401,6 +401,7 @@ export class UsersService {
         firstName,
         lastName,
         dateJoined: new Date(),
+        firebaseToken,
       });
       await this.userRepo.save(createdUser);
 

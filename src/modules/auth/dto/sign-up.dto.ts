@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -30,4 +31,8 @@ export class SignUpDto {
   @IsString()
   @MaxLength(50)
   lastName: string;
+
+  @IsOptional()
+  @IsString()
+  firebaseToken: string;
 }
