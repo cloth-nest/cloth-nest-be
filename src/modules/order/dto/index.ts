@@ -8,3 +8,4 @@ export * from './get-all-order.dto';
 export * from './get-order-detail-admin.dto';
 export * from './update-order-status.dto';
 export * from './import-order.dto';
+export * from './calc-bill-without-cart.dto';

@@ -12,6 +12,7 @@ import { DataSource, In, Repository } from 'typeorm';
 import { AuthUser } from '../../shared/interfaces';
 import {
   CalcBillBodyDto,
+  CalcBillWithoutCartBodyDto,
   CreateOrderWithCartBodyDto,
   CreateOrderWithoutCartBodyDto,
   GetAllOrdersBelongToUserQueryDTO,
@@ -207,6 +208,31 @@ export class OrderService {
         user,
         addressId,
         ghnServerTypeId,
+      });
+
+      return {
+        data: {
+          bill,
+          cart,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async calcBillWithoutCart(
+    user: AuthUser,
+    calcBillWithoutCartBodyDto: CalcBillWithoutCartBodyDto,
+  ) {
+    try {
+      const { addressId, ghnServerTypeId, carts } = calcBillWithoutCartBodyDto;
+
+      const { bill, cart } = await this.orderLine.calcBillWithoutCart({
+        user,
+        addressId,
+        ghnServerTypeId,
+        cart: carts,
       });
 
       return {

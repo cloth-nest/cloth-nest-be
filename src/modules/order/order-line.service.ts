@@ -560,6 +560,22 @@ export class OrderLine {
     return checkCartHandler.handle(request, this.dataSource);
   }
 
+  public async calcBillWithoutCart(
+    request: IOrderLineRequest,
+  ): Promise<IOrderLineRequest> {
+    const checkInventoryHandler = new CheckInventoryHandler();
+    const checkAddressHandler = new CheckAddressHandler();
+    const calculateTotalHandler = new CalculateTotalHandler(
+      this.httpService,
+      this.configService,
+    );
+
+    checkInventoryHandler.setNext(checkAddressHandler);
+    checkAddressHandler.setNext(calculateTotalHandler);
+
+    return checkInventoryHandler.handle(request, this.dataSource);
+  }
+
   public async createOrderWithCart(
     request: IOrderLineRequest,
   ): Promise<IOrderLineRequest> {

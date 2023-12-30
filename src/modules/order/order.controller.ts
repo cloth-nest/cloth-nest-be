@@ -14,6 +14,7 @@ import { Auth, CurrentUser } from '../../shared/decorators';
 import { OrderService } from './order.service';
 import {
   CalcBillBodyDto,
+  CalcBillWithoutCartBodyDto,
   CancelOrderParamDto,
   CreateOrderWithCartBodyDto,
   CreateOrderWithoutCartBodyDto,
@@ -59,6 +60,19 @@ export class OrderController {
     @Body() calcBillBodyDto: CalcBillBodyDto,
   ) {
     return this.orderService.calcBill(user, calcBillBodyDto);
+  }
+
+  @Auth()
+  @Post('/calc-bill-without-cart')
+  @HttpCode(HttpStatus.OK)
+  calcBillWithoutCart(
+    @CurrentUser() user: AuthUser,
+    @Body() calcBillWithoutCartBodyDto: CalcBillWithoutCartBodyDto,
+  ) {
+    return this.orderService.calcBillWithoutCart(
+      user,
+      calcBillWithoutCartBodyDto,
+    );
   }
 
   @Auth()
