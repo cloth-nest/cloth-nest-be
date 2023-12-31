@@ -534,7 +534,9 @@ export class ProductService {
         name: product.name,
         price: product.price,
         description: product.description,
-        image: product.productImages[0]?.image,
+        image: product.productImages.find(
+          (productImage) => productImage.order === 0,
+        ).image,
         defautVariantId: product?.defaultVariant?.id,
         colors: colorProducts[product.id],
       }));
