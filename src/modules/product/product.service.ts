@@ -1611,7 +1611,7 @@ export class ProductService {
       }
 
       // Get price min of all variants
-      const minPrice = await this.productVariantRepo
+      const { minPrice } = await this.productVariantRepo
         .createQueryBuilder('variant')
         .where('variant.productId = :id', {
           id: productId,
@@ -1619,9 +1619,11 @@ export class ProductService {
         .select('MIN(variant.price)', 'minPrice')
         .getRawOne();
       // Update min price of product
-      await queryRunner.manager.update(Product, productId, {
-        price: minPrice.minPrice,
-      });
+      if (minPrice) {
+        await queryRunner.manager.update(Product, productId, {
+          price: minPrice,
+        });
+      }
 
       // Create variant images
       if (imageIds) {
