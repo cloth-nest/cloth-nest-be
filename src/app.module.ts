@@ -30,6 +30,8 @@ import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { WarehouseModule } from './modules/warehouse/warehouse.module';
 import { StatisticModule } from './modules/statistic/statistic.module';
+import { RecommendationModule } from './modules/recommendation/recommendation.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -59,6 +61,7 @@ import { StatisticModule } from './modules/statistic/statistic.module';
       inject: [ConfigService],
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     GlobalModule,
     MailModule,
     AuthModule,
@@ -72,6 +75,7 @@ import { StatisticModule } from './modules/statistic/statistic.module';
     PaymentModule,
     WarehouseModule,
     StatisticModule,
+    RecommendationModule,
   ],
   controllers: [AppController],
   providers: [

@@ -10,6 +10,7 @@ type Code =
   | 'EmptyBody'
   | 'UnprocessableEntity'
   | 'GHNThirdPartyError'
+  | 'RecomendationSystemError'
 
   // Group B
   | 'InvalidEmail'
@@ -241,6 +242,12 @@ export const ERRORS: Record<Code, CustomError> = {
   GHNThirdPartyError: {
     code: 'A0008',
     message: 'GHN third party error',
+    statusCode: 500,
+    typeError: TYPE_ERRORS.InternalServerError,
+  },
+  RecomendationSystemError: {
+    code: 'A0009',
+    message: 'Reccomendation system error',
     statusCode: 500,
     typeError: TYPE_ERRORS.InternalServerError,
   },
