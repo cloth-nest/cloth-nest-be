@@ -1273,7 +1273,7 @@ export class ProductService {
         .select('MAX(productImage.order)', 'maxOrder')
         .getRawOne();
 
-      if (!maxOrder) {
+      if (maxOrder === null) {
         maxOrder = -1;
       }
 
@@ -1507,14 +1507,16 @@ export class ProductService {
       }
 
       // Check imageIds belong to product
-      const productImages = await this.productImgRepo.count({
-        where: {
-          productId,
-          id: In(imageIds),
-        },
-      });
-      if (productImages !== imageIds.length) {
-        throw new CustomErrorException(ERRORS.ImageNotExist);
+      if (imageIds) {
+        const productImages = await this.productImgRepo.count({
+          where: {
+            productId,
+            id: In(imageIds),
+          },
+        });
+        if (productImages !== imageIds.length) {
+          throw new CustomErrorException(ERRORS.ImageNotExist);
+        }
       }
 
       // Check warehouse exists
@@ -1587,7 +1589,8 @@ export class ProductService {
         })
         .select('MAX(variant.order)', 'maxOrder')
         .getRawOne();
-      if (!maxOrder) {
+
+      if (maxOrder === null) {
         maxOrder = -1;
       }
 
