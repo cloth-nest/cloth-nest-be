@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsNumberString, Min } from 'class-validator';
+import { IsInt, IsNumberString, IsOptional, Min } from 'class-validator';
 
 export class GetProductRecommendationParamDTO {
   @IsNumberString()
@@ -8,8 +8,8 @@ export class GetProductRecommendationParamDTO {
 
 export class GetProductRecommendationQueryDTO {
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   @IsInt()
   @Min(1)
-  count: number;
+  count: number = 10;
 }

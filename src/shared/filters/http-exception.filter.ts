@@ -160,6 +160,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'limit': {
         return ERRORS.InvalidLimitQueryParam;
       }
+      case 'count': {
+        return ERRORS.InvalidCountQueryParam;
+      }
       case 'id': {
         return ERRORS.InvalidIdPathParam;
       }
