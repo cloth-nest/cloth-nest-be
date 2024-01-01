@@ -521,11 +521,12 @@ export class UsersService {
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@$!%*#?&';
     const randomIndex = () => Math.floor(Math.random() * characters.length);
 
-    // Select at least one letter, one digit, and one special character
+    // Select at least one letter, one digit, one number digit and one special character
     const validString =
       characters[randomIndex()] + // Letter
       characters[randomIndex() + 26] + // Digit
       characters[randomIndex() + 52] + // Special character
+      characters.slice(52, 62) + // Numeric digits
       characters.slice(0, 9); // 9 random characters
 
     // Randomize the string to create a random valid string
