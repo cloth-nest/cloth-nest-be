@@ -33,6 +33,8 @@ import {
   UserAddressSeeder,
   OrderSeeder,
   OrderDetailSeeder,
+  ReviewSeeder,
+  ReviewImageSeeder,
 } from './seeders';
 
 dotenv.config();
@@ -84,6 +86,8 @@ const {
       UserAddressSeeder,
       OrderSeeder,
       OrderDetailSeeder,
+      ReviewSeeder,
+      ReviewImageSeeder,
     ],
   };
 

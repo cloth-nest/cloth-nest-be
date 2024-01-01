@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/dm-20230821164209-001.jpg?v=1692694024000",
+    "reviewId": 1
+  },
+  {
+    "id": 2,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/dm-20230821164209-001-copy.jpg?v=1692694026730",
+    "reviewId": 1
+  },
+  {
+    "id": 3,
+    "image": "https://bizweb.dktcdn.net/100/467/832/products/back-a6c42be6-2b03-420c-8a03-47f71d749800.jpg?v=1694769233527",
+    "reviewId": 2
+  }
+]
