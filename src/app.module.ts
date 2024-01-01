@@ -32,6 +32,7 @@ import { WarehouseModule } from './modules/warehouse/warehouse.module';
 import { StatisticModule } from './modules/statistic/statistic.module';
 import { RecommendationModule } from './modules/recommendation/recommendation.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ReviewModule } from './modules/review/review.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     WarehouseModule,
     StatisticModule,
     RecommendationModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [
