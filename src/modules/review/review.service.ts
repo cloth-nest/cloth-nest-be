@@ -52,6 +52,9 @@ export class ReviewService {
           'images.id',
           'images.image',
         ])
+        .skip((page - 1) * limit)
+        .take(limit)
+        .orderBy('review.createdAt', 'DESC')
         .getManyAndCount();
 
       return {
