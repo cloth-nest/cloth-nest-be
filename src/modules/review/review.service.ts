@@ -60,6 +60,7 @@ export class ReviewService {
           'user.lastName',
           'images.id',
           'images.image',
+          'images.order',
         ])
         .skip((page - 1) * limit)
         .take(limit)
@@ -105,6 +106,7 @@ export class ReviewService {
           'user.lastName',
           'images.id',
           'images.image',
+          'images.order',
         ])
         .getOne();
 
