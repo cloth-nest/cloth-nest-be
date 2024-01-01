@@ -163,6 +163,7 @@ type Code =
   | 'OrderAlreadyDelivered'
   | 'OrderAlreadyUpdated'
   | 'UserNotExist'
+  | 'MissFieldQuantity'
 
   // Group L (Payment)
   | 'ZaloPayPaymentFailed'
@@ -1073,6 +1074,12 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'K0013',
     message: 'User not exist',
     statusCode: 404,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  MissFieldQuantity: {
+    code: 'K0014',
+    message: 'Miss field quantity',
+    statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },
 

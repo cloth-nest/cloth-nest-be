@@ -442,14 +442,9 @@ export class CreateOrderWithoutCartHandler extends OrderLineHandler {
         throw new CustomErrorException(ERRORS.PaymentMethodNotExist);
       }
 
-      // Check request.variantId is undefined
-      if (!request.cart) {
-        throw new CustomErrorException(ERRORS.CartEmpty);
-      }
-
       // Check request.quantity is undefined
-      if (!request.cart) {
-        throw new CustomErrorException(ERRORS.CartEmpty);
+      if (!request.quantity) {
+        throw new CustomErrorException(ERRORS.MissFieldQuantity);
       }
 
       // Check request.ghnServerTypeId is undefined
