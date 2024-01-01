@@ -17,6 +17,7 @@ import {
   UserWishlist,
   Cart,
   Order,
+  Review,
 } from './';
 import * as bcrypt from 'bcrypt';
 import { Gender } from '../shared/enums';
@@ -105,6 +106,9 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   order: Order[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  review: Review[];
 
   @CreateDateColumn({
     name: 'created_at',

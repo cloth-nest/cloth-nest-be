@@ -26,3 +26,5 @@ export * from './user-wishlist.entity';
 export * from './cart.entity';
 export * from './order.entity';
 export * from './order-detail.entity';
+export * from './review.entity';
+export * from './review-image.entity';

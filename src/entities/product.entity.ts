@@ -15,6 +15,7 @@ import {
   ProductImage,
   ProductType,
   ProductVariant,
+  Review,
 } from './';
 import { ColumnNumericTransformer } from '../shared/utils';
 
@@ -86,6 +87,9 @@ export class Product {
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   productImages: ProductImage[];
+
+  @OneToMany(() => Review, (review) => review.product)
+  review: Review[];
 
   @CreateDateColumn({
     name: 'created_at',
