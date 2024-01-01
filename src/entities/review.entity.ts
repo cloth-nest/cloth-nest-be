@@ -24,7 +24,7 @@ export class Review {
   @Column({ name: 'content', nullable: false })
   content: string;
 
-  @Column({ name: 'rating', nullable: false, type: 'integer' })
+  @Column({ name: 'rating', nullable: false, type: 'numeric' })
   rating: number;
 
   @ManyToOne(() => User, (user) => user.review)

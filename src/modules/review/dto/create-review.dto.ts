@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import {
-  IsInt,
   IsNotEmpty,
+  IsNumber,
   IsNumberString,
   IsString,
   Max,
@@ -20,7 +20,13 @@ export class CreateReviewBodyDTO {
 
   @Type(() => Number)
   @IsNotEmpty()
-  @IsInt()
+  @IsNumber(
+    { maxDecimalPlaces: 1 },
+    {
+      message:
+        'rating must be a number conforming to the specified constraints is 1. Eg: Use 3.7 instead of 3.71',
+    },
+  )
   @Min(1)
   @Max(5)
   rating: number;
