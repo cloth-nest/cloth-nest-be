@@ -77,6 +77,45 @@ export class ReviewService {
     }
   }
 
+  async getReviewDetail(reviewId: string) {
+    try {
+      // Check if review exists
+      const review = await this.reviewRepo.findOne({
+        where: { id: parseInt(reviewId) },
+      });
+      if (!review) {
+        throw new CustomErrorException(ERRORS.ReviewNotExist);
+      }
+
+      // Get review detail
+      const reviewDetail = await this.reviewRepo
+        .createQueryBuilder('review')
+        .where('review.id = :reviewId', { reviewId: parseInt(reviewId) })
+        .leftJoinAndSelect('review.images', 'images')
+        .leftJoinAndSelect('review.user', 'user')
+        .select([
+          'review.id',
+          'review.content',
+          'review.rating',
+          'review.createdAt',
+          'user.id',
+          'user.email',
+          'user.avatar',
+          'user.firstName',
+          'user.lastName',
+          'images.id',
+          'images.image',
+        ])
+        .getOne();
+
+      return {
+        data: reviewDetail,
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createReview(
     user: AuthUser,
     productId: string,

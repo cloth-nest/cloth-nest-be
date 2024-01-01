@@ -17,6 +17,7 @@ import {
   GetAllReviewsBelongToProductParamDTO,
   GetAllReviewsBelongToProductQueryDTO,
   CreateReviewBodyDTO,
+  GetReviewDetailParamDTO,
 } from './dto';
 import { AuthUser } from '../../shared/interfaces';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -39,6 +40,16 @@ export class ReviewController {
       getAllReviewsBelongToProductParamDTO.id,
       getAllReviewsBelongToProductQueryDTO,
     );
+  }
+
+  @Auth()
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  getReviewDetail(
+    @Param()
+    getReviewDetailParamDTO: GetReviewDetailParamDTO,
+  ) {
+    return this.reviewService.getReviewDetail(getReviewDetailParamDTO.id);
   }
 
   @Auth()

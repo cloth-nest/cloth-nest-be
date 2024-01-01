@@ -172,7 +172,10 @@ type Code =
   | 'StartDateMustBeBeforeEndDate'
 
   // Group N (Warehouse)
-  | 'WarehouseNameExist';
+  | 'WarehouseNameExist'
+
+  // Group O (Review)
+  | 'ReviewNotExist';
 
 export const TYPE_ERRORS: Record<TypeError, TypeError> = {
   InternalServerError: 'InternalServerError',
@@ -1101,5 +1104,13 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'Warehouse name is already existed',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
+  },
+
+  // Group O (Review)
+  ReviewNotExist: {
+    code: 'O0001',
+    message: 'Review not exist',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
   },
 };
