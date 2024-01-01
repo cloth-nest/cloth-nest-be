@@ -62,6 +62,8 @@ type Code =
   | 'InvalidProductDescription'
   | 'InvalidOrderStatus'
   | 'InvalidCountQueryParam'
+  | 'InvalidReviewContent'
+  | 'InvalidRating'
 
   // Group C
   | 'EmailExisted'
@@ -545,6 +547,18 @@ export const ERRORS: Record<Code, CustomError> = {
   InvalidCountQueryParam: {
     code: 'B0048',
     message: 'Invalid input count query param',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidReviewContent: {
+    code: 'B0049',
+    message: 'Invalid input reviewContent',
+    statusCode: 400,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  InvalidRating: {
+    code: 'B0050',
+    message: 'Invalid input rating',
     statusCode: 400,
     typeError: TYPE_ERRORS.ValidationError,
   },

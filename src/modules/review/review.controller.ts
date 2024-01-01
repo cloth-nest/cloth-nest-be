@@ -1,17 +1,26 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
+  Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
-import { Auth } from '../../shared/decorators';
+import { Auth, CurrentUser } from '../../shared/decorators';
 import {
   GetAllReviewsBelongToProductParamDTO,
   GetAllReviewsBelongToProductQueryDTO,
+  CreateReviewBodyDTO,
 } from './dto';
+import { AuthUser } from '../../shared/interfaces';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { extensionImageReg } from '../../shared/constants';
 
 @Controller('review')
 export class ReviewController {
@@ -29,6 +38,39 @@ export class ReviewController {
     return this.reviewService.getAllReviewsBelongToProduct(
       getAllReviewsBelongToProductParamDTO.id,
       getAllReviewsBelongToProductQueryDTO,
+    );
+  }
+
+  @Auth()
+  @Post('product/:id')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FilesInterceptor('files', 8))
+  createReview(
+    @CurrentUser() user: AuthUser,
+    @Param()
+    getAllReviewsBelongToProductParamDTO: GetAllReviewsBelongToProductParamDTO,
+    @Body()
+    createReviewBodyDTO: CreateReviewBodyDTO,
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: extensionImageReg,
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          fileIsRequired: false,
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    files: Express.Multer.File[],
+  ) {
+    return this.reviewService.createReview(
+      user,
+      getAllReviewsBelongToProductParamDTO.id,
+      createReviewBodyDTO,
+      files,
     );
   }
 }

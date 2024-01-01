@@ -244,6 +244,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'orderStatus': {
         return ERRORS.InvalidOrderStatus;
       }
+      case 'reviewContent': {
+        return ERRORS.InvalidReviewContent;
+      }
+      case 'rating': {
+        return ERRORS.InvalidRating;
+      }
       default:
         return ERRORS.InternalServerError;
     }

@@ -20,6 +20,9 @@ export class ReviewImage {
   })
   image: string;
 
+  @Column({ name: 'order', nullable: false })
+  order: number;
+
   @Column({ name: 'review_id', nullable: false })
   reviewId: number;
 
