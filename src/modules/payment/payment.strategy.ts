@@ -148,7 +148,9 @@ export class ZaloPayStrategy implements PaymentStrategy {
 
     const miliseconds = now.getMilliseconds();
 
-    return `${year}${month}${date}_${hours}${minutes}${seconds}${miliseconds}`;
+    return `${year}${month >= 10 ? month : `0${month}`}${
+      date >= 10 ? date : `0${date}`
+    }_${hours}${minutes}${seconds}${miliseconds}`;
   }
 
   private createAppTime() {
