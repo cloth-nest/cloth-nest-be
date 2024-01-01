@@ -23,6 +23,7 @@ import {
   ProductTypeProductAttribute,
   ProductTypeProductVariant,
   ProductVariant,
+  Review,
   VariantImage,
   Warehouse,
   WarehouseStock,
@@ -74,6 +75,8 @@ export class ProductService {
     private productVariantRepo: Repository<ProductVariant>,
     @InjectRepository(Warehouse)
     private warehouseRepo: Repository<Warehouse>,
+    @InjectRepository(Review)
+    private reviewRepo: Repository<Review>,
     @InjectRepository(WarehouseStock)
     private warehouseStockRepo: Repository<WarehouseStock>,
     @InjectRepository(VariantImage)
@@ -529,6 +532,18 @@ export class ProductService {
         products.map((product) => product.id),
       );
 
+      // Get avg rating of products
+      const productIds = products.map((product) => product.id);
+
+      const avgRatings = await this.reviewRepo
+        .createQueryBuilder('review')
+        .where('review.productId IN (:...productIds)', {
+          productIds,
+        })
+        .select(['review.productId AS id', 'AVG(review.rating)::float'])
+        .groupBy('review.productId')
+        .getRawMany();
+
       const formatedProducts = products.map((product) => ({
         id: product.id,
         name: product.name,
@@ -539,6 +554,10 @@ export class ProductService {
         ).image,
         defautVariantId: product?.defaultVariant?.id,
         colors: colorProducts[product.id],
+        rating:
+          parseFloat(
+            avgRatings.find((x) => x.id === product.id)?.avg.toFixed(1),
+          ) || null,
       }));
 
       return {
@@ -757,10 +776,20 @@ export class ProductService {
           .getRawMany(),
       ]);
 
+      // Calc avg rating
+      const { avg } = await this.reviewRepo
+        .createQueryBuilder('review')
+        .where('review.productId = :id', {
+          id: parseInt(productId),
+        })
+        .select('AVG(review.rating)::float')
+        .getRawOne();
+
       const formatedProductDetail = {
         ...productDetail,
         attributes,
         images,
+        rating: avg ? parseFloat(avg.toFixed(1)) : null,
         productType: {
           id: productType.id,
           name: productType.name,
