@@ -1619,8 +1619,8 @@ export class ProductService {
       }
 
       // Get max order
-      let { maxOrder } = await this.productVariantRepo
-        .createQueryBuilder('variant')
+      let { maxOrder } = await queryRunner.manager
+        .createQueryBuilder(ProductVariant, 'variant')
         .where('variant.productId = :id', {
           id: productId,
         })
@@ -1651,15 +1651,16 @@ export class ProductService {
       }
 
       // Get price min of all variants
-      const { minPrice } = await this.productVariantRepo
-        .createQueryBuilder('variant')
+      const { minPrice } = await queryRunner.manager
+        .createQueryBuilder(ProductVariant, 'variant')
         .where('variant.productId = :id', {
           id: productId,
         })
         .select('MIN(variant.price)', 'minPrice')
         .getRawOne();
+
       // Update min price of product
-      if (minPrice) {
+      if (minPrice !== null) {
         await queryRunner.manager.update(Product, productId, {
           price: minPrice,
         });
