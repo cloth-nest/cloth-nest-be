@@ -9,7 +9,11 @@ import {
   PaymentContext,
   ZaloPayStrategy,
 } from './payment.strategy';
-import { OrderPaymentMethod, OrderPaymentStatus } from '../../shared/enums';
+import {
+  OrderPaymentMethod,
+  OrderPaymentStatus,
+  OrderStatus,
+} from '../../shared/enums';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import * as crypto from 'crypto';
@@ -112,6 +116,7 @@ export class PaymentService {
         apptransid,
       },
       {
+        status: OrderStatus.ON_PROCESS,
         paymentStatus: OrderPaymentStatus.PAID,
       },
     );
