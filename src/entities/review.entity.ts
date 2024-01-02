@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Product, ReviewImage, User } from './';
+import { ColumnNumericTransformer } from '../shared/utils';
 
 @Entity({ name: 'review' })
 export class Review {
@@ -24,7 +25,12 @@ export class Review {
   @Column({ name: 'content', nullable: false })
   content: string;
 
-  @Column({ name: 'rating', nullable: false, type: 'numeric' })
+  @Column({
+    name: 'rating',
+    nullable: false,
+    type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
+  })
   rating: number;
 
   @ManyToOne(() => User, (user) => user.review)
