@@ -537,9 +537,7 @@ export class ProductService {
 
       const avgRatings = await this.reviewRepo
         .createQueryBuilder('review')
-        .where('review.productId IN (:...productIds)', {
-          productIds,
-        })
+        .whereInIds(productIds)
         .select([
           'review.productId AS id',
           'AVG(review.rating)::float',
