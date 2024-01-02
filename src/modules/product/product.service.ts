@@ -540,7 +540,11 @@ export class ProductService {
         .where('review.productId IN (:...productIds)', {
           productIds,
         })
-        .select(['review.productId AS id', 'AVG(review.rating)::float'])
+        .select([
+          'review.productId AS id',
+          'AVG(review.rating)::float',
+          'COUNT(*)::int',
+        ])
         .groupBy('review.productId')
         .getRawMany();
 
@@ -558,6 +562,7 @@ export class ProductService {
           parseFloat(
             avgRatings.find((x) => x.id === product.id)?.avg.toFixed(1),
           ) || null,
+        numOfReviews: avgRatings.find((x) => x.id === product.id)?.count || 0,
       }));
 
       return {
@@ -777,12 +782,12 @@ export class ProductService {
       ]);
 
       // Calc avg rating
-      const { avg } = await this.reviewRepo
+      const { avg, count } = await this.reviewRepo
         .createQueryBuilder('review')
         .where('review.productId = :id', {
           id: parseInt(productId),
         })
-        .select('AVG(review.rating)::float')
+        .select(['AVG(review.rating)::float', 'COUNT(*)::int AS count'])
         .getRawOne();
 
       const formatedProductDetail = {
@@ -790,6 +795,7 @@ export class ProductService {
         attributes,
         images,
         rating: avg ? parseFloat(avg.toFixed(1)) : null,
+        numOfReviews: count || 0,
         productType: {
           id: productType.id,
           name: productType.name,
