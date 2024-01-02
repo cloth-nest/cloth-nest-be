@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { RecommendationService } from './recommendation.service';
 import {
   GetProductRecommendationParamDTO,
   GetProductRecommendationQueryDTO,
 } from './dto';
+import { Auth } from '../../shared/decorators';
 
 @Controller('recommendation')
 export class RecommendationController {
@@ -18,5 +19,11 @@ export class RecommendationController {
       getProductRecommendationParamDTO.id,
       getProductRecommendationQueryDTO,
     );
+  }
+
+  @Auth()
+  @Post('sync')
+  syncProductRecommendation() {
+    return this.recommendationService.syncProductRecommendation();
   }
 }

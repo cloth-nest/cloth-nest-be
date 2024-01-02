@@ -97,4 +97,49 @@ export class RecommendationService {
       throw error;
     }
   }
+
+  async syncProductRecommendation() {
+    try {
+      // Get all products
+      const products = await this.productRepo
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .select(['product.id', 'productImages.image', 'productImages.order'])
+        .getMany();
+
+      const inputProducts = products
+        .map((product) => ({
+          id: product.id,
+          image_url: product.productImages.find(
+            (productImage) => productImage.order === 0,
+          )?.image,
+        }))
+        .filter((product) => product.image_url !== undefined);
+
+      const syncProductRoute =
+        this.configService.get<string>('RECOMMENDATION_BASE_URL') +
+        '/product/recommend/catalog?sync=true';
+      await firstValueFrom(
+        this.httpService.post(syncProductRoute, inputProducts).pipe(
+          catchError((err) => {
+            const errData = err.response.data;
+            const code = errData.error.code;
+            switch (code) {
+              case 'R01':
+                throw new CustomErrorException(ERRORS.RecomendationSystemError);
+              default:
+                throw new CustomErrorException(ERRORS.InternalServerError);
+            }
+          }),
+        ),
+      );
+
+      return {
+        message: 'Sync product recommendation successfully',
+        data: inputProducts,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
