@@ -27,7 +27,6 @@ import { extensionImageReg } from '../../shared/constants';
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  @Auth()
   @Get('product/:id')
   @HttpCode(HttpStatus.OK)
   getAllReviewsBelongToProduct(
@@ -42,7 +41,6 @@ export class ReviewController {
     );
   }
 
-  @Auth()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   getReviewDetail(
