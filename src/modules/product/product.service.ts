@@ -535,9 +535,20 @@ export class ProductService {
       // Get avg rating of products
       const productIds = products.map((product) => product.id);
 
+      if (productIds.length === 0) {
+        return {
+          data: {
+            products: [],
+            pageInformation: paginate(limit, page, total),
+          },
+        };
+      }
+
       const avgRatings = await this.reviewRepo
         .createQueryBuilder('review')
-        .whereInIds(productIds)
+        .where('review.productId IN (:...productIds)', {
+          productIds,
+        })
         .select([
           'review.productId AS id',
           'AVG(review.rating)::float',
