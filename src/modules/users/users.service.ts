@@ -526,7 +526,9 @@ export class UsersService {
       characters[randomIndex()] + // Letter
       characters[randomIndex() + 26] + // Digit
       characters[randomIndex() + 52] + // Special character
+      characters.slice(26, 52) + // Numeric digits
       characters.slice(52, 62) + // Numeric digits
+      characters.slice(62) + // Special digits
       characters.slice(0, 9); // 9 random characters
 
     // Randomize the string to create a random valid string
