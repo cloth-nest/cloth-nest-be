@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../../entities';
@@ -8,6 +8,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
 import { GetProductRecommendationQueryDTO } from './dto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class RecommendationService {
@@ -140,6 +141,69 @@ export class RecommendationService {
       };
     } catch (error) {
       throw error;
+    }
+  }
+
+  // Run cron job at 7:30 AM everyday
+  @Cron('0 30 07 * * *')
+  async handleSyncProductRecommendation() {
+    try {
+      // Log start
+      Logger.log(
+        'Start sync product recommendation',
+        RecommendationService.name,
+      );
+
+      // Get all products created today
+      const products = await this.productRepo
+        .createQueryBuilder('product')
+        .where('product.createdAt >= :date', {
+          date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+        })
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .select(['product.id', 'productImages.image', 'productImages.order'])
+        .getMany();
+
+      const inputProducts = products
+        .map((product) => ({
+          id: product.id,
+          image_url: product.productImages.find(
+            (productImage) => productImage.order === 0,
+          )?.image,
+        }))
+        .filter((product) => product.image_url !== undefined);
+
+      // Skip if no product created today
+      if (inputProducts.length === 0) {
+        Logger.log('No product created today', RecommendationService.name);
+        return;
+      }
+
+      // Sync product recommendation -> Add new product to recommendation system
+      const syncProductRoute =
+        this.configService.get<string>('RECOMMENDATION_BASE_URL') +
+        '/product/recommend/catalog';
+      await firstValueFrom(
+        this.httpService.post(syncProductRoute, inputProducts).pipe(
+          catchError((err) => {
+            const errData = err.response.data;
+            const code = errData.error.code;
+            switch (code) {
+              case 'R01':
+                throw new CustomErrorException(ERRORS.RecomendationSystemError);
+              default:
+                throw new CustomErrorException(ERRORS.InternalServerError);
+            }
+          }),
+        ),
+      );
+
+      Logger.log(
+        'Sync product recommendation successfully',
+        RecommendationService.name,
+      );
+    } catch (error) {
+      Logger.error(error.name, error.stack, RecommendationService.name);
     }
   }
 }
