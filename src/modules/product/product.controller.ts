@@ -53,7 +53,7 @@ import { extensionImageReg } from '../../shared/constants';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth()
   @Get('attributes')
   @HttpCode(HttpStatus.OK)
   getAllAttributes(
@@ -63,7 +63,7 @@ export class ProductController {
     return this.productService.getAllAttributes(getAllAttributesQueryDTO);
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Post('attributes')
   @HttpCode(HttpStatus.CREATED)
   createProductAttribute(
@@ -75,7 +75,7 @@ export class ProductController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Patch('attributes/:id')
   @HttpCode(HttpStatus.OK)
   updateProductAttribute(
@@ -89,14 +89,14 @@ export class ProductController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Delete('attributes/:id')
   @HttpCode(HttpStatus.OK)
   deleteProductAttribute(@Param() param: DeleteProductAttributeParamDto) {
     return this.productService.deleteProductAttribute(param.id);
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth()
   @Get('attributes/values/:id')
   @HttpCode(HttpStatus.OK)
   getAllValuesBelongToAttribute(
@@ -110,7 +110,7 @@ export class ProductController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Post('attributes/values')
   @HttpCode(HttpStatus.CREATED)
   createAttributeValue(
@@ -122,7 +122,7 @@ export class ProductController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Patch('attributes/values/:id')
   @HttpCode(HttpStatus.OK)
   updateAttributeValue(
@@ -136,7 +136,7 @@ export class ProductController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Delete('attributes/values/:id')
   @HttpCode(HttpStatus.OK)
   deleteAttributeValue(@Param() param: DeleteAttributeValueParamDto) {

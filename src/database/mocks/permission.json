@@ -1,102 +1,47 @@
 [
   {
-    "name": "Handle checkouts",
-    "codeName": "HANDLE_CHECKOUTS"
-  },
-  {
-    "name": "Handle payments",
-    "codeName": "HANDLE_PAYMENTS"
-  },
-  {
-    "name": "Handle taxes",
-    "codeName": "HANDLE_TAXES"
-  },
-  {
-    "name": "Impersonate user",
-    "codeName": "IMPERSONATE_USER"
-  },
-  {
-    "name": "Manage apps",
-    "codeName": "MANAGE_APPS"
-  },
-  {
-    "name": "Manage channels",
-    "codeName": "MANAGE_CHANNELS"
-  },
-  {
-    "name": "Manage checkouts",
-    "codeName": "MANAGE_CHECKOUTS"
-  },
-  {
-    "name": "Manage customers",
-    "codeName": "MANAGE_USERS"
-  },
-  {
-    "name": "Manage gift cards",
-    "codeName": "MANAGE_GIFT_CARD"
-  },
-  {
-    "name": "Manage navigation",
-    "codeName": "MANAGE_MENUS"
-  },
-  {
-    "name": "Manage observability",
-    "codeName": "MANAGE_OBSERVABILITY"
-  },
-  {
+    "id": 1,
     "name": "Manage orders import",
     "codeName": "MANAGE_ORDERS_IMPORT"
   },
   {
+    "id": 2,
     "name": "Manage orders",
     "codeName": "MANAGE_ORDERS"
   },
   {
-    "name": "Manage page types and attributes",
-    "codeName": "MANAGE_PAGE_TYPES_AND_ATTRIBUTES"
-  },
-  {
-    "name": "Manage pages",
-    "codeName": "MANAGE_PAGES"
-  },
-  {
-    "name": "Manage plugins",
-    "codeName": "MANAGE_PLUGINS"
-  },
-  {
+    "id": 3,
     "name": "Manage product types and attributes",
     "codeName": "MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES"
   },
   {
+    "id": 4,
     "name": "Manage products",
     "codeName": "MANAGE_PRODUCTS"
   },
   {
-    "name": "Manage sales and vouchers",
-    "codeName": "MANAGE_DISCOUNTS"
+    "id": 5,
+    "name": "Manage warehouse",
+    "codeName": "MANAGE_WAREHOUSE"
   },
   {
-    "name": "Manage settings",
-    "codeName": "MANAGE_SETTINGS"
-  },
-  {
-    "name": "Manage shipping",
-    "codeName": "MANAGE_SHIPPING"
-  },
-  {
+    "id": 6,
     "name": "Manage staff",
     "codeName": "MANAGE_STAFF"
   },
   {
-    "name": "Manage taxes",
-    "codeName": "MANAGE_TAXES"
-  },
-  {
-    "name": "Manage translations",
-    "codeName": "MANAGE_TRANSLATIONS"
-  },
-  {
+    "id": 7,
     "name": "Manage categories",
     "codeName": "MANAGE_CATEGORIES"
+  },
+  {
+    "id": 8,
+    "name": "Manage statistic",
+    "codeName": "MANAGE_STATISTIC"
+  },
+  {
+    "id": 9,
+    "name": "Manage sync recommendation",
+    "codeName": "MANAGE_SYNC_RECOMMENDATION"
   }
 ]

@@ -1,68 +1,34 @@
 [
   {
-    "name": "Apps management"
-  },
-  {
-    "name": "Channels management"
-  },
-  {
-    "name": "Checkouts management"
-  },
-  {
-    "name": "Customer Suport"
-  },
-  {
-    "name": "Discounts management"
-  },
-  {
+    "id": 1,
     "name": "Full Access"
   },
   {
-    "name": "Gift card management"
-  },
-  {
-    "name": "Menus management"
-  },
-  {
-    "name": "Observability management"
-  },
-  {
+    "id": 2,
     "name": "Orders management"
   },
   {
-    "name": "Pages management"
-  },
-  {
-    "name": "Page types and attributes management"
-  },
-  {
-    "name": "Payments management"
-  },
-  {
-    "name": "Plugins management"
-  },
-  {
+    "id": 3,
     "name": "Products management"
   },
   {
+    "id": 4,
     "name": "Product types and attributes management"
   },
   {
-    "name": "Settings management"
-  },
-  {
-    "name": "Shipping management"
-  },
-  {
+    "id": 5,
     "name": "Staff management"
   },
   {
-    "name": "Translations management"
+    "id": 6,
+    "name": "Recommendation system management"
   },
   {
-    "name": "User management"
+    "id": 7,
+    "name": "Analytics management"
   },
   {
-    "name": "Users management"
+    "id": 8,
+    "name": "Warehouse management"
   }
 ]

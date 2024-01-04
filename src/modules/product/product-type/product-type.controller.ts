@@ -30,7 +30,7 @@ import { extensionImageReg } from '../../../shared/constants';
 export class ProductTypeController {
   constructor(private readonly productTypeService: ProductTypeService) {}
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth()
   @Get('')
   @HttpCode(HttpStatus.OK)
   getAllProductTypes(
@@ -41,7 +41,7 @@ export class ProductTypeController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   getAllAttributeBelongToProductType(
@@ -50,7 +50,7 @@ export class ProductTypeController {
     return this.productTypeService.getAllAttributeBelongToProductType(param.id);
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Post('')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('file'))
@@ -77,7 +77,7 @@ export class ProductTypeController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   deleteProductType(
@@ -88,14 +88,14 @@ export class ProductTypeController {
     );
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Post('/attribute')
   @HttpCode(HttpStatus.CREATED)
   addAttributes(@Body() addAttributeBodyDTO: AddAttributeBodyDTO) {
     return this.productTypeService.addAttributes(addAttributeBodyDTO);
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Delete('/attribute')
   @HttpCode(HttpStatus.OK)
   removeAttributes(@Body() removeAttributeBodyDTO: RemoveAttributeBodyDTO) {

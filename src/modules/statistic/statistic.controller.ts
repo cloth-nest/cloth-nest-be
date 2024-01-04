@@ -8,7 +8,7 @@ import { GetStatisticBodyDTO } from './dto';
 export class StatisticController {
   constructor(private readonly statisticService: StatisticService) {}
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_STATISTIC)
   @Post('')
   @HttpCode(HttpStatus.OK)
   getStatistic(@Body() getStatisticBodyDTO: GetStatisticBodyDTO) {

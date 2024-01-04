@@ -5,6 +5,7 @@ import {
   GetProductRecommendationQueryDTO,
 } from './dto';
 import { Auth } from '../../shared/decorators';
+import { Permission } from '../../shared/enums';
 
 @Controller('recommendation')
 export class RecommendationController {
@@ -21,7 +22,7 @@ export class RecommendationController {
     );
   }
 
-  @Auth()
+  @Auth(Permission.MANAGE_SYNC_RECOMMENDATION)
   @Post('sync')
   syncProductRecommendation() {
     return this.recommendationService.syncProductRecommendation();

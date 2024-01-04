@@ -22,7 +22,7 @@ export class WarehouseController {
     return this.warehouseService.getAllWarehouse();
   }
 
-  @Auth(Permission.MANAGE_PRODUCTS)
+  @Auth(Permission.MANAGE_WAREHOUSE)
   @Post('')
   @HttpCode(HttpStatus.CREATED)
   createWarehouse(@Body() createWarehouseBodyDTO: CreateWarehouseBodyDTO) {
