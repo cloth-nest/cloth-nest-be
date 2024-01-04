@@ -4,6 +4,7 @@
 
 # Env
 .env
+.env.local
 
 # Logs
 logs
