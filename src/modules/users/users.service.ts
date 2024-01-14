@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Group, User, UserGroup } from '../../entities';
+import {
+  Group,
+  User,
+  UserGroup,
+  UserPermission,
+  GroupPermission,
+} from '../../entities';
 import { DataSource, In, Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
@@ -283,7 +289,7 @@ export class UsersService {
         updateGroupPermissionStaffBodyDto;
 
       // Check if staff member exist
-      const staffMember = await this.userRepo.findOne({
+      const staffMember = await queryRunner.manager.findOne(User, {
         where: {
           id: parseInt(staffMemberId),
           isStaff: true,
@@ -306,7 +312,8 @@ export class UsersService {
         }
 
         // Update isActive field
-        await this.userRepo.update(
+        await queryRunner.manager.update(
+          User,
           {
             id: parseInt(staffMemberId),
           },
@@ -319,7 +326,7 @@ export class UsersService {
       let groupPermissions: Group[] = undefined;
       if (groupPermissionIds) {
         // Check groupPermissionIds correct
-        const groupPermissionsExist = await this.groupRepo.count({
+        const groupPermissionsExist = await queryRunner.manager.count(Group, {
           where: {
             id: In(groupPermissionIds),
           },
@@ -334,6 +341,9 @@ export class UsersService {
           userId: parseInt(staffMemberId),
         });
 
+        await queryRunner.manager.delete(UserPermission, {
+          userId: parseInt(staffMemberId),
+        });
         // Insert new group permission
         await queryRunner.manager.save(
           UserGroup,
@@ -343,7 +353,23 @@ export class UsersService {
           })),
         );
 
-        groupPermissions = await this.groupRepo.find({
+        // Get all permissions of groups
+        const gpermissions = await queryRunner.manager.find(GroupPermission, {
+          where: {
+            groupId: In(groupPermissionIds),
+          },
+          select: ['permissionId'],
+        });
+
+        await queryRunner.manager.save(
+          UserPermission,
+          gpermissions.map((permission) => ({
+            userId: parseInt(staffMemberId),
+            permissionId: permission.permissionId,
+          })),
+        );
+
+        groupPermissions = await queryRunner.manager.find(Group, {
           where: {
             id: In(groupPermissionIds),
           },
