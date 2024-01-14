@@ -174,6 +174,8 @@ type Code =
 
   // Group N (Warehouse)
   | 'WarehouseNameExist'
+  | 'WarehouseNotFound'
+  | 'WarehouseHasStock'
 
   // Group O (Review)
   | 'ReviewNotExist';
@@ -1109,6 +1111,18 @@ export const ERRORS: Record<Code, CustomError> = {
   WarehouseNameExist: {
     code: 'N0001',
     message: 'Warehouse name is already existed',
+    statusCode: 409,
+    typeError: TYPE_ERRORS.ValidationError,
+  },
+  WarehouseNotFound: {
+    code: 'N0002',
+    message: 'Warehouse not found',
+    statusCode: 404,
+    typeError: TYPE_ERRORS.NotFoundError,
+  },
+  WarehouseHasStock: {
+    code: 'N0003',
+    message: 'Warehouse has stock',
     statusCode: 409,
     typeError: TYPE_ERRORS.ValidationError,
   },
