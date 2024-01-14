@@ -48,7 +48,7 @@ import { CustomErrorException } from '../../shared/exceptions/custom-error.excep
 import { ERRORS } from '../../shared/constants';
 import * as _ from 'lodash';
 import { PriceRange, ProductOrderDirection } from '../../shared/enums';
-import { faker } from '@faker-js/faker';
+// import { faker } from '@faker-js/faker';
 import { FileUploadService } from '../../shared/services';
 import { ConfigService } from '@nestjs/config';
 
@@ -566,7 +566,7 @@ export class ProductService {
           (productImage) => productImage.order === 0,
         ).image,
         defautVariantId: product?.defaultVariant?.id,
-        colors: colorProducts[product.id],
+        colors: colorProducts[product.id] || [],
         rating:
           parseFloat(
             avgRatings.find((x) => x.id === product.id)?.avg.toFixed(1),
@@ -586,30 +586,30 @@ export class ProductService {
   }
 
   public async getColorsOfProducts(productIdList: number[]) {
-    const mockColor = _.mapValues(_.keyBy(productIdList), () =>
-      faker.helpers.arrayElements(
-        [
-          'Red',
-          'Orange',
-          'Yellow',
-          'Green',
-          'Blue',
-          'Purple',
-          'Pink',
-          'Brown',
-          'White',
-          'Black',
-          'Grey',
-          'Multi-Colour',
-        ],
-        {
-          min: 2,
-          max: 6,
-        },
-      ),
-    );
+    // const mockColor = _.mapValues(_.keyBy(productIdList), () =>
+    //   faker.helpers.arrayElements(
+    //     [
+    //       'Red',
+    //       'Orange',
+    //       'Yellow',
+    //       'Green',
+    //       'Blue',
+    //       'Purple',
+    //       'Pink',
+    //       'Brown',
+    //       'White',
+    //       'Black',
+    //       'Grey',
+    //       'Multi-Colour',
+    //     ],
+    //     {
+    //       min: 2,
+    //       max: 6,
+    //     },
+    //   ),
+    // );
 
-    return mockColor;
+    // return mockColor;
 
     const attributeColorId = await this.productAttributeRepo.findOne({
       where: {
@@ -638,12 +638,12 @@ export class ProductService {
       )
       .select(['product.id AS "productId"', 'attributeValue.value AS "value"'])
       .where('attributeValue.attributeId = :id', {
-        id: attributeColorId,
+        id: attributeColorId.id,
       })
       .getRawMany();
     const formatedResult = _.mapValues(
       _.groupBy(productColors, 'productId'),
-      (productColorList) => productColorList.map((x) => x.value),
+      (productColorList) => _.uniq(productColorList.map((x) => x.value)),
     );
 
     return formatedResult;
