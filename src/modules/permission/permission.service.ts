@@ -391,4 +391,39 @@ export class PermissionService {
       },
     };
   }
+
+  public async getGroupPermissionDetail(groupPermissionId: string) {
+    const groupPermission = await this.groupRepo.findOne({
+      where: {
+        id: parseInt(groupPermissionId),
+      },
+    });
+
+    if (!groupPermission) {
+      throw new CustomErrorException(ERRORS.GroupPermissionNotExist);
+    }
+
+    const groupPermissions = await this.groupPermissionRepo
+      .createQueryBuilder('gp')
+      .select(['p.id AS "id"', 'p.name AS "name"'])
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)::int as count')
+            .from(UserGroup, 'ug')
+            .where('ug.group_id = gp.group_id'),
+        'members',
+      )
+      .leftJoin(Permission, 'p', 'p.id = gp.permission_id')
+      .where('gp.group_id = :groupId', { groupId: parseInt(groupPermissionId) })
+      .getRawMany();
+
+    return {
+      data: {
+        id: parseInt(groupPermissionId),
+        name: groupPermission.name,
+        groupPermissions,
+      },
+    };
+  }
 }

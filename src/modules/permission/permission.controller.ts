@@ -20,6 +20,7 @@ import {
   DeletePermissionParamDto,
   GetAllGroupPermissionsQueryDTO,
   GetAllPermissionsQueryDTO,
+  GetGroupPermissionParamDto,
   UpdateGroupPermissionBodyDto,
   UpdateGroupPermissionParamDto,
   UpdatePermissionBodyDto,
@@ -92,6 +93,18 @@ export class PermissionController {
   ) {
     return this.permissionService.createGroupPermission(
       createGroupPermissionBodyDto,
+    );
+  }
+
+  @Auth(Permission.MANAGE_STAFF)
+  @Get('group/:id')
+  @HttpCode(HttpStatus.OK)
+  getGroupPermissionDetail(
+    @Param()
+    getGroupPermissionParamDto: GetGroupPermissionParamDto,
+  ) {
+    return this.permissionService.getGroupPermissionDetail(
+      getGroupPermissionParamDto.id,
     );
   }
 
