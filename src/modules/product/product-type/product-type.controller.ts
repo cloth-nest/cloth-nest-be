@@ -78,17 +78,6 @@ export class ProductTypeController {
   }
 
   @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
-  @Delete(':id')
-  @HttpCode(HttpStatus.OK)
-  deleteProductType(
-    @Param() deleteProductTypeParamDto: DeleteProductTypeParamDto,
-  ) {
-    return this.productTypeService.deleteProductType(
-      deleteProductTypeParamDto.id,
-    );
-  }
-
-  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
   @Post('/attribute')
   @HttpCode(HttpStatus.CREATED)
   addAttributes(@Body() addAttributeBodyDTO: AddAttributeBodyDTO) {
@@ -100,5 +89,16 @@ export class ProductTypeController {
   @HttpCode(HttpStatus.OK)
   removeAttributes(@Body() removeAttributeBodyDTO: RemoveAttributeBodyDTO) {
     return this.productTypeService.removeAttributes(removeAttributeBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES)
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deleteProductType(
+    @Param() deleteProductTypeParamDto: DeleteProductTypeParamDto,
+  ) {
+    return this.productTypeService.deleteProductType(
+      deleteProductTypeParamDto.id,
+    );
   }
 }
