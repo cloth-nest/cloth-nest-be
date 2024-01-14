@@ -62,4 +62,39 @@ export class WarehouseService {
       throw err;
     }
   }
+
+  public async deleteWarehouse(warehouseId: string) {
+    try {
+      const warehouse = await this.warehouseRepo.findOne({
+        where: {
+          id: parseInt(warehouseId),
+        },
+      });
+
+      if (!warehouse) {
+        throw new CustomErrorException(ERRORS.WarehouseNotFound);
+      }
+
+      // Dont't delete warehouse if it has stock (Not force delete)
+      const warehouseStock = await this.warehouseStockRepo.count({
+        where: {
+          warehouseId: parseInt(warehouseId),
+        },
+      });
+
+      if (warehouseStock) {
+        throw new CustomErrorException(ERRORS.WarehouseHasStock);
+      }
+
+      await this.warehouseRepo.delete({
+        id: parseInt(warehouseId),
+      });
+
+      return {
+        message: 'Delete warehouse successfully',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

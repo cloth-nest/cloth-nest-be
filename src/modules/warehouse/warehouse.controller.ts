@@ -5,11 +5,13 @@ import {
   HttpCode,
   HttpStatus,
   Body,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import { Permission } from '../../shared/enums';
 import { Auth } from '../../shared/decorators';
-import { CreateWarehouseBodyDTO } from './dto';
+import { CreateWarehouseBodyDTO, DeleteWarehouseParamDto } from './dto';
 
 @Controller('warehouse')
 export class WarehouseController {
@@ -27,5 +29,12 @@ export class WarehouseController {
   @HttpCode(HttpStatus.CREATED)
   createWarehouse(@Body() createWarehouseBodyDTO: CreateWarehouseBodyDTO) {
     return this.warehouseService.createWarehouse(createWarehouseBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_WAREHOUSE)
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  deleteWarehouse(@Param() deleteWarehouseParamDto: DeleteWarehouseParamDto) {
+    return this.warehouseService.deleteWarehouse(deleteWarehouseParamDto.id);
   }
 }
