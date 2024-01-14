@@ -412,7 +412,7 @@ export class PermissionService {
             .select('COUNT(*)::int as count')
             .from(UserGroup, 'ug')
             .where('ug.group_id = gp.group_id'),
-        'members',
+        'groupPermissionsCount',
       )
       .leftJoin(Permission, 'p', 'p.id = gp.permission_id')
       .where('gp.group_id = :groupId', { groupId: parseInt(groupPermissionId) })
