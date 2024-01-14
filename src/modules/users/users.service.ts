@@ -294,7 +294,7 @@ export class UsersService {
         throw new CustomErrorException(ERRORS.StaffMemberNotFound);
       }
 
-      if (isActive) {
+      if (isActive !== undefined) {
         // Check if staff member is super user
         if (staffMember.isSuperUser) {
           throw new CustomErrorException(ERRORS.CannotChangeSuperUserStatus);
