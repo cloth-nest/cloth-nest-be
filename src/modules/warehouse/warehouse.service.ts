@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Warehouse, WarehouseStock } from '../../entities';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
-import { CreateWarehouseBodyDTO } from './dto';
+import { CreateWarehouseBodyDTO, UpdateWarehouseBodyDTO } from './dto';
 
 @Injectable()
 export class WarehouseService {
@@ -57,6 +57,51 @@ export class WarehouseService {
           id: createdWarehouse.id,
           name: createdWarehouse.name,
         },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async updateWarehouse(
+    warehouseId: string,
+    updateWarehouseBodyDTO: UpdateWarehouseBodyDTO,
+  ) {
+    try {
+      const { warehouseName } = updateWarehouseBodyDTO;
+
+      const warehouse = await this.warehouseRepo.count({
+        where: {
+          id: parseInt(warehouseId),
+        },
+      });
+
+      if (!warehouse) {
+        throw new CustomErrorException(ERRORS.WarehouseNotFound);
+      }
+
+      // Check if warehouse name is exist
+      const warehouseNameExist = await this.warehouseRepo.count({
+        where: {
+          name: warehouseName,
+        },
+      });
+
+      if (warehouseNameExist) {
+        throw new CustomErrorException(ERRORS.WarehouseNameExist);
+      }
+
+      await this.warehouseRepo.update(
+        {
+          id: parseInt(warehouseId),
+        },
+        {
+          name: warehouseName,
+        },
+      );
+
+      return {
+        message: 'Update warehouse successfully',
       };
     } catch (err) {
       throw err;

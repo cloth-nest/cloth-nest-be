@@ -11,7 +11,12 @@ import {
 import { WarehouseService } from './warehouse.service';
 import { Permission } from '../../shared/enums';
 import { Auth } from '../../shared/decorators';
-import { CreateWarehouseBodyDTO, DeleteWarehouseParamDto } from './dto';
+import {
+  CreateWarehouseBodyDTO,
+  DeleteWarehouseParamDto,
+  UpdateWarehouseBodyDTO,
+  UpdateWarehouseParamDto,
+} from './dto';
 
 @Controller('warehouse')
 export class WarehouseController {
@@ -29,6 +34,19 @@ export class WarehouseController {
   @HttpCode(HttpStatus.CREATED)
   createWarehouse(@Body() createWarehouseBodyDTO: CreateWarehouseBodyDTO) {
     return this.warehouseService.createWarehouse(createWarehouseBodyDTO);
+  }
+
+  @Auth(Permission.MANAGE_WAREHOUSE)
+  @Post(':id')
+  @HttpCode(HttpStatus.OK)
+  updateWarehouse(
+    @Param() updateWarehouseParamDto: UpdateWarehouseParamDto,
+    @Body() updateWarehouseBodyDTO: UpdateWarehouseBodyDTO,
+  ) {
+    return this.warehouseService.updateWarehouse(
+      updateWarehouseParamDto.id,
+      updateWarehouseBodyDTO,
+    );
   }
 
   @Auth(Permission.MANAGE_WAREHOUSE)
