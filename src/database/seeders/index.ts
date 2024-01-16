@@ -12,6 +12,7 @@ export * from './product-type.seeder';
 export * from './product-type-product-attribute.seeder';
 export * from './product-type-product-variant.seeder';
 export * from './product-variant.seeder';
+export * from './product-product-variant-default.seeder';
 export * from './product-image.seeder';
 export * from './variant-image.seeder';
 export * from './assigned-product-attribute.seeder';

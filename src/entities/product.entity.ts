@@ -52,10 +52,7 @@ export class Product {
   @Column({ name: 'product_type_id', nullable: false })
   productTypeId: number;
 
-  // @Column({ name: 'default_variant_id', nullable: false })
-  // defaultVariantId: number;
-
-  @OneToOne(() => ProductVariant)
+  @OneToOne(() => ProductVariant, { nullable: true })
   @JoinColumn({
     name: 'default_variant_id',
     referencedColumnName: 'id',
